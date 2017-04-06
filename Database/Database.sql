@@ -1,119 +1,205 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               10.1.22-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
--- HeidiSQL Version:             9.4.0.5125
--- --------------------------------------------------------
+-- phpMyAdmin SQL Dump
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Apr 07, 2017 at 12:56 AM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 7.1.1
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Database: `project01`
+--
 
--- Dumping database structure for project01
-DROP DATABASE IF EXISTS `project01`;
-CREATE DATABASE IF NOT EXISTS `project01` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `project01`;
+-- --------------------------------------------------------
 
--- Dumping structure for table project01.group
-DROP TABLE IF EXISTS `group`;
-CREATE TABLE IF NOT EXISTS `group` (
-  `groupID` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `contactAddress` varchar(255) DEFAULT NULL,
-  `Information` varchar(10000) DEFAULT NULL,
-  `phoneNumber` bigint(11) DEFAULT NULL,
-  `currentNews` varchar(2000) DEFAULT NULL,
-  PRIMARY KEY (`groupID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+--
+-- Table structure for table `item`
+--
 
--- Dumping data for table project01.group: ~2 rows (approximately)
-/*!40000 ALTER TABLE `group` DISABLE KEYS */;
-REPLACE INTO `group` (`groupID`, `name`, `contactAddress`, `Information`, `phoneNumber`, `currentNews`) VALUES
-	(1, 'test\r\n', NULL, NULL, NULL, NULL),
-	(2, 'test2', NULL, NULL, NULL, NULL);
-/*!40000 ALTER TABLE `group` ENABLE KEYS */;
-
--- Dumping structure for table project01.item
-DROP TABLE IF EXISTS `item`;
-CREATE TABLE IF NOT EXISTS `item` (
-  `itemID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `item` (
+  `itemID` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `end` datetime NOT NULL,
   `description` varchar(500) NOT NULL,
   `type` set('Request','Supplying') NOT NULL,
   `FKuser` int(11) NOT NULL,
   `finished` tinyint(4) NOT NULL,
-  `group` int(11) DEFAULT NULL,
-  PRIMARY KEY (`itemID`),
-  KEY `FKUser` (`FKuser`),
-  KEY `FKGroupID` (`group`),
-  CONSTRAINT `FKGroupID` FOREIGN KEY (`group`) REFERENCES `group` (`groupID`),
-  CONSTRAINT `FKUser` FOREIGN KEY (`FKuser`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `organisation` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table project01.item: ~1 rows (approximately)
-/*!40000 ALTER TABLE `item` DISABLE KEYS */;
-REPLACE INTO `item` (`itemID`, `name`, `end`, `description`, `type`, `FKuser`, `finished`, `group`) VALUES
-	(1, 'gerd item', '2017-05-04 16:36:32', 'test', 'Request', 1, 0, NULL);
-/*!40000 ALTER TABLE `item` ENABLE KEYS */;
+-- --------------------------------------------------------
 
--- Dumping structure for table project01.notifcation
-DROP TABLE IF EXISTS `notifcation`;
-CREATE TABLE IF NOT EXISTS `notifcation` (
-  `NotificationID` int(11) NOT NULL AUTO_INCREMENT,
+--
+-- Table structure for table `notifcation`
+--
+
+CREATE TABLE `notifcation` (
+  `NotificationID` int(11) NOT NULL,
   `FKUser` int(11) NOT NULL,
-  `FKTag` int(11) NOT NULL,
-  PRIMARY KEY (`NotificationID`),
-  KEY `FKUserID` (`FKUser`),
-  KEY `FKTagID` (`FKTag`),
-  CONSTRAINT `FKTagID` FOREIGN KEY (`FKTag`) REFERENCES `tag` (`tagID`),
-  CONSTRAINT `FKUserID` FOREIGN KEY (`FKUser`) REFERENCES `user` (`userID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `FKTag` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table project01.notifcation: ~1 rows (approximately)
-/*!40000 ALTER TABLE `notifcation` DISABLE KEYS */;
-REPLACE INTO `notifcation` (`NotificationID`, `FKUser`, `FKTag`) VALUES
-	(1, 1, 2);
-/*!40000 ALTER TABLE `notifcation` ENABLE KEYS */;
+-- --------------------------------------------------------
 
--- Dumping structure for table project01.tag
-DROP TABLE IF EXISTS `tag`;
-CREATE TABLE IF NOT EXISTS `tag` (
-  `tagID` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  PRIMARY KEY (`tagID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+--
+-- Table structure for table `organisation`
+--
 
--- Dumping data for table project01.tag: ~2 rows (approximately)
-/*!40000 ALTER TABLE `tag` DISABLE KEYS */;
-REPLACE INTO `tag` (`tagID`, `name`) VALUES
-	(1, 'Boogers'),
-	(2, 'Beef');
-/*!40000 ALTER TABLE `tag` ENABLE KEYS */;
+CREATE TABLE `organisation` (
+  `groupID` int(10) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `Information` varchar(10000) DEFAULT NULL,
+  `currentNews` varchar(2000) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping structure for table project01.user
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE IF NOT EXISTS `user` (
-  `userID` int(10) NOT NULL AUTO_INCREMENT,
+--
+-- Dumping data for table `organisation`
+--
+
+INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`) VALUES
+(1, 'YMCA Ballarat', '03 5329 2800 ballarat.hr@ymca.org.au', NULL),
+(2, 'Ballarat Health Services', 'https://www.bhs.org.au/how-we-can-help', NULL),
+(3, 'Uniting Care Ballarat', '105 Dana Street PO Box 608 Ballarat VIC 3353 Phone 03 5332 1286', NULL),
+(4, 'Southern Cross Care', 'https://www.sccv.org.au/contact-us-(1)', NULL),
+(5, 'Salvation Army', 'Major Volunteer Organisation provides multiple community services.', NULL),
+(6, 'Ballarat Wildlife Park', 'http://wildlifepark.com.au/', NULL),
+(7, 'Conservation Volunteers Australia', 'http://conservationvolunteers.com.au/contact-us/office-locations/victoria/ballarat/', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tag`
+--
+
+CREATE TABLE `tag` (
+  `tagID` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `userID` int(10) NOT NULL,
   `userFirstName` varchar(35) NOT NULL,
   `userLastName` varchar(35) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `FKgroup` int(11) DEFAULT NULL,
-  PRIMARY KEY (`userID`),
-  UNIQUE KEY `UserID` (`userID`),
-  KEY `FKgroup` (`FKgroup`),
-  CONSTRAINT `FKGroup` FOREIGN KEY (`FKgroup`) REFERENCES `group` (`groupID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `FKgroup` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- Dumping data for table project01.user: ~1 rows (approximately)
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-REPLACE INTO `user` (`userID`, `userFirstName`, `userLastName`, `email`, `FKgroup`) VALUES
-	(1, 'Gerd', 'Gerd', 'Gerd', 1);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+--
+-- Dumping data for table `user`
+--
 
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+INSERT INTO `user` (`userID`, `userFirstName`, `userLastName`, `email`, `FKgroup`) VALUES
+(3, 'Gerard', 'May', 'gerdington@gmail.com', NULL);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `item`
+--
+ALTER TABLE `item`
+  ADD PRIMARY KEY (`itemID`),
+  ADD KEY `FKUser` (`FKuser`),
+  ADD KEY `FKGroupID` (`organisation`);
+
+--
+-- Indexes for table `notifcation`
+--
+ALTER TABLE `notifcation`
+  ADD PRIMARY KEY (`NotificationID`),
+  ADD KEY `FKUserID` (`FKUser`),
+  ADD KEY `FKTagID` (`FKTag`);
+
+--
+-- Indexes for table `organisation`
+--
+ALTER TABLE `organisation`
+  ADD PRIMARY KEY (`groupID`);
+
+--
+-- Indexes for table `tag`
+--
+ALTER TABLE `tag`
+  ADD PRIMARY KEY (`tagID`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`userID`),
+  ADD UNIQUE KEY `UserID` (`userID`),
+  ADD KEY `FKgroup` (`FKgroup`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `item`
+--
+ALTER TABLE `item`
+  MODIFY `itemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `notifcation`
+--
+ALTER TABLE `notifcation`
+  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `organisation`
+--
+ALTER TABLE `organisation`
+  MODIFY `groupID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `tag`
+--
+ALTER TABLE `tag`
+  MODIFY `tagID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `userID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `item`
+--
+ALTER TABLE `item`
+  ADD CONSTRAINT `FKGroupID` FOREIGN KEY (`organisation`) REFERENCES `organisation` (`groupID`),
+  ADD CONSTRAINT `FKUser` FOREIGN KEY (`FKuser`) REFERENCES `user` (`userID`);
+
+--
+-- Constraints for table `notifcation`
+--
+ALTER TABLE `notifcation`
+  ADD CONSTRAINT `FKTagID` FOREIGN KEY (`FKTag`) REFERENCES `tag` (`tagID`),
+  ADD CONSTRAINT `FKUserID` FOREIGN KEY (`FKUser`) REFERENCES `user` (`userID`);
+
+--
+-- Constraints for table `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `FKGroup` FOREIGN KEY (`FKgroup`) REFERENCES `organisation` (`groupID`);
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
