@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2017 at 12:56 AM
+-- Generation Time: Apr 07, 2017 at 12:59 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `project01`
 --
+CREATE DATABASE IF NOT EXISTS `project01` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `project01`;
 
 -- --------------------------------------------------------
 
@@ -26,6 +28,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `item`
 --
 
+DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `itemID` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -43,6 +46,7 @@ CREATE TABLE `item` (
 -- Table structure for table `notifcation`
 --
 
+DROP TABLE IF EXISTS `notifcation`;
 CREATE TABLE `notifcation` (
   `NotificationID` int(11) NOT NULL,
   `FKUser` int(11) NOT NULL,
@@ -55,6 +59,7 @@ CREATE TABLE `notifcation` (
 -- Table structure for table `organisation`
 --
 
+DROP TABLE IF EXISTS `organisation`;
 CREATE TABLE `organisation` (
   `groupID` int(10) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -81,6 +86,7 @@ INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`) VAL
 -- Table structure for table `tag`
 --
 
+DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `tagID` int(11) NOT NULL,
   `name` varchar(50) NOT NULL
@@ -92,6 +98,7 @@ CREATE TABLE `tag` (
 -- Table structure for table `user`
 --
 
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `userID` int(10) NOT NULL,
   `userFirstName` varchar(35) NOT NULL,
