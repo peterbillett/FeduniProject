@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2017 at 04:27 AM
+-- Generation Time: Apr 07, 2017 at 09:42 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -166,6 +166,7 @@ CREATE TABLE `user` (
   `userFirstName` varchar(35) NOT NULL,
   `userLastName` varchar(35) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `userPassword` varchar(50) NOT NULL,
   `FKgroup` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -173,12 +174,12 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`userID`, `userFirstName`, `userLastName`, `email`, `FKgroup`) VALUES
-(3, 'Gerard', 'May', 'gerdington@gmail.com', NULL),
-(4, 'Tim', 'Russel', 'timjarussell@gmail.com', 1),
-(5, 'Tim', 'McKnight', 'tmcknight@gmail.com', 2),
-(6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', 10),
-(7, 'Peter', 'Billett', 'peterbillettsemail@gmail.com', 17);
+INSERT INTO `user` (`userID`, `userFirstName`, `userLastName`, `email`, `userPassword`, `FKgroup`) VALUES
+(3, 'Gerard', 'May', 'gerdington@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', NULL),
+(4, 'Tim', 'Russel', 'timjarussell@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 1),
+(5, 'Tim', 'McKnight', 'tmcknight@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 2),
+(6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 10),
+(7, 'Peter', 'Billett', 'peterbillettsemail@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 17);
 
 -- --------------------------------------------------------
 
