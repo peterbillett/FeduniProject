@@ -16,36 +16,33 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
+
 -- Database: `project01`
---
+
 CREATE DATABASE IF NOT EXISTS `project01` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `project01`;
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `item`
---
 
 DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `itemID` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `end` datetime NOT NULL,
+  `endtime` datetime NOT NULL,
   `description` varchar(500) NOT NULL,
-  `type` set('Request','Supplying') NOT NULL,
-  `FKuser` int(11) NOT NULL,
+  `category` set('Request','Supplying') NOT NULL,
+  `FKclient` int(11) NOT NULL,
   `finished` tinyint(4) NOT NULL DEFAULT '0',
   `organisation` int(11) DEFAULT NULL,
   `FKTagID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `item`
---
 
-INSERT INTO `item` (`itemID`, `name`, `end`, `description`, `type`, `FKuser`, `finished`, `organisation`, `FKTagID`) VALUES
+-- Dumping data for table `item`
+
+INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKclient`, `finished`, `organisation`, `FKTagID`) VALUES
 (3, 'Coaches', '2017-04-14 00:00:00', 'Looking for people to help out with coaching under 12 basketball', 'Request', 4, 0, 1, 6),
 (4, 'Sausages', '2017-04-13 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 0, 2, 7),
 (5, 'Sausages', '2017-04-10 00:00:00', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 0, 17, 7),
@@ -53,22 +50,19 @@ INSERT INTO `item` (`itemID`, `name`, `end`, `description`, `type`, `FKuser`, `f
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `notifcation`
---
+-- Table structure for table `notification`
 
-DROP TABLE IF EXISTS `notifcation`;
-CREATE TABLE `notifcation` (
+DROP TABLE IF EXISTS `notification`;
+CREATE TABLE `notification` (
   `NotificationID` int(11) NOT NULL,
-  `FKUser` int(11) NOT NULL,
+  `FKClient` int(11) NOT NULL,
   `FKTag` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `notifcation`
---
 
-INSERT INTO `notifcation` (`NotificationID`, `FKUser`, `FKTag`) VALUES
+-- Dumping data for table `notification`
+
+INSERT INTO `notification` (`NotificationID`, `FKClient`, `FKTag`) VALUES
 (3, 3, 4),
 (4, 3, 8),
 (5, 3, 13),
@@ -78,9 +72,7 @@ INSERT INTO `notifcation` (`NotificationID`, `FKUser`, `FKTag`) VALUES
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `organisation`
---
 
 DROP TABLE IF EXISTS `organisation`;
 CREATE TABLE `organisation` (
@@ -90,9 +82,8 @@ CREATE TABLE `organisation` (
   `currentNews` varchar(2000) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
+
 -- Dumping data for table `organisation`
---
 
 INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`) VALUES
 (1, 'YMCA Ballarat', '03 5329 2800 ballarat.hr@ymca.org.au', NULL),
@@ -125,9 +116,7 @@ INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`) VAL
 
 -- --------------------------------------------------------
 
---
 -- Table structure for table `tag`
---
 
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
@@ -135,9 +124,8 @@ CREATE TABLE `tag` (
   `name` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
+
 -- Dumping data for table `tag`
---
 
 INSERT INTO `tag` (`tagID`, `name`) VALUES
 (1, 'Other'),
@@ -156,174 +144,166 @@ INSERT INTO `tag` (`tagID`, `name`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `user`
---
+-- Table structure for table `client`
 
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `userID` int(10) NOT NULL,
-  `userFirstName` varchar(35) NOT NULL,
-  `userLastName` varchar(35) NOT NULL,
+DROP TABLE IF EXISTS `client`;
+CREATE TABLE `client` (
+  `clientID` int(10) NOT NULL,
+  `clientFirstName` varchar(35) NOT NULL,
+  `clientLastName` varchar(35) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `userPassword` varchar(50) NOT NULL,
+  `clientPassword` varchar(50) NOT NULL,
   `FKgroup` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `user`
---
 
-INSERT INTO `user` (`userID`, `userFirstName`, `userLastName`, `email`, `userPassword`, `FKgroup`) VALUES
+-- Dumping data for table `client`
+
+INSERT INTO `client` (`clientID`, `clientFirstName`, `clientLastName`, `email`, `clientPassword`, `FKgroup`) VALUES
 (3, 'Gerard', 'May', 'gerdington@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', NULL),
-(4, 'Tim', 'Russel', 'timjarussell@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 1),
+(4, 'Tim', 'Russell', 'timjarussell@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 1),
 (5, 'Tim', 'McKnight', 'tmcknight@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 2),
 (6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 10),
 (7, 'Peter', 'Billett', 'peterbillettsemail@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 17);
 
 -- --------------------------------------------------------
 
---
--- Stand-in structure for view `user/organisations with tags`
+-- Stand-in structure for view `client/organisations with tags`
 -- (See below for the actual view)
---
-DROP VIEW IF EXISTS `user/organisations with tags`;
-CREATE TABLE `user/organisations with tags` (
+
+DROP VIEW IF EXISTS `client/organisations with tags`;
+CREATE TABLE `client/organisations with tags` (
 `Tag ID` int(11)
 ,`Tag Name` varchar(50)
-,`User ID` int(10)
-,`userFirstName` varchar(35)
-,`userLastName` varchar(35)
+,`Client ID` int(10)
+,`clientFirstName` varchar(35)
+,`clientLastName` varchar(35)
 ,`Organisation ID` int(11)
 ,`Organisation Name` varchar(255)
 );
 
 -- --------------------------------------------------------
 
---
--- Stand-in structure for view `users in organisations`
+-- Stand-in structure for view `clients in organisations`
 -- (See below for the actual view)
---
-DROP VIEW IF EXISTS `users in organisations`;
-CREATE TABLE `users in organisations` (
-`userID` int(10)
-,`userFirstName` varchar(35)
-,`userLastName` varchar(35)
+
+DROP VIEW IF EXISTS `clients in organisations`;
+CREATE TABLE `clients in organisations` (
+`clientID` int(10)
+,`clientFirstName` varchar(35)
+,`clientLastName` varchar(35)
 ,`FKgroup` int(11)
 ,`name` varchar(255)
 );
 
 -- --------------------------------------------------------
 
---
--- Structure for view `user/organisations with tags`
---
-DROP TABLE IF EXISTS `user/organisations with tags`;
+-- Structure for view `client/organisations with tags`
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user/organisations with tags`  AS  select `tag`.`tagID` AS `Tag ID`,`tag`.`name` AS `Tag Name`,`user`.`userID` AS `User ID`,`user`.`userFirstName` AS `userFirstName`,`user`.`userLastName` AS `userLastName`,`user`.`FKgroup` AS `Organisation ID`,`organisation`.`name` AS `Organisation Name` from (((`tag` join `user`) join `organisation`) join `notifcation`) where ((`notifcation`.`FKUser` = `user`.`userID`) and (`notifcation`.`FKTag` = `tag`.`tagID`) and (`organisation`.`groupID` = `user`.`FKgroup`)) ;
+DROP TABLE IF EXISTS `client/organisations with tags`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `client/organisations with tags`  AS  select `tag`.`tagID` AS `Tag ID`,`tag`.`name` AS `Tag Name`,`client`.`clientID` AS `Client ID`,`client`.`clientFirstName` AS `clientFirstName`,`client`.`clientLastName` AS `clientLastName`,`client`.`FKgroup` AS `Organisation ID`,`organisation`.`name` AS `Organisation Name` from (((`tag` join `client`) join `organisation`) join `notification`) where ((`notification`.`FKClient` = `client`.`clientID`) and (`notification`.`FKTag` = `tag`.`tagID`) and (`organisation`.`groupID` = `client`.`FKgroup`)) ;
 
 -- --------------------------------------------------------
 
---
--- Structure for view `users in organisations`
---
-DROP TABLE IF EXISTS `users in organisations`;
+-- Structure for view `clients in organisations`
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `users in organisations`  AS  select `user`.`userID` AS `userID`,`user`.`userFirstName` AS `userFirstName`,`user`.`userLastName` AS `userLastName`,`user`.`FKgroup` AS `FKgroup`,`organisation`.`name` AS `name` from (`user` join `organisation` on((`organisation`.`groupID` = `user`.`FKgroup`))) ;
+DROP TABLE IF EXISTS `clients in organisations`;
 
---
--- Indexes for dumped tables
---
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `clients in organisations`  AS  select `client`.`clientID` AS `clientID`,`client`.`clientFirstName` AS `clientFirstName`,`client`.`clientLastName` AS `clientLastName`,`client`.`FKgroup` AS `FKgroup`,`organisation`.`name` AS `name` from (`client` join `organisation` on((`organisation`.`groupID` = `client`.`FKgroup`))) ;
 
---
+
+-- INDEXES FOR DUMPED TABLES
+
 -- Indexes for table `item`
---
+
 ALTER TABLE `item`
   ADD PRIMARY KEY (`itemID`),
-  ADD KEY `FKUser` (`FKuser`),
+  ADD KEY `FKClient` (`FKclient`),
   ADD KEY `FKGroupID` (`organisation`),
   ADD KEY `FKTagID` (`FKTagID`);
 
---
--- Indexes for table `notifcation`
---
-ALTER TABLE `notifcation`
+  
+-- Indexes for table `notification`
+
+ALTER TABLE `notification`
   ADD PRIMARY KEY (`NotificationID`),
-  ADD KEY `FKUserID` (`FKUser`),
+  ADD KEY `FKClientID` (`FKClient`),
   ADD KEY `FKTagID` (`FKTag`);
 
---
+
 -- Indexes for table `organisation`
---
+
 ALTER TABLE `organisation`
   ADD PRIMARY KEY (`groupID`);
 
---
+
 -- Indexes for table `tag`
---
+
 ALTER TABLE `tag`
   ADD PRIMARY KEY (`tagID`);
 
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`userID`),
-  ADD UNIQUE KEY `UserID` (`userID`),
+
+-- Indexes for table `client`
+
+ALTER TABLE `client`
+  ADD PRIMARY KEY (`clientID`),
+  ADD UNIQUE KEY `ClientID` (`clientID`),
   ADD KEY `FKgroup` (`FKgroup`);
 
---
--- AUTO_INCREMENT for dumped tables
---
 
---
+-- AUTO_INCREMENT FOR DUMPED TABLES
+
 -- AUTO_INCREMENT for table `item`
---
-ALTER TABLE `item`
-  MODIFY `itemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
---
--- AUTO_INCREMENT for table `notifcation`
---
-ALTER TABLE `notifcation`
-  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `organisation`
---
-ALTER TABLE `organisation`
-  MODIFY `groupID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
---
--- AUTO_INCREMENT for table `tag`
---
-ALTER TABLE `tag`
-  MODIFY `tagID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
---
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `user`
-  MODIFY `userID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
---
--- Constraints for dumped tables
---
 
---
+ALTER TABLE `item`
+  MODIFY `itemID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+  
+-- AUTO_INCREMENT for table `notification`
+
+ALTER TABLE `notification`
+  MODIFY `NotificationID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+  
+-- AUTO_INCREMENT for table `organisation`
+
+ALTER TABLE `organisation`
+  MODIFY `groupID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+  
+-- AUTO_INCREMENT for table `tag`
+
+ALTER TABLE `tag`
+  MODIFY `tagID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+  
+-- AUTO_INCREMENT for table `client`
+
+ALTER TABLE `client`
+  MODIFY `clientID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
+  
+-- CONSTRAINTS FOR DUMPED TABLES
+
 -- Constraints for table `item`
---
+
 ALTER TABLE `item`
   ADD CONSTRAINT `FKGroupID` FOREIGN KEY (`organisation`) REFERENCES `organisation` (`groupID`),
-  ADD CONSTRAINT `FKUser` FOREIGN KEY (`FKuser`) REFERENCES `user` (`userID`),
+  ADD CONSTRAINT `FKClient` FOREIGN KEY (`FKclient`) REFERENCES `client` (`clientID`),
   ADD CONSTRAINT `item_ibfk_1` FOREIGN KEY (`FKTagID`) REFERENCES `tag` (`tagID`);
 
---
--- Constraints for table `notifcation`
---
-ALTER TABLE `notifcation`
-  ADD CONSTRAINT `FKTagID` FOREIGN KEY (`FKTag`) REFERENCES `tag` (`tagID`),
-  ADD CONSTRAINT `FKUserID` FOREIGN KEY (`FKUser`) REFERENCES `user` (`userID`);
 
---
--- Constraints for table `user`
---
-ALTER TABLE `user`
+-- Constraints for table `notification`
+
+ALTER TABLE `notification`
+  ADD CONSTRAINT `FKTagID` FOREIGN KEY (`FKTag`) REFERENCES `tag` (`tagID`),
+  ADD CONSTRAINT `FKClientID` FOREIGN KEY (`FKClient`) REFERENCES `client` (`clientID`);
+
+
+-- Constraints for table `client`
+
+ALTER TABLE `client`
   ADD CONSTRAINT `FKGroup` FOREIGN KEY (`FKgroup`) REFERENCES `organisation` (`groupID`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
