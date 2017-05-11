@@ -1,0 +1,54 @@
+.topnav, Shtml, body, div, span, h2, h3, h4, h5, h6, p, a, img, form, label, table, tr, th, td, article, footer, header, menu, nav, section, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font-family: Arial;
+	vertical-align: baseline;
+}
+
+article, footer, header, menu, nav, section {
+	display: block;
+}
+
+h1, h1>a, h1>a:hover {
+	background-color: #0051A3;
+	margin: 0;
+	padding-bottom: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+	text-align: center;
+	color: white;
+	font-weight: bold;
+	font-size: 40pt;
+	color: white;
+	text-decoration: none;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+	color: white;
+}
+
+.navbar-inverse, .navbar-inverse>a, .navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
+	background-color: #0051A3;
+	font-size: 12pt;
+	color: white;
+	margin: 0;
+	padding-bottom: 0;
+	border: 0;
+	font-family: Arial;
+	font-weight: bold;
+}
+
+footer{
+	bottom: 0;
+	width: 100%;
+	background-color: #0051A3;
+	position: fixed;
+	color: white;
+}
+
+.createAccountLogin {
+	text-align: center;
+}
