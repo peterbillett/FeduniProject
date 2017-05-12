@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Connect Me Ballarat</title>
-	<link rel="icon" href="icon.png">	
+	<link rel="icon" href="img/icon.png">	
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -12,10 +12,10 @@
 
 <body>
 	<nav class="navbar navbar-inverse">
+		<h1><a href="index.html">CONNECT ME Ballarat</a></h1>
 		<div class="container-fluid">
-			<h1><a href="index.html">CONNECT ME Ballarat</a></h1>
 			<ul class="nav navbar-nav">
-				<li><a href="index.html">Home</a></li>
+				<li><a href="index.html"><span class="glyphicon glyphicon-home"></span></p></a></li>
 				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Volunteer Organisations<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="#">All</a></li>
@@ -34,7 +34,7 @@
 						<li><a href="#">Example 4</a></li>
 					</ul>
 				</li>
-				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Looking to supply...<span class="caret"></span></a>
+				<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Supplying...<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="#">All</a></li>
 						<li><a href="#">Example 1</a></li>
@@ -45,7 +45,7 @@
 				</li>
 				<li><a href="#">Create listing</a></li>
 				<li><a href="#">FAQ</a></li>
-				<li><a href="#">Login/Create Account</a></li>
+				<li><a href="createAccountLogin.html">Your Account</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -54,29 +54,36 @@
 
 	<section class="createAccountLogin">
 		
-		<details>
+		<details open>
 			<summary>Login</summary>
-			<form action="/login_user.php">
-				Email: <input type="email" name="email" required placeholder="Enter a valid email address">
+			<form method = "post" action="php/login_user.php">
+				<label>Email: </label>
+				<br><input type="email" name="email" placeholder="Enter email" required value="gerdington@gmail.com" ><br />
 				<br>
-				Password: <input type="password" name="password" required placeholder="Enter password">
-				<br>
-			  	<input type="submit">
+				<label>Password: </label>
+				<br><input type="password" name="password" required placeholder="Enter password" value="password"><br />
+			  	<br><input type="submit">
 			</form>
+		
+			<div style = "font-size:11px; color:#cc0000; margin-top:10px"><?php echo @$error; ?></div>
 		</details>
-
+	
 		<br>
 		
 		<details>
 			<summary>Create Account</summary>
 			<form action="/login_user.php">
-				Email: <input type="email" name="email" required placeholder="Enter a valid email address">
+				<label>Email: </label>
+				<br><input type="email" name="email" required placeholder="Enter a valid email address"><br />
 				<br>
-				First name: <input type="text" name="firstname" required placeholder="Enter your first name">
+				<label>First name: </label>
+				<br><input type="text" name="firstname" required placeholder="Enter your first name"><br />
 				<br>
-				Last name: <input type="text" name="lastname" required placeholder="Enter your last name">
+				<label>Last name: </label>
+				<br><input type="text" name="lastname" required placeholder="Enter your last name"><br />
 				<br>
-				Password: <input type="password" name="password" required placeholder="Enter password">
+				<label>Password: </label>
+				<br><input type="password" name="password" required placeholder="Enter password">
 				<br>
 			  	<input type="submit">
 			</form>

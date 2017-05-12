@@ -11,8 +11,8 @@ article, footer, header, menu, nav, section {
 	display: block;
 }
 
-h1, h1>a, h1>a:hover {
-	background-color: #0051A3;
+h1, h1>a, h1>a:hover, h1>a:focus {
+	background-color: #337AB7;
 	margin: 0;
 	padding-bottom: 0;
 	border: 0;
@@ -26,19 +26,32 @@ h1, h1>a, h1>a:hover {
 	text-decoration: none;
 }
 
-.navbar-inverse .navbar-nav>li>a {
-	color: white;
+details summary::-webkit-details-marker { display:none; }
+
+details summary {
+	font-size: 11pt;
+	text-decoration: underline;
 }
 
-.navbar-inverse, .navbar-inverse>a, .navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
-	background-color: #0051A3;
-	font-size: 12pt;
-	color: white;
+.navbar-inverse .navbar-nav>li>a {
+	color: black;
+}
+
+.navbar-inverse, .navbar-inverse>a, .navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover, .dropdown-menu>li>a  {
+	background-color: #F8F8F8;
+	font-size: 11pt;
+	color: black;
 	margin: 0;
 	padding-bottom: 0;
 	border: 0;
 	font-family: Arial;
 	font-weight: bold;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.navbar-inverse .navbar-nav>li>a:focus, .navbar-inverse .navbar-nav>li>a:hover{
+	color: #15344D;
 }
 
 footer{
@@ -51,4 +64,39 @@ footer{
 
 .createAccountLogin {
 	text-align: center;
+}
+
+@media (min-width: 1000px) {
+    .navbar .navbar-nav {
+        display: inline-block;
+        float: none;
+        vertical-align: top;
+    }
+
+    .navbar-inverse>a {
+    	color: green;
+    }
+
+    .navbar .navbar-collapse {
+        text-align: center;
+    }
+
+    .navbar-right .dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+  .navbar-right .dropdown-menu-left {
+    left: 0;
+    right: auto;
+  }
+}
+
+@media (max-width: 767px){
+	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:focus, .navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover {
+		color: #133461;
+	}
+
+	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+		color: #252E58;
+	}
 }
