@@ -1,7 +1,7 @@
 <?php
-   	echo('
+   	echo(/*
 	<nav class="navbar navbar-inverse">
-		<h1><a href="index.html">CONNECT ME Ballarat</a></h1>
+		<h1><a href="index.html">CONNECT ME Ballarat</a></h1>*/'
 		<div class="container-fluid">
 			<ul class="nav navbar-nav">
 				<li><a href="index.html"><span class="glyphicon glyphicon-home"></span></p></a></li>
@@ -36,6 +36,6 @@
 				<li><a href="#">FAQ</a></li>
 				<li><a href="createAccountLogin.html">Your Account</a></li>
 			</ul>
-		</div>
-	</nav>');
+		</div>'/*
+	</nav>*/);
 ?>
