@@ -11,6 +11,25 @@ article, footer, header, menu, nav, section {
 	display: block;
 }
 
+.loading{
+	display:block;
+	margin: 0 auto;
+}
+
+.center {
+    margin: auto;
+    text-align: left;
+	width: 100%;
+}
+
+.table-responsive{
+	float: left;
+	max-width: 1000px;
+	width: 50%;
+	min-width: 370px;
+	padding: 10px;
+}
+
 h1, h1>a, h1>a:hover, h1>a:focus {
 	background-color: #337AB7;
 	margin: 0;
@@ -62,9 +81,26 @@ footer{
 	color: white;
 }
 
+.listPages{
+	text-align: center;
+	width: 100%;
+}
+
 .createAccountLogin {
 	text-align: center;
 }
+
+.navbar-inverse .navbar-toggle .icon-bar {
+  display: block;
+  width: 50px;
+  height: 2px;
+  background-color: #cccccc;
+  border-radius: 1px;
+}
+
+.navbar-toggle {
+    	float: none;
+    }
 
 @media (min-width: 1000px) {
     .navbar .navbar-nav {
@@ -81,6 +117,8 @@ footer{
         text-align: center;
     }
 
+
+
     .navbar-right .dropdown-menu {
     left: auto;
     right: 0;
@@ -92,11 +130,26 @@ footer{
 }
 
 @media (max-width: 767px){
-	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a:focus, .navbar-inverse .navbar-nav .open .dropdown-menu>li>a:hover {
-		color: #133461;
+
+	.center {
+		width: 100%;
 	}
 
-	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
-		color: #252E58;
+	.table-responsive > .table-bordered {
+		border: 1px solid #ddd;	    
+	}
+
+	.table-responsive{
+		float: none;
+		width: 100%;
+		padding: 10px;
+		border: 0;
+	}
+
+}
+
+@media (max-width: 610px){
+	h1, h1>a, h1>a:hover, h1>a:focus{
+		font-size: 30px;
 	}
 }
