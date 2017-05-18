@@ -45,6 +45,19 @@ $(function () {
 		xmlhttp.send();
 	}
 
+	if(window.location.pathname == '/website/item.html'){
+		//Initalize tables of listings
+		document.getElementById("itemDetails").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("itemDetails").innerHTML = this.responseText;
+			}
+		};
+		xmlhttp.open("GET", "./php/itemInfo.php" + window.location.search, true);
+		xmlhttp.send();
+	}
+
 	if(window.location.pathname == '/website/allOrgs.html'){
 		//Initalize tables of listings
 		document.getElementById("orgsList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';

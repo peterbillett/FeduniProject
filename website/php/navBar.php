@@ -31,7 +31,7 @@
 							<li><a href="#">Example 4</a></li>
 						</ul>
 					</li>
-					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdowns" href="#">Supplying...<span class="caret"></span></a>
+					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Supplying...<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li><a href="#">All</a></li>
 							<li><a href="#">Example 1</a></li>
