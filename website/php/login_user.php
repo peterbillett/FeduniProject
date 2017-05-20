@@ -8,16 +8,12 @@
       $stmt->execute(array($_POST['email']));
 
       if($stmt->rowCount() == 1) {
-         //echo"GOOD";
-         //echo $stmt['clientID'];
-         //print_r($stmt);
-         //echo('<p>success');
-         $_SESSION['login_user'] = $_POST['email'];         
+         $result = $stmt->fetch(PDO::FETCH_ASSOC); 
+         $_SESSION['userID'] = $result['clientID'];       
          header("location: ../index.html");
       }else {
          header("location: ../createAccountLogin.html");
-         //echo('<p>failed');
-         $error = "Your Login Name or Password is invalid";
+         //$error = "Your Login Name or Password is invalid";
       }
    }
 ?>

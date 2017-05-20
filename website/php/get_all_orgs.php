@@ -11,10 +11,10 @@
 	}
 
 	//Number of organisations that will be fetched
-	$orgAmount = 6;
+	$orgAmount = 20;
 
    //If the pageNumber is greater than 0 show previous link
-	echo'<div class="orgsPages">';
+	echo'<div class="listPages">';
    if ($_SESSION['pageNumber'] > 0){
    	echo '<a href="allOrgs.html?pageNumber='.($_SESSION['pageNumber']-1).'">Previous Page</a>';
    }

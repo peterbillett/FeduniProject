@@ -11,6 +11,14 @@ article, footer, header, menu, nav, section {
 	display: block;
 }
 
+.tableImage{
+	width: 100px;
+}
+
+.table-padding {
+	padding: 10px;
+}
+
 .loading{
 	display:block;
 	margin: 0 auto;
@@ -27,7 +35,6 @@ article, footer, header, menu, nav, section {
 	max-width: 1000px;
 	width: 50%;
 	min-width: 370px;
-	padding: 10px;
 }
 
 h1, h1>a, h1>a:hover, h1>a:focus {
@@ -54,6 +61,13 @@ details summary {
 
 .navbar-inverse .navbar-nav>li>a {
 	color: black;
+}
+
+.fullItemDesc{
+	width: 98%;
+	margin-left:auto; 
+    margin-right:auto;
+
 }
 
 .navbar-inverse, .navbar-inverse>a, .navbar-inverse .navbar-nav>li>a, .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover, .dropdown-menu>li>a  {
@@ -90,10 +104,6 @@ footer{
 	text-align: center;
 }
 
-.table{
-	padding: 10px;
-}
-
 .navbar-inverse .navbar-toggle .icon-bar {
   display: block;
   width: 50px;
@@ -103,8 +113,30 @@ footer{
 }
 
 .navbar-toggle {
-    	float: none;
-    }
+    float: none;
+}
+
+.itemStatus {
+	text-align: center;
+	color: white;
+	font-weight: bold;
+}
+
+.available {
+	background-color: #5CB85C;
+}
+
+.wanted {
+	background-color: #F0AD4E;
+}
+
+.finished {
+	background-color: #D9534F;
+}
+
+.edit {
+	background-color: #337AB7;
+}
 
 @media (min-width: 881px) {
     .navbar .navbar-nav {
