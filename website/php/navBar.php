@@ -20,6 +20,7 @@
 							if (isset($_SESSION['userID'])){
 								//Makes 'Create a Volunteer Group' option visiable
 								echo '<li><a href="createVolOrgAccount.html">Create a Volunteer Group</a></li>';
+								echo '<li><a href="joinVolOrg.html">Join a Volunteer Group</a></li>';
 							}
 							
 						echo '</ul>

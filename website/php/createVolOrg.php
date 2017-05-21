@@ -11,7 +11,7 @@
 
 		// Grabs the name of the organisation that has been inputted and compares it with names from pre-existing accounts
 		$stmt = $db->prepare("SELECT name FROM organisation WHERE UCASE(name) = UCASE(?)");
-		$stmt -> execute(array($_POST['name']));
+		$stmt -> execute(array($_POST['volOrgName']));
 	
 		// Checks to see if the organisation name in the form already exists
 		if($stmt->rowCount() == 1) // Refuse the group creation
@@ -35,10 +35,6 @@
 			// Checks to see if data insertion was successful
 			if($stmt->rowCount() == 1) 
 			{
-				// Handles data insertion success
-				$result = $stmt->fetch(PDO::FETCH_ASSOC); 
-				$_SESSION['userID'] = $result['clientID'];  
-
 				// Notify the user of the success and redicts them to the Home page
 				echo ("<SCRIPT LANGUAGE='JavaScript'>
 						window.alert('Volunteer Group creation successful')

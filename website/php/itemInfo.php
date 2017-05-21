@@ -9,13 +9,13 @@
 
    //For each item create table using name, description and itemID
 	echo '<div class="center wrapper">';
-
-		$stmt = $db->prepare("SELECT * FROM item JOIN client ON client.clientID = item.FKclient WHERE itemID=?");
-    	$stmt->execute(array($_GET['item']));
+		//$stmt = $db->prepare("SELECT * FROM item JOIN client ON client.clientID = item.FKclient WHERE itemID=?");
+        $stmt = $db->prepare("SELECT client.clientFirstName, client.clientLastName, client.email, client.FKgroup, item.*, organisation.groupID, organisation.name FROM client, item, organisation WHERE client.clientID = item.FKclient AND item.itemID = ? AND organisation.groupID = client.FKgroup");
+        $stmt->execute(array($_GET['item']));
     	$itemResult = $stmt->fetch(PDO::FETCH_ASSOC);
 
     	$stmt = $db->prepare("SELECT * FROM organisation WHERE groupID=?");
-    	$stmt->execute(array($itemResult['organisation']));
+    	$stmt->execute(array($itemResult['FKgroup']));
     	$organisationResult = $stmt->fetch(PDO::FETCH_ASSOC);  	
   		
         echo'<div class="listPages">';
@@ -42,7 +42,7 @@
             	//Item details: client, organisation+url, end date/time
             	echo '<td>';
             	    echo 'Supplier: '.$itemResult['clientFirstName'].' '.$itemResult['clientLastName'];
-            	    echo '<br>Organisation: <a href="organisation.html?id='.$organisationResult['groupID'].'"">'.$organisationResult['name'].'</a>';
+            	    echo '<br>Organisation: <a href="organisation.html?id='.$itemResult['groupID'].'"">'.$itemResult['name'].'</a>';
             	    echo '<br>End date/time: '.$itemResult['endtime'];
             	    echo '<br>Contact email: <a href="mailto:'.$itemResult['email'].'?Subject='.$itemResult['name'].'">'.$itemResult['email'].'</a>';
 

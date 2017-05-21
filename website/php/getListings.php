@@ -47,8 +47,18 @@
 		   		echo '<li><div class="table-responsive table-padding" >';
 			      	echo '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
 				      	echo '<tbody>';
-				      		echo '<tr><td>';
-				      			echo '<a href="item.html?item='.$row['itemID'].'"><b>'.$row['name'].'<b></a>';
+				      		echo '<tr><td ';
+			      			switch ($row['finished']) {
+			            		case 0:
+			                        echo 'class="available">';
+			            			break;
+			            		case 1:
+			                        echo 'class="wanted">';
+			            			break;
+			            		default:
+			                        echo 'class="finished">';
+			            	}
+			      			echo '<a class="itemName" href="item.html?item='.$row['itemID'].'"><b>'.$row['name'].'</b></a>';
 				      		echo '</td>';
 							echo '<td  rowspan="2" class="tableImage">';
 						    	echo '<div><img src="php/getImage.php?id='.$row['itemID'].'" class="itemImage" /></div>';
