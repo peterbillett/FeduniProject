@@ -44,6 +44,19 @@ $(function () {
 		xmlhttp.send();
 	};
 
+	if(currentPage == 'allListings'){
+		//Initalize tables of listings
+		document.getElementById("listingList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("listingList").innerHTML = this.responseText;
+			}
+		};
+		xmlhttp.open("GET", "./php/getListings.php" + window.location.search, true);
+		xmlhttp.send();
+	}
+
 	if(currentPage == 'allRequests'){
 		//Initalize tables of listings
 		document.getElementById("listingList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
@@ -53,7 +66,7 @@ $(function () {
 				document.getElementById("listingList").innerHTML = this.responseText;
 			}
 		};
-		xmlhttp.open("GET", "./php/getAllRequests.php?type=Request&" + window.location.search, true);
+		xmlhttp.open("GET", "./php/getListings.php?type=Request&" + window.location.search, true);
 		xmlhttp.send();
 	}
 
@@ -66,9 +79,22 @@ $(function () {
 				document.getElementById("listingList").innerHTML = this.responseText;
 			}
 		};
-		xmlhttp.open("GET", "./php/getAllRequests.php?type=Supplying&" + window.location.search, true);
+		xmlhttp.open("GET", "./php/getListings.php?type=Supplying&" + window.location.search, true);
 		xmlhttp.send();
 	}
+
+	if(currentPage == 'joinVolOrg'){
+		//Initalize tables of listings
+		document.getElementById("volOrgList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("volOrgList").innerHTML = this.responseText;
+			}
+		};
+		xmlhttp.open("GET", "./php/linkClientVolOrg.php", true);
+		xmlhttp.send();
+	}	
 
 	if(currentPage == 'organisation'){
 		//Initalize organisation info
@@ -80,19 +106,6 @@ $(function () {
 			}
 		};
 		xmlhttp.open("GET", "./php/organisationInfo.php" + window.location.search, true);
-		xmlhttp.send();
-	}
-
-	if(currentPage == 'allListings'){
-		//Initalize tables of listings
-		document.getElementById("listingList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				document.getElementById("listingList").innerHTML = this.responseText;
-			}
-		};
-		xmlhttp.open("GET", "./php/getAllRequests.php" + window.location.search, true);
 		xmlhttp.send();
 	}
 
