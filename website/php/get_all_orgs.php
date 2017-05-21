@@ -12,38 +12,46 @@
 
 	//Number of organisations that will be fetched
 	$orgAmount = 20;
-
-   //If the pageNumber is greater than 0 show previous link
-	echo'<div class="listPages">';
-   if ($_SESSION['pageNumber'] > 0){
-   	echo '<a href="allOrgs.html?pageNumber='.($_SESSION['pageNumber']-1).'">Previous Page</a>';
-   }
-
-   //If there are more organisations then show next link
-   $orgCount = $db->query("SELECT groupID FROM organisation");
-	if($orgCount->rowCount() > (($_SESSION['pageNumber']+1)*$orgAmount)){
-		if ($_SESSION['pageNumber'] > 0){
-			echo ' - ';
-		}
-		echo '<a href="allOrgs.html?pageNumber='.($_SESSION['pageNumber']+1).'">Next Page</a>';
-	}
-	echo'</div>';
-
-   //For each organisation create table using name, description and itemID
 	echo '<div class="center wrapper">';
-   foreach($db->query("SELECT name, Information FROM organisation LIMIT ".($_SESSION['pageNumber']*$orgAmount).", ".$orgAmount) as $row) {    
-      echo '<div class="table-responsive" >';
-      echo '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
-      echo '<thead>';
-      echo '<tr><td><b>'.$row['name'].'<b></td></tr>';
-      echo '</thead>';
-      echo '<tbody>';
-      echo '<tr><td>'.$row['Information'].'<br>';
-      //echo '<a href="item.html?item='.$row['groupID'].'">Read more...</a></td></tr>';
-      echo '</tbody>';
-      echo '</table>';
-      echo '</div><p>';
-   }
+
+		echo '<input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search..">';
+		echo '<ul id="tableList">';
+
+		//If the pageNumber is greater than 0 show previous link
+		echo'<div class="listPages">';
+	   	if ($_SESSION['pageNumber'] > 0){
+	   		echo '<a href="allOrgs.html?pageNumber='.($_SESSION['pageNumber']-1).'">Previous Page</a>';
+	   	}
+	   	//If there are more organisations then show next link
+	   	$orgCount = $db->query("SELECT groupID FROM organisation");
+		if($orgCount->rowCount() > (($_SESSION['pageNumber']+1)*$orgAmount)){
+			if ($_SESSION['pageNumber'] > 0){
+				echo ' - ';
+			}
+			echo '<a href="allOrgs.html?pageNumber='.($_SESSION['pageNumber']+1).'">Next Page</a>';
+		}
+		echo'</div>';
+
+	   	//For each organisation create table using name, description and itemID
+	   	foreach($db->query("SELECT name, Information, groupID FROM organisation LIMIT ".($_SESSION['pageNumber']*$orgAmount).", ".$orgAmount) as $row) {    
+	      	echo '<li><div class="table-responsive table-padding" >';
+	      	echo '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
+	      	echo '<thead>';
+	      	echo '<tr><td><a href="organisation.html?id='.$row['groupID'].'"><b>'.$row['name'].'<b></a></td></tr>';
+	      	echo '</thead>';
+	      	echo '<tbody>';
+	      	echo '<tr><td>';
+	      	if (strlen($row['Information'])>200){
+					echo substr($row['Information'],0,200).'...<br>';	
+				}
+				else{
+					echo $row['Information'].'<br>';
+				}
+	      	echo '<a href="organisation.html?id='.$row['groupID'].'">Read more...</a></td></tr>';
+	      	echo '</tbody>';
+	      	echo '</table>';
+	      	echo '</div></li>';
+	   }
    echo'</div>';
 
 ?>

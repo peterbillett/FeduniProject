@@ -25,9 +25,16 @@ article, footer, header, menu, nav, section {
 }
 
 .center {
-    margin: auto;
+    margin: 0 auto;
     text-align: left;
 	width: 100%;
+}
+
+.testing{
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	text-align: center;
 }
 
 .table-responsive{
@@ -186,4 +193,51 @@ footer{
 	h1, h1>a, h1>a:hover, h1>a:focus{
 		font-size: 30px;
 	}
+}
+
+/*
+@media (min-width: 1101px){
+	.center{
+		width: 200%;
+	}	
+}
+
+@media (max-width: 1101px){
+	.center{
+		width: 250%;
+	}	
+}
+
+@media (min-width: 992px){
+	.center{
+		width: 300%;
+	}	
+}
+
+@media (min-width: 880px){
+	.center{
+		width: 300%;
+	}	
+}
+
+@media (min-width: 768px){
+	.center{
+		width: 400%;
+	}	
+}
+*/
+
+#searchValue {
+    width: 100%; /* Full-width */
+    font-size: 15px; /* Increase font-size */
+    padding: 12px 12px 12px 25px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 5px; /* Add some space below the input */
+}
+
+#tableList {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }

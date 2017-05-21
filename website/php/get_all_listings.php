@@ -11,10 +11,14 @@
 	}
 
 	//Number of items that will be fetched
-	$itemAmount = 2;
+	$itemAmount = 20;
 
    	//If the pageNumber is greater than 0 show previous link
 	echo '<div class="center wrapper">';
+
+		echo '<input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search..">';
+		echo '<ul id="tableList">';
+			
 		echo'<div class="listPages">';
 	   	if ($_SESSION['pageNumber'] > 0){
 	   		echo '<a href="allListings.html?pageNumber='.($_SESSION['pageNumber']-1).'">Previous Page</a>';
@@ -32,11 +36,11 @@
 
 	   	//For each item create table using name, description and itemID
 	   	foreach($db->query("SELECT * FROM item LIMIT ".($_SESSION['pageNumber']*$itemAmount).", ".$itemAmount) as $row) {    
-	   		echo '<div class="table-responsive table-padding" >';
+	   		echo '<li><div class="table-responsive table-padding" >';
 		      	echo '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
 			      	echo '<tbody>';
 			      		echo '<tr><td>';
-			      			echo '<b>'.$row['name'].'<b>';
+			      			echo '<a href="item.html?item='.$row['itemID'].'"><b>'.$row['name'].'<b></a>';
 			      		echo '</td>';
 						echo '<td  rowspan="2" class="tableImage">';
 					    	echo '<div><img src="php/getImage.php?id='.$row['itemID'].'" class="itemImage" /></div>';
@@ -52,8 +56,9 @@
 			      		echo '</td></tr>';
 			      	echo '</tbody>';
 		      	echo '</table>';
-	      	echo '</div><p>';
+	      	echo '</div></li>';
 	   	}
+	   	echo '</ul>';
    	echo'</div>';
 
 ?>
