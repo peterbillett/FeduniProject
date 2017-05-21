@@ -52,7 +52,7 @@
 				// Notifies the user of the failure and redicts them to the Create Account page
 				echo ("<SCRIPT LANGUAGE='JavaScript'>
 						window.alert('Failed to create Account.')
-						window.location.href='../createAccountLogin';
+						window.location.href='../createAccountLogin.html';
 						</SCRIPT>");
 			}
 		}

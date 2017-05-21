@@ -51,7 +51,58 @@
                     if(isset($_SESSION['userID'])){
                         if ($_SESSION['userID'] == $itemResult['FKclient']){
                             //echo '<a href="../editItem.html?id='.$_GET['item'].'" class="btn btn-primary">Edit</a> ';
-                            echo '<a href="#" class="btn btn-primary">Edit</a> ';
+                            //class="span4 proj-div"
+                            echo '
+                            <div class="btn btn-primary" data-toggle="modal" data-target="#GSCCModal">Edit</div>
+                            <div id="GSCCModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;  </button>
+                                            <h4 class="modal-title" id="myModalLabel">Editing item: '.$itemResult['name'].'</h4>
+                                        </div>
+                                        <div class="modal-body testing">
+
+                                            <form method = "post" action="php/editListing.php?id='.$_GET['item'].'">
+                                                <label>Title </label>
+                                                    <input type="text" name="title" required value="'.$itemResult['name'].'" placeholder="Lisiting name...">
+                                                <br/>
+                                                <br>
+                                                    <label>Description </label>
+                                                    <input type="text" name="description" required value="'.$itemResult['description'].'" placeholder="Enter description...">
+                                                <br/>
+                                                <br>
+                                                    <label>Type </label>
+                                                    <select name="category">';
+                                                    if ($itemResult['category'] == "Request"){
+                                                        echo '<option selected="selected" value="Request">Request</option>
+                                                            <option value="Supplying">Supplying</option>';
+                                                    }
+                                                    else{
+                                                        echo '<option value="Request">Request</option>
+                                                            <option selected="selected" value="Supplying">Supplying</option>';
+                                                    }
+                                                    echo '
+                                                    </select>
+                                                </br>
+                                                </br>
+                                                <button class="btn btn-primary" type="submit">Submit changes</button>
+                                            </form>
+
+                                        </div>
+                                        <div class="modal-footer testing">
+
+                                            <form method = "post" action="php/removeListing.php?id='.$_GET['item'].'">
+                                                <button class="btn btn-danger">Remove listing</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel editing</button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            ';
+
                             if ($itemResult['finished'] < 2){
                                 echo '<a href="./php/changeItemStatus.php?id='.$_GET['item'].'&status=2" class="btn btn-success">Set as completed</a> ';
                             }

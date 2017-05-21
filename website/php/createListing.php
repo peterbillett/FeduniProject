@@ -2,6 +2,13 @@
    include("config.php");
    session_start();
 
+   if(!isset($_SESSION['userID'])){
+      echo ("<SCRIPT LANGUAGE='JavaScript'>
+         window.alert('You must login before creating a listing.')
+         window.location.href='../createAccountLogin.html';
+         </SCRIPT>");
+   }
+
    if($_SERVER["REQUEST_METHOD"] == "POST") {
       
       $stmt = $db->prepare("SELECT FKGroup FROM client WHERE clientID=?");
@@ -15,16 +22,13 @@
       $insertId = $db->lastInsertId();
 
       if($stmt->rowCount() == 0){
-         echo "FAILURE";
+         echo ("<SCRIPT LANGUAGE='JavaScript'>
+            window.alert('Failed to create listing.')
+            window.location.href='../createListing.html';
+            </SCRIPT>");
       }
-      else{
-         echo "SUCCESS";
-
-         
+      else{         
          header("location: ../item.html?item=".$insertId);
       }
-
-      
-
    }
 ?>

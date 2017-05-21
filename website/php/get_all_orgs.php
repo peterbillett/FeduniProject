@@ -33,7 +33,7 @@
 		echo'</div>';
 
 	   	//For each organisation create table using name, description and itemID
-	   	foreach($db->query("SELECT name, Information, groupID FROM organisation LIMIT ".($_SESSION['pageNumber']*$orgAmount).", ".$orgAmount) as $row) {    
+	   	foreach($db->query("SELECT name, Information, groupID FROM organisation ORDER BY name LIMIT ".($_SESSION['pageNumber']*$orgAmount).", ".$orgAmount) as $row) {    
 	      	echo '<li><div class="table-responsive table-padding" >';
 	      	echo '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
 	      	echo '<thead>';
