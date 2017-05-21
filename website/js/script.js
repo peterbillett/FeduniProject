@@ -14,6 +14,17 @@ $(function () {
 
 	//Individual page inital load elements
 	var currentPage = GetFilename(window.location.href);
+
+	var dtp = document.getElementById('datetimepicker');
+	//if (dtp != null){
+	//}
+		$('#myModal').on('show.bs.modal', function () {
+		  $('#datetimepicker1').datetimepicker({
+					defaultDate: new Date(),
+					minDate: new Date()
+				});
+		})
+
 	if(currentPage == 'createListing'){
 		//Initalize datetimepicker with todays date as the min and selected
 		$('#datetimepicker1').datetimepicker({

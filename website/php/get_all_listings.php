@@ -35,7 +35,7 @@
 		echo'</div>';
 
 	   	//For each item create table using name, description and itemID
-	   	foreach($db->query("SELECT * FROM item LIMIT ".($_SESSION['pageNumber']*$itemAmount).", ".$itemAmount) as $row) {    
+	   	foreach($db->query("SELECT * FROM item ORDER BY name LIMIT ".($_SESSION['pageNumber']*$itemAmount).", ".$itemAmount) as $row) {    
 	   		echo '<li><div class="table-responsive table-padding" >';
 		      	echo '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
 			      	echo '<tbody>';
