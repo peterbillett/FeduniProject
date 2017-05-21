@@ -13,7 +13,8 @@ $(function () {
 	xmlhttpTEST.send();
 
 	//Individual page inital load elements
-	if(window.location.pathname == '/website/createListing.html'){
+	var currentPage = GetFilename(window.location.href);
+	if(currentPage == 'createListing'){
 		//Initalize datetimepicker with todays date as the min and selected
 		$('#datetimepicker1').datetimepicker({
 			defaultDate: new Date(),
@@ -32,7 +33,7 @@ $(function () {
 		xmlhttp.send();
 	};
 
-	if(window.location.pathname == '/website/allListings.html'){
+	if(currentPage == 'allRequests'){
 		//Initalize tables of listings
 		document.getElementById("listingList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
 		var xmlhttp = new XMLHttpRequest();
@@ -41,11 +42,50 @@ $(function () {
 				document.getElementById("listingList").innerHTML = this.responseText;
 			}
 		};
-		xmlhttp.open("GET", "./php/get_all_listings.php" + window.location.search, true);
+		xmlhttp.open("GET", "./php/getAllRequests.php?type=Request&" + window.location.search, true);
 		xmlhttp.send();
 	}
 
-	if(window.location.pathname == '/website/item.html'){
+	if(currentPage == 'allSupplying'){
+		//Initalize tables of listings
+		document.getElementById("listingList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("listingList").innerHTML = this.responseText;
+			}
+		};
+		xmlhttp.open("GET", "./php/getAllRequests.php?type=Supplying&" + window.location.search, true);
+		xmlhttp.send();
+	}
+
+	if(currentPage == 'organisation'){
+		//Initalize organisation info
+		document.getElementById("organisationDetails").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("organisationDetails").innerHTML = this.responseText;
+			}
+		};
+		xmlhttp.open("GET", "./php/organisationInfo.php" + window.location.search, true);
+		xmlhttp.send();
+	}
+
+	if(currentPage == 'allListings'){
+		//Initalize tables of listings
+		document.getElementById("listingList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById("listingList").innerHTML = this.responseText;
+			}
+		};
+		xmlhttp.open("GET", "./php/getAllRequests.php" + window.location.search, true);
+		xmlhttp.send();
+	}
+
+	if(currentPage == 'item'){
 		//Initalize tables of listings
 		document.getElementById("itemDetails").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
 		var xmlhttp = new XMLHttpRequest();
@@ -58,7 +98,7 @@ $(function () {
 		xmlhttp.send();
 	}
 
-	if(window.location.pathname == '/website/allOrgs.html'){
+	if(currentPage == 'allOrgs'){
 		//Initalize tables of listings
 		document.getElementById("orgsList").innerHTML = '<img class="loading" src="img/loading.gif" alt="Loading items...">';
 		var xmlhttp = new XMLHttpRequest();
@@ -72,3 +112,32 @@ $(function () {
 	}
 
 });
+
+function GetFilename(url){
+   if (url)
+   {
+      var m = url.toString().match(/.*\/(.+?)\./);
+      if (m && m.length > 1)
+      {
+         return m[1];
+      }
+   }
+   return "";
+}
+
+function searchTables(){
+    var input, filter, ul, li, a, i;
+    input = document.getElementById('searchValue');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("tableList");
+    li = ul.getElementsByTagName('li');
+
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("a")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+        }
+    }
+}

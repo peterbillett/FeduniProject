@@ -19,45 +19,48 @@
 <body>
 	<nav class="navbar navbar-inverse">
 		<h1><a href="index.html">CONNECT ME Ballarat</a></h1>
-		
-	<span id="navBar"></span>
-
+		<span id="navBar"></span>
 	</nav>
 
 	<br>
 
-	<section style="margin-left: auto; margin-right: auto; display: block; text-align: center;">
+	<section class="testing">
 		<h2>Create listing</h2><br>
-		<form onsubmit="sendListing(this.title.value)"><!--method = "post" action="php/createListing.php"-->
+		<form method = "post" action="php/createListing.php">
 			<label>Title </label>
-			<input type="text" name="title" required value="testName" placeholder="Enter the lisiting name here"><br/>
-			<br>
-			<label>Description </label>
-			<input type="text" name="description" required value="testDesc" placeholder="Enter description for listing"><br/>
-			<br>
-			<label>Type </label>
-			<span id="tagType"></span>
+				<input type="text" name="title" required placeholder="Lisiting name...">
 			<br/>
 			<br>
-			<label>End date/time </label>
+				<label>Description </label>
+				<input type="text" name="description" required placeholder="Enter description...">
+			<br/>
 			<br>
-
-			<div class="container">
-				<div class="row">
-					<div class='col-sm-6'>
-						<div class="form-group">
-							<div class='input-group date' id='datetimepicker1'>
-								<input type='text' class="form-control" />
-								<span class="input-group-addon">
-									<span class="glyphicon glyphicon-calendar"></span>
-								</span>
+				<label>Tag </label>
+				<span id="tagType"></span>
+			<br/>
+			<br>
+				<label>Type </label>
+				<select name="category">
+					<option value="Request">Request</option>
+					<option value="Supplying">Supplying</option>
+				</select>
+			</br>
+			<br>
+				<label>End date/time </label>
+				<div class="container center">
+					<div class="row">
+						<div class='col-sm-6'>
+							<div class="form-group">
+								<div class='input-group date' id='datetimepicker1'>
+									<input type='text' name='endtime' class="form-control" />
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<br>
-
 			<input type="submit">
 		</form>
 
