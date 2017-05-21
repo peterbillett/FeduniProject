@@ -4,12 +4,11 @@
    
    // Starts the session
    session_start();
-
 	
 	// Create an account
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-		// Grabs the email that has been inputted and compares it with emails from preesisting accounts
+		// Grabs the email that has been inputted and compares it with emails from pre-existing accounts
 		$stmt = $db->prepare("SELECT email FROM client WHERE email = ?");
 		$stmt -> execute(array($_POST['email']));
 	
@@ -30,10 +29,10 @@
 			
 			// Inserts the new values into the database
 		
-			$stmt->execute(array(':email' => $_POST['email'], 
-								':firstname' => $_POST['firstname'], 
-								':lastname' => $_POST['lastname'], 
-								':password' => $_POST['password']));
+			$stmt->execute(array(':email' => $_POST['newAccountEmail'], 
+								':firstname' => $_POST['newAccountFirstName'], 
+								':lastname' => $_POST['newAccountLastName'], 
+								':password' => $_POST['newAccountPassword']));
 		  
 			// Checks to see if data insertion was successful
 			if($stmt->rowCount() == 1) 
@@ -45,7 +44,7 @@
 				// Notify the user of the success and redicts them to the Home page
 				echo ("<SCRIPT LANGUAGE='JavaScript'>
 						window.alert('Account creation successful')
-						window.location.href='../php/login_user.php?email=".$_POST['email']."&password=".$_POST['password']."';
+						window.location.href='../php/login_user.php?email=".$_POST['newAccountEmail']."&password=".$_POST['newAccountPassword']."';
 						</SCRIPT>");
 			}
 			else // Handles data insertion failure

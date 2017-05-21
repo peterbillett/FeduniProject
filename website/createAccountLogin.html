@@ -14,6 +14,7 @@
 
 
 <body>
+	<!-- Navigation bar -->
 	<nav class="navbar navbar-inverse">
 		<h1><a href="index.html">CONNECT ME Ballarat</a></h1>
 		<span id="navBar"></span>
@@ -25,6 +26,7 @@
 		
 		<details open>
 			<summary>Login</summary>
+			<!-- Form that allows for login of a pre-existing user's account -->
 			<form action="php/login_user.php" method="post">
 				<label>Email: </label>
 				<br><input type="email" name="email" placeholder="Enter email" required ><br />
@@ -40,18 +42,19 @@
 		
 		<details>
 			<summary>Create Account</summary>
+			<!-- Form that allows for the creation of a new user's account -->
 			<form action="php/createUser.php" method="post">
 				<label>Email: </label>
-				<br><input type="email" name="email" required placeholder="Enter a valid email address"><br />
+				<br><input type="email" name="newAccountEmail" required placeholder="Enter a valid email address"><br />
 				<br>
 				<label>First name: </label>
-				<br><input type="text" name="firstname" required placeholder="Enter your first name"><br />
+				<br><input type="text" name="newAccountFirstName" required placeholder="Enter your first name"><br />
 				<br>
 				<label>Last name: </label>
-				<br><input type="text" name="lastname" required placeholder="Enter your last name"><br />
+				<br><input type="text" name="newAccountLastName" required placeholder="Enter your last name"><br />
 				<br>
 				<label>Password: </label>
-				<br><input type="password" name="password" required placeholder="Enter password">
+				<br><input type="password" name="newAccountPassword" required placeholder="Enter password">
 				<br>
 			  	<input type="submit">
 			</form>
@@ -64,5 +67,6 @@
 	</footer>
 
 </body>
-<!-- http://wiki.hashphp.org/Main_Page -->
 </html>
+<!-- References -->
+<!-- (2016). hashPHP. Accessed (2017), May 21, at http://wiki.hashphp.org/PDO_Tutorial_for_MySQL_Developers -->
