@@ -22,7 +22,6 @@
 	   	if ($_SESSION['pageNumber'] > 0){
 	   		echo '<a href="allOrgs.html?pageNumber='.($_SESSION['pageNumber']-1).'">Previous Page</a>';
 	   	}
-
 	   	//If there are more organisations then show next link
 	   	$orgCount = $db->query("SELECT groupID FROM organisation");
 		if($orgCount->rowCount() > (($_SESSION['pageNumber']+1)*$orgAmount)){
