@@ -9,14 +9,13 @@
 
    //For each item create table using name, description and itemID
 	echo '<div class="center wrapper">';
-		//$stmt = $db->prepare("SELECT * FROM item JOIN client ON client.clientID = item.FKclient WHERE itemID=?");
-        $stmt = $db->prepare("SELECT client.clientFirstName, client.clientLastName, client.email, client.FKgroup, item.*, organisation.groupID, organisation.name FROM client, item, organisation WHERE client.clientID = item.FKclient AND item.itemID = ? AND organisation.groupID = client.FKgroup");
+        $stmt = $db->prepare("SELECT client.clientFirstName, client.clientLastName, client.email, client.FKgroup, item.* FROM client, item WHERE client.clientID = item.FKclient AND item.itemID = ?");
         $stmt->execute(array($_GET['item']));
     	$itemResult = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    	$stmt = $db->prepare("SELECT * FROM organisation WHERE groupID=?");
-    	$stmt->execute(array($itemResult['FKgroup']));
-    	$organisationResult = $stmt->fetch(PDO::FETCH_ASSOC);  	
+    	$stmt = $db->prepare("SELECT organisation.groupID, organisation.name FROM organisation WHERE groupID=?");
+        $stmt->execute(array($itemResult['FKgroup']));
+        $organisationResult = $stmt->fetch(PDO::FETCH_ASSOC);
   		
         echo'<div class="listPages">';
            if (isset($_SESSION['pageNumber'])){
@@ -42,7 +41,7 @@
             	//Item details: client, organisation+url, end date/time
             	echo '<td>';
             	    echo 'Supplier: '.$itemResult['clientFirstName'].' '.$itemResult['clientLastName'];
-            	    echo '<br>Organisation: <a href="organisation.html?id='.$itemResult['groupID'].'"">'.$itemResult['name'].'</a>';
+            	    echo '<br>Organisation: <a href="organisation.html?id='.$organisationResult['groupID'].'"">'.$organisationResult['name'].'</a>';
             	    echo '<br>End date/time: '.$itemResult['endtime'];
             	    echo '<br>Contact email: <a href="mailto:'.$itemResult['email'].'?Subject='.$itemResult['name'].'">'.$itemResult['email'].'</a>';
 
@@ -50,8 +49,6 @@
                     echo '<br>';
                     if(isset($_SESSION['userID'])){
                         if ($_SESSION['userID'] == $itemResult['FKclient']){
-                            //echo '<a href="../editItem.html?id='.$_GET['item'].'" class="btn btn-primary">Edit</a> ';
-                            //class="span4 proj-div"
                             echo '
                             <div class="btn btn-primary" data-toggle="modal" data-target="#GSCCModal">Edit</div>
                             <div id="GSCCModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
