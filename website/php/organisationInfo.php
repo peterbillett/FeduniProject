@@ -27,6 +27,12 @@
                 echo '<tr><td><b>Current News: </b>'.$organisationResult['currentNews'].'</td></tr>';
     	    echo '</tbody>';
 	    echo '</table>';
+
+      echo '<iframe class="maps-frame" src="https://www.google.com/maps/embed/v1/search?q='.str_replace(' ', '+', $organisationResult['address']).'+3350+Australia
+          &zoom=16
+          &key=AIzaSyDnIx1QkG-_64NuLSYxxQj4vkcdt9I5zV0">
+        </iframe>
+      ';
     }
     else{
       echo "<b>404 - Organisation not found</b>";

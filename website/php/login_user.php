@@ -16,16 +16,8 @@
    if($stmt->rowCount() == 1) {
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       $_SESSION['userID'] = $result['clientID'];
-      echo ("<SCRIPT LANGUAGE='JavaScript'>
-                  window.alert('Login was successful.')
-                  window.location.href='../index.html';
-                  </SCRIPT>");
-      header("location: ../index.html");
+      echo "success";
    }else {
-      echo ("<SCRIPT LANGUAGE='JavaScript'>
-                  window.alert('The entered details do not match any account.')
-                  window.location.href='../createAccountLogin';
-                  </SCRIPT>");
-      header("location: ../createAccountLogin.html");
+      echo "The email or password was incorrect";
    }
 ?>

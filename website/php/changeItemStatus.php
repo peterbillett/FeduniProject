@@ -2,14 +2,26 @@
 	include("config.php");
 	session_start();
 
-	if(empty($_GET['id']) || empty($_GET['status'])){
-		header("Location: ../allListings.html");
+	if(isset($_SESSION['userID'])){
+		if ($_GET['status'] == 3){
+			$status = 0;
+		} else {
+			$status = $_GET['status'];
+		}
+
+		if(empty($_GET['id']) || empty($_GET['status'])){
+			echo "Error: Invalid status update call";
+		} else {
+			$stmt = $db->prepare("UPDATE item SET finished=? WHERE itemID=?");
+			$stmt->execute(array($status, $_GET['id']));
+			if ($stmt->rowCount() > 0){
+				echo "success";
+			} else {
+				echo "Error: Could not update the items status";
+			}
+		}
+	} else {
+		echo "Error: You are not logged in";
 	}
-
-	$stmt = $db->prepare("UPDATE item SET finished=? WHERE itemID=?");
-	$stmt->execute(array($_GET['status'], $_GET['id']));
-	$affected_rows = $stmt->rowCount();
-
-	header("Location: ../item.html?item=".$_GET['id']);
 
 ?>
