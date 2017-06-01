@@ -1,0 +1,12 @@
+RewriteEngine On 
+Options -Indexes
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+Options +FollowSymLinks
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !(.*)website
+RewriteRule ^(.*)$ website/$1 [L]
+
