@@ -2,10 +2,12 @@
 Issue should be formated in the following way
 TITLE:
  [Bug,Enhancement,Other] Issue name
+ 
 DESCRIPTION:
- Due date: [DD/MM/YYYY,event]
- Priority: [P1,P2,P3,P4,P5]
- Description:
+
+  Due date: [DD/MM/YYYY,event]
+  Priority: [P1,P2,P3,P4,P5]
+  Description:
 
 P1 is highest priority (Must be done ASAP)
 P5 is lowest priority (Can be left till end of sprint)
