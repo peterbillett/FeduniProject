@@ -14,7 +14,7 @@
 	$orgAmount = 20;
 	echo '<div class="center wrapper">';
 
-		echo '<input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search..">';
+		echo '<input type="text" id="searchValue" onkeyup="searchOrgTables()" placeholder="Search..">';
 		echo '<ul id="tableList">';
 
 		//If the pageNumber is greater than 0 show previous link
@@ -40,7 +40,7 @@
 	      	echo '<tr><td><a href="organisation.html?id='.$row['groupID'].'"><b>'.$row['name'].'<b></a></td></tr>';
 	      	echo '</thead>';
 	      	echo '<tbody>';
-	      	echo '<tr><td>';
+	      	echo '<tr><td class="table-listings">';
 	      	if (strlen($row['Information'])>200){
 					echo substr($row['Information'],0,200).'...<br>';	
 				}

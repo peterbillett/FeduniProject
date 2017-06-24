@@ -7,6 +7,27 @@
 	vertical-align: baseline;
 }
 
+.br-filter{
+	display: none;
+}
+
+.form-wrapper {
+  	width: 100%;
+  	margin: 0 auto;
+  	text-align: center;
+ 	background-color: #CCC;
+}
+
+.form-filter {
+  	width: 45%;
+  	display: inline-block;
+}
+
+button:disabled{
+  background-color: #cccccc;
+  color: #666666;
+}
+
 h3 {
 	color: white;
 	font-size: 20px;
@@ -212,6 +233,68 @@ footer{
   	overflow-y: auto;
 }
 
+
+#searchValue {
+    width: 100%; /* Full-width */
+    font-size: 15px; /* Increase font-size */
+    padding: 12px 12px 12px 25px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 5px; /* Add some space below the input */
+}
+
+#tableList {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.no-select-link, .no-select-link>a {
+	outline: 0;
+	outline-offset: 0;
+}
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dropdown-content {
+    background-color: #f9f9f9;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    width: 100%;
+    text-align: center;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media only screen and (min-width: 881px) {
     .navbar .navbar-nav {
         display: inline-block;
@@ -235,9 +318,25 @@ footer{
     left: 0;
     right: auto;
   }
+
+  .table-button {
+	    text-align: left;
+	    background-color: transparent;
+	    padding: 0px;
+	    border-width: 0;
+	    min-width: 100%;
+		display: block;
+	  	overflow-y: auto;
+	  	outline:none;
+	}
+	
 }
 
 @media only screen and (max-width: 880px){
+
+	.br-filter{
+		display: block;
+	}
 
 	.center {
 		width: 100%;
@@ -254,48 +353,36 @@ footer{
 		border: 0;
 	}
 
+	.table-button {
+	    text-align: left;
+	    background-color: transparent;
+	    padding: 0px;
+	    border-width: 0;
+	    min-width: 100%;
+		display: block;
+	  	overflow-y: auto;
+	  	outline:none;
+	}
+
 }
 
 @media only screen and (max-width: 610px){
+
 	h1, h1>a, h1>a:hover, h1>a:focus{
 		font-size: 30px;
 	}
+
+	.table-button {
+	    text-align: left;
+	    background-color: transparent;
+	    padding: 0px;
+	    border-width: 0;
+	    min-width: 100%;
+		display: block;
+	  	overflow-y: auto;
+	  	outline:none;
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @media (min-width: 881px) {
     .navbar .navbar-nav {
@@ -320,9 +407,25 @@ footer{
     left: 0;
     right: auto;
   }
+
+  .table-button {
+	    text-align: left;
+	    background-color: transparent;
+	    padding: 0px;
+	    border-width: 0;
+	    min-width: 100%;
+		display: block;
+	  	overflow-y: auto;
+	  	outline:none;
+	}
+
 }
 
 @media (max-width: 880px){
+
+	.br-filter{
+		display: block;
+	}
 
 	.center {
 		width: 100%;
@@ -339,30 +442,67 @@ footer{
 		border: 0;
 	}
 
+	.table-button {
+	    text-align: left;
+	    background-color: transparent;
+	    padding: 0px;
+	    border-width: 0;
+	    min-width: 100%;
+		display: block;
+	  	overflow-y: auto;
+	  	outline:none;
+	}
+
 }
 
 @media (max-width: 610px){
+
 	h1, h1>a, h1>a:hover, h1>a:focus{
 		font-size: 40px;
 	}
+
+	.table-button {
+	    text-align: left;
+	    background-color: transparent;
+	    padding: 0px;
+	    border-width: 0;
+	    min-width: 100%;
+		display: block;
+	  	overflow-y: auto;
+	  	outline:none;
+	}
 }
 
-#searchValue {
-    width: 100%; /* Full-width */
-    font-size: 15px; /* Increase font-size */
-    padding: 12px 12px 12px 25px; /* Add some padding */
-    border: 1px solid #ddd; /* Add a grey border */
-    margin-bottom: 5px; /* Add some space below the input */
+.inlineBlock{
+	display: inline-block;
+	min-width: 0px;s
 }
 
-#tableList {
-    /* Remove default list styling */
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+.carousel-inner > .item > button{
+	width: 100%; /* use this, or not */
+	margin: auto;
 }
 
-.no-select-link, .no-select-link>a {
-	outline: 0;
-	outline-offset: 0;
+.carousel-content {
+    color: black;
+    display: flex;
+    align-items: center;
+}
+
+#text-carousel {
+  width: 100%;
+  height: auto;
+  padding: 50px;
+}
+
+.col-xs-offset-3{
+	margin-left: 5%;
+}
+
+.col-xs-6 {
+    width: 90%;
+}
+
+.carousel-control {
+    width: 5%;
 }

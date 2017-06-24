@@ -1,38 +1,29 @@
 <?php
-	// Connects to the database
 	include("config.php");
-   
-	// Starts the session
 	session_start();
 
+	//If the user is logged in then link the organisation to the user
 	if(isset($_SESSION['userID']))
 	{
 		$stmt = $db -> prepare ('UPDATE client SET FKgroup=? WHERE clientID=?');
 		$stmt -> execute (array($_POST['groupID'], $_SESSION['userID']));
 		
-		if($stmt -> rowCount() == 0)
+		if($stmt -> rowCount() > 0)
 		{
-			// Notify the user of the failure and redirect them to the Join a Volunteer Group page
-			echo ("<SCRIPT LANGUAGE='JavaScript'>
-					window.alert('Failed to link user with selected volunteer group')
-					window.location.href='../joinVolOrg.html';
-					</SCRIPT>");
+			//Update the users items to include their organisation and return success
+			$stmt = $db -> prepare ('UPDATE item SET organisation=? WHERE clientID=?');
+			$stmt -> execute (array($_POST['groupID'], $_SESSION['userID']));
+			echo "success";	
 		}
 		else
 		{
-			// Notify the user of the success and redicts them to the Home page
-			echo ("<SCRIPT LANGUAGE='JavaScript'>
-					window.alert('You have successfully joined a volunteer group')
-					window.location.href='../index.html';
-					</SCRIPT>");
+			//Notify the user of the failure
+			echo "There was an error linking the organisation to your account";
 		}
 	}
 	else
 	{
-		// Notify the user of the success and redicts them to the Create Account page
-		echo ("<SCRIPT LANGUAGE='JavaScript'>
-				window.alert('You must be logged in to join a Volunteer Group')
-				window.location.href='../createAccountLogin.html';
-				</SCRIPT>");
+		//Notify the user they are not logged in
+		echo "You must be logged in to link an organisation to your account";
 	}
 ?>

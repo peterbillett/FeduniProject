@@ -14,10 +14,10 @@
 		    </div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="index"><span class="glyphicon glyphicon-home"></span></p></a></li>
+					<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/index.php'".')"><span class="glyphicon glyphicon-home"></span></a></button></li>
 					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Volunteer Organisations<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="allOrgs">Volunteer Organisation List</a></li>';
+							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationsPage()">Volunteer Organisation List</button></a></li>';
 
 							//Checks to see if the user is logged in (Only logged in users can create Volunteer Groups
 							if (isset($_SESSION['userID'])){
@@ -30,9 +30,9 @@
 					</li>
 					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Listings<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="allListings">All</a></li>
-							<li><a href="allRequests">Requests</a></li>
-							<li><a href="allSupplying">Supplying</a></li>
+							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php'".')">All</button></a></li>
+							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php?type=Request'".')">Requesting</button></a></li>
+							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php?type=Supplying'".')">Supplying</button></a></li>
 						</ul>
 					</li>';
 
@@ -50,34 +50,32 @@
 						      		</div>
 
 						      		<div class="modal-body testing">
-										<label>Title: </label>
-										<br><input type="text" id="createTitle" required placeholder="Lisiting name..."><br/>
-										<br>
-										<label>Description: </label>
-										<br><input type="text" id="createDescription" required placeholder="Enter description..."><br/>
-										<br>
-										<label>Tag: </label>
-										<br>
-										<select id="createTagID">';
+						      			
+										<input type="text" id="createTitle" required placeholder="Enter lisiting name..."></input>
+										<br><textarea type="text" placeholder="Enter description..." id="createDescription" rows="4" cols="30"></textarea><br>
+										<label>Tag: <select id="createTagID">';
 
 										foreach($db->query('SELECT * FROM tag') as $row) {
 										    echo '<option value="'.$row['tagID'].'">'.$row['name'].'</option>';
 										}
 
-										echo '</select>
-										<br/><br>
-										<label>Category: </label>
-										<br><select id="createCategory">
-											<option value="Request">Request</option>
-											<option value="Supplying">Supplying</option>
-										</select><br/>
-										<br>
-										<label>End datetime: </label>
-										<br><input type="datetime-local" id="createEndtime" value="';
-										echo date('Y-m-d');
-										echo 'T';
-										echo date('H:i');
-										echo '"></br>
+										echo '</select></label>
+										<label>Category: 
+											<select id="createCategory">
+												<option value="Request">Request</option>
+												<option value="Supplying">Supplying</option>
+											</select>
+										</label>
+										
+										<label>End datetime: 
+							                <div class="input-group date" id="datetimepicker1">
+							                    <input type="text" class="form-control">
+							                    <span class="input-group-addon">
+							                        <span class="glyphicon glyphicon-calendar"></span>
+							                    </span>
+							                </div>
+										</label>
+
                                     </div>
 
 							      	<div class="modal-footer testing">
@@ -91,17 +89,17 @@
 						</div>
 						';
 					} else {
-						echo '<li class="no-select-link"><a href="" class="no-select-link" data-toggle="modal" data-target="#modal-login">Create listing</a></li>';
+						echo '<li class="no-select-link"><a href="" onclick="loginRequiredMessage(true)" class="no-select-link" data-toggle="modal" data-target="#modal-login">Create listing</a></li>';
 					}
 
-					echo '<li><a href="FAQ">FAQ</a></li>';
+					echo '<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/FAQ.php'".')">FAQ</button></a></li>';
 
 					if (isset($_SESSION['userID'])){
 						echo '<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="logout()">Logout</button></a></li>';
 					}
 					else{
                         echo '
-                        <li class="no-select-link"><a href="" class="no-select-link" data-toggle="modal" data-target="#modal-login">Login</a></li>
+                        <li class="no-select-link"><a href="" onclick="loginRequiredMessage(false)" class="no-select-link" data-toggle="modal" data-target="#modal-login">Login</a></li>
 						 
 						<!-- Login Modal -->
 						<div class="modal fade" id="modal-login">

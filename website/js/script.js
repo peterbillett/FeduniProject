@@ -1,4 +1,8 @@
-//Setup pagedson load
+var currentListingsPage = 1;
+var totalListingsPage = 1;
+var indexData = null;
+
+//Setup pages on load
 $(function () {
 
 	//Load navBar on all pages
@@ -7,25 +11,35 @@ $(function () {
 	xmlhttpTEST.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("navBar").innerHTML = this.responseText;
+			$('#datetimepicker1').datetimepicker({
+				sideBySide: true
+			});
 		}
 	};
 	xmlhttpTEST.open("GET", "/php/navBar.php", true);
 	xmlhttpTEST.send();
 
-	//Individual page inital load elements
+	sendOffPHP("pageDetails", "php/pages/index.php");
+
+	/*
+	if(document.getElementById('tagFilterList') != undefined){
+		var result = '';
+		getTagList(function(obj){
+			result = '<option selected="selected" value="">All</option>';
+			Object.keys(obj).forEach(function(k){
+				result += '<option value="' + obj[k].tagID + '">' + obj[k].name + ' (' + obj[k].totalItems + ')</option>';
+	    	});
+			document.getElementById("tagFilterList").innerHTML = result;
+		});
+	}
+
 	//Initalize tables of listings
 	if(document.getElementById('listAllItems') != undefined){
-		sendOffPHP("listAllItems", "/php/getListings.php" + window.location.search);
-	}
-
-	//Initalize tables of listings
-	if(document.getElementById('listRequestItems') != undefined){
-		sendOffPHP("listRequestItems", "/php/getListings.php?type=Request&" + window.location.search);
-	}
-
-	//Initalize tables of listings
-	if(document.getElementById('listSupplyItems') != undefined){
-		sendOffPHP("listSupplyItems", "/php/getListings.php?type=Supplying&" + window.location.search);
+		getAllListings("listAllItems","/php/itemGetAll.php",false);
+	} else if(document.getElementById('listRequestItems') != undefined){
+		getAllListings("listRequestItems","/php/itemGetAll.php?type=Request",false);
+	}else if(document.getElementById('listSupplyItems') != undefined){
+		getAllListings("listSupplyItems","/php/itemGetAll.php?type=Supplying",false);
 	}
 
 	//Initalize list of organisations
@@ -33,21 +47,82 @@ $(function () {
 		sendOffPHP("volOrgList", "/php/linkClientVolOrg.php");
 	}	
 
-	//Initalize organisation info
-	if(document.getElementById('organisationDetails') != undefined){
-		sendOffPHP("organisationDetails", "/php/organisationInfo.php" + window.location.search);
-	}
-
 	//Initalize tables of organisations
-	if(document.getElementById('orgsList') != undefined){
-		sendOffPHP("orgsList", "/php/get_all_orgs.php" + window.location.search);
+	if(document.getElementById('organisationList') != undefined){
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				createOrganisationList(JSON.parse(this.responseText), function(result){
+					document.getElementById("organisationList").innerHTML = result;
+				});
+			}
+		};
+		xmlhttp.open("GET", "/php/organisationGetAll.php", true);
+		xmlhttp.send();
 	}
+	*/
+});
 
+function getOrganisationsPage() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			createOrganisationList(JSON.parse(this.responseText), function(result){
+				document.getElementById("pageDetails").innerHTML = result;
+			});
+		}
+	};
+	xmlhttp.open("GET", "/php/organisationGetAll.php", true);
+	xmlhttp.send();
+}
+
+function getListingsPage(listingType) {
+	document.getElementById("pageDetails").innerHTML = '';
+	waitForCallback("pageDetails", "php/pages/listings.php", function(result){
+		var result = '';
+		getTagList(function(obj){
+			result = '<option selected="selected" value="">All</option>';
+			Object.keys(obj).forEach(function(k){
+				result += '<option value="' + obj[k].tagID + '">' + obj[k].name + ' (' + obj[k].totalItems + ')</option>';
+	    	});
+			$("#tagFilterList").html(result);
+			console.log(result);
+			getAllListings("listingArea",listingType,false);
+		});
+	});
+}
+
+function waitForCallback(positionID,phpFile,callback){
+	callback(sendOffPHP(positionID, phpFile));
+}
+
+$('.dropdown-content').click(function(e) {
+    e.stopPropagation();
 });
 
 
-function sendOffPHP(elementID, phpDetails){
-	document.getElementById(elementID).innerHTML = '<img class="loading" src="/img/loading.gif" alt="Loading items...">';
+function getAllListings(postionID,phpFile,callSearch) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			filterArray(JSON.parse(this.responseText),$("#tagFilterList").val(),$("input[name='statusFilter']:checked").val(), function(filteredArray){
+				createItemList(filteredArray, function(result){
+					document.getElementById(postionID).innerHTML = result;
+					activateLazyLoad();
+					if (callSearch) {
+						searchItemTables();
+					}
+				});
+			});
+		}
+	};
+	xmlhttp.open("GET", phpFile, true);
+	xmlhttp.send();
+}
+
+
+function sendOffPHP(elementID, phpDetails) {
+	document.getElementById(elementID).innerHTML = '';
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -59,17 +134,64 @@ function sendOffPHP(elementID, phpDetails){
 }
 
 
-function searchTables(){
+function activateLazyLoad() {
+	$('.lazy').Lazy({
+		effect: 'fadeIn',
+		effectTime: 500,
+		visibleOnly: true
+	});
+}
+
+
+function searchItemTables() {
     var input, filter, ul, li, a, i;
     input = document.getElementById('searchValue');
     filter = input.value.toUpperCase();
     ul = document.getElementById("tableList");
     li = ul.getElementsByTagName('li');
 
+    if (filter == "") {
+    	for (i = 1; i <= totalListingsPage; i++) { 
+    		var tempVis = document.getElementById('itemPage' + i);
+    		tempVis.style.display = "none";
+    	}
+    	tempVis = document.getElementById('itemPage' + currentListingsPage);
+    	tempVis.style.display = "block";  
+    	$('.listingButton').show();
+    } else {
+    	
+    	for (i = 1; i <= totalListingsPage; i++) { 
+    		var tempVis = document.getElementById('itemPage' + i);
+    		tempVis.style.display = "block";
+    	}
+    	$('.listingButton').hide();
+    }
+
     for (i = 0; i < li.length; i++) {
-        a = li[i].getElementsByTagName("a")[0];
+        a = li[i];
         if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
             li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+        }
+    }
+
+    activateLazyLoad();
+}
+
+
+function searchOrgTables() {
+	var input, filter, ul, li, a, i;
+	input = document.getElementById('searchValue');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("tableList");
+    li = ul.getElementsByTagName('li');
+    
+	for (i = 0; i < li.length; i++) {
+        a = li[i];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+            li[i].style.display
         } else {
             li[i].style.display = "none";
         }
@@ -77,9 +199,7 @@ function searchTables(){
 }
 
 
-function checkLoginSuccess(){
-
-	document.getElementById("loginMessage").innerHTML = "";
+function checkLoginSuccess() {
 	email = document.getElementById("loginEmail").value;
 	password = document.getElementById("loginPassword").value;
 	//SHA256(document.getElementById("password").value)
@@ -93,12 +213,14 @@ function checkLoginSuccess(){
 		document.getElementById("loginMessage").innerHTML = "Please enter a vaild password or create a new account.";
 		return false;
 	}
+	document.getElementById("loginMessage").innerHTML = "Logging in...";
 
 	//Check if login is successful
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText == "success"){
+				document.getElementById("loginMessage").innerHTML = "You have been logged in";
 				window.location.reload(false); 
 			} else {
 				document.getElementById("loginMessage").innerHTML = this.responseText;
@@ -111,8 +233,7 @@ function checkLoginSuccess(){
 }
 
 
-function checkAccountCreationSuccess(){
-	console.log("fired");
+function checkAccountCreationSuccess() {
 	document.getElementById("accountCreationMessage").innerHTML = "";
 	email = document.getElementById("newEmail").value;
 	password = document.getElementById("newPassword").value;
@@ -122,27 +243,27 @@ function checkAccountCreationSuccess(){
 	//SHA256(document.getElementById("password").value)
 
 	//Validation
-	if (validateEmail(email) == false){
+	if (validateEmail(email) == false) {
 		document.getElementById("accountCreationMessage").innerHTML = "Invalid email address.";
 		return false;
 	}
 	
-	if (validatePassword(password) == false || validatePassword(confirmPassword) == false){
+	if (validatePassword(password) == false || validatePassword(confirmPassword) == false) {
 		document.getElementById("accountCreationMessage").innerHTML = "Invalid passwords.";
 		return false;
 	}
 
-	if (password != confirmPassword){
+	if (password != confirmPassword) {
 		document.getElementById("accountCreationMessage").innerHTML = "Your passwords do not match.";
 		return false;
 	}
 
-	if (validateName(firstName) == false){
+	if (validateName(firstName) == false) {
 		document.getElementById("accountCreationMessage").innerHTML = "Invalid first name.";
 		return false;
 	}
 
-	if (validateName(lastName) == false){
+	if (validateName(lastName) == false) {
 		document.getElementById("accountCreationMessage").innerHTML = "Invalid last name.";
 		return false;
 	}
@@ -151,7 +272,7 @@ function checkAccountCreationSuccess(){
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			if (this.responseText == "success"){
+			if (this.responseText == "success") {
 				window.location.reload(false);
 			} else {
 				document.getElementById("accountCreationMessage").innerHTML = this.responseText;
@@ -159,7 +280,7 @@ function checkAccountCreationSuccess(){
 			}			
 		}
 	};
-	xmlhttp.open("GET", "/php/createUser.php?email="+email+"&password="+password+"&firstName="+firstName+"&lastName="+lastName, true);
+	xmlhttp.open("GET", "/php/accountCreate.php?email="+email+"&password="+password+"&firstName="+firstName+"&lastName="+lastName, true);
 	xmlhttp.send();
 }
 
@@ -175,10 +296,12 @@ function validatePassword(password) {
     return re.test(password);
 }
 
+
 function validateName(name) {
     var re = /^[A-Za-z]\w{1,50}$/;  
     return re.test(name);
 }
+
 
 function logout() {
 	var xmlhttp = new XMLHttpRequest();
@@ -191,34 +314,52 @@ function logout() {
 	xmlhttp.send();
 }
 
-function getItemDetails(itemID) {
 
-	document.getElementById("itemDetails").innerHTML = '<img class="loading" src="/img/loading.gif" alt="Loading items...">';
+function getItemModal(itemID) {
+	document.getElementById("modalDetails").innerHTML = '<img class="loading" src="/img/loading.gif" alt="Loading items...">';
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText == ""){
-				document.getElementById("itemDetails").innerHTML = "There was an error getting the details for this item";
+				document.getElementById("modalDetails").innerHTML = "There was an error getting the details for this item";
 			} else {
-				document.getElementById("itemDetails").innerHTML = this.responseText;
+				document.getElementById("modalDetails").innerHTML = this.responseText;
 			}			
 		}
 	};
-	xmlhttp.open("GET", "/php/itemInfo.php?id="+itemID, true);
+	xmlhttp.open("GET", "/php/itemGetModalInfo.php?id="+itemID, true);
 	xmlhttp.send();
 }
+
+
+function getOrganisationModal(organisationID) {
+	document.getElementById("modalDetails").innerHTML = '<img class="loading" src="/img/loading.gif" alt="Loading items...">';
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText == ""){
+				document.getElementById("modalDetails").innerHTML = "There was an error getting the details for this item";
+			} else {
+				document.getElementById("modalDetails").innerHTML = this.responseText;
+			}			
+		}
+	};
+	xmlhttp.open("GET", "/php/organisationGetModalInfo.php?id="+organisationID, true);
+	xmlhttp.send();
+}
+
 
 function createNewListing() {
 	var createNewListingButton = document.getElementById("createNewListingButton");
 	createNewListingButton.disabled = true;
-	document.getElementById("createListingMessage").innerHTML = "";
 	var createTitle = document.getElementById("createTitle");
 	var createDescription = document.getElementById("createDescription");
 	var createTagID = document.getElementById("createTagID");
 	var createCategory = document.getElementById("createCategory");
-	var createEndtime = document.getElementById("createEndtime");
+	var createEndtime = new Date();//document.getElementById("createEndtime"); temp hard code
 
 	if (createTitle.value != "" & createDescription.value != "" & createTagID.value != "" & createCategory.value != "" & createEndtime.value != ""){
+		document.getElementById("createListingMessage").innerHTML = "Creating listing...";
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -226,18 +367,12 @@ function createNewListing() {
 					document.getElementById("createListingMessage").innerHTML = "Failed to create listing";
 					createNewListingButton.disabled = false;
 				} else {
-					var count=5;
-					var counter=setInterval(timer, 1000);
-					function timer() {
-					  	count=count-1;
-					  	if (count <= 0) {
-					     	clearInterval(counter);
-					     	document.location.href = "/allListings";
-					     	return;
-					  	}
-					  	document.getElementById("createListingMessage").innerHTML = "Listing created. Redirecting you to all listings in " + count + " seconds...";
-					}	
-					getItemDetails(this.responseText);
+					var itemNum = this.responseText;
+					clearModal(function(){
+						$('#modal-createListing').modal('hide');
+						getItemModal(itemNum);
+						$('#modal-modalDetails').modal('show');
+					});					
 				}			
 			}
 		};
@@ -247,6 +382,10 @@ function createNewListing() {
 		document.getElementById("createListingMessage").innerHTML = "All fields must be filled out";
 		document.getElementById("createNewListingButton").disabled = false;
 	}
+}
+
+function clearModal(callback){
+	callback(getListingsPage('php/itemGetAll.php'));
 }
 
 
@@ -265,21 +404,40 @@ function changeHiddenState() {
 }
 
 
+function getXMLHttpRequest() {
+    if (window.XMLHttpRequest) {
+        return new window.XMLHttpRequest;
+    } else {
+        try {
+            return new ActiveXObject("MSXML2.XMLHTTP.3.0");
+        } catch(ex) {
+            return null;
+        }
+    }
+}
+
+
 function changeStatus(itemID, newItemStatus) {
 	document.getElementById("itemInfoMessage").innerHTML = "";
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			if (this.responseText == "success") {
-				getItemDetails(itemID);
-				updateItemTable(itemID);
-			} else {
-				document.getElementById("itemInfoMessage").innerHTML = this.responseText;
-			}			
+	var xmlhttp = getXMLHttpRequest();
+	if (xmlhttp != null) {
+	    xmlhttp.open("GET", "/php/itemStatusChange.php?id="+itemID+"&status="+newItemStatus, true);
+	    xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				if (this.responseText == "success") {
+					getItemModal(itemID);
+					updateItemTable(itemID);
+				} else {
+					console.log(this.responseText);
+					document.getElementById("itemInfoMessage").innerHTML = this.responseText;
+				}			
+			}
 		}
-	};
-	xmlhttp.open("GET", "/php/changeItemStatus.php?id="+itemID+"&status="+newItemStatus, true);
-	xmlhttp.send();
+	    xmlhttp.send();
+	}
+	else {
+	    console.log("AJAX (XMLHTTP) not supported.");
+	}
 }
 
 
@@ -291,17 +449,8 @@ function removeListing(itemID) {
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				if (this.responseText == "success") {
-					var count=5;
-					var counter=setInterval(timer, 1000);
-					function timer() {
-					  	count=count-1;
-					  	if (count <= 0) {
-					     	clearInterval(counter);
-					     	location.reload();
-					     	return;
-					  	}
-					  	document.getElementById("itemEditMessage").innerHTML = "Listing removed. The page will refresh in " + count + " seconds...";
-					}			
+					//UPDATE HERE
+					$('#modal-modalDetails').modal('hide');
 				} else {
 					document.getElementById("itemEditMessage").innerHTML = this.responseText;
 				}			
@@ -314,6 +463,7 @@ function removeListing(itemID) {
 
 
 function editListing(itemID) {
+	console.log("FIRED");
 	document.getElementById("itemEditMessage").innerHTML = "";
 	var newDescription = document.getElementById("newDescription");
 	var newTitle = document.getElementById("newTitle");
@@ -325,15 +475,14 @@ function editListing(itemID) {
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				if (this.responseText == "success") {
-					getItemDetails(itemID);
+					getItemModal(itemID);
 					updateItemTable(itemID);
-					document.getElementById("itemEditMessage").innerHTML = "";
 				} else {
 					document.getElementById("itemEditMessage").innerHTML = this.responseText;
 				}			
 			}
 		};
-		xmlhttp.open("GET", "/php/editListing.php?id="+itemID+"&title="+newTitle.value+"&description="+newDescription.value+"&category="+newCategory.value, true);
+		xmlhttp.open("GET", "/php/itemEdit.php?id="+itemID+"&title="+newTitle.value+"&description="+newDescription.value+"&category="+newCategory.value, true);
 		xmlhttp.send();
 	} else {
 		document.getElementById("itemEditMessage").innerHTML = "Information fields must not be empty";
@@ -347,147 +496,307 @@ function updateItemTable(itemID) {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText != "failed") {
-				getItemDetails(itemID);
-				document.getElementById("itemTableID"+itemID).innerHTML = this.responseText;
+				getItemModal(itemID);
+				createItemTable(JSON.parse(this.responseText), function(result){
+					document.getElementById("itemTableID"+itemID).innerHTML = result;
+					activateLazyLoad();
+				});
 			} else {
 				location.reload();
 			}			
 		}
 	};
-	xmlhttp.open("GET", "/php/getSingleItemTable.php?id="+itemID, true);
+	xmlhttp.open("GET", "/php/itemGetSingle.php?id="+itemID, true);
 	xmlhttp.send();
 }
 
 
-
-
-
-
-
-/**
-*
-*  Secure Hash Algorithm (SHA256)
-*  http://www.webtoolkit.info/
-*
-*  Original code by Angel Marin, Paul Johnston.
-*
-**/
- 
-function SHA256(s){
- 
-	var chrsz   = 8;
-	var hexcase = 0;
- 
-	function safe_add (x, y) {
-		var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-		var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-		return (msw << 16) | (lsw & 0xFFFF);
+function loginRequiredMessage(requiredCheck) {
+	if (requiredCheck == true){
+		document.getElementById("loginMessage").innerHTML = "You must be logged in before you can create a listing";
+	} else {
+		document.getElementById("loginMessage").innerHTML = "";
 	}
- 
-	function S (X, n) { return ( X >>> n ) | (X << (32 - n)); }
-	function R (X, n) { return ( X >>> n ); }
-	function Ch(x, y, z) { return ((x & y) ^ ((~x) & z)); }
-	function Maj(x, y, z) { return ((x & y) ^ (x & z) ^ (y & z)); }
-	function Sigma0256(x) { return (S(x, 2) ^ S(x, 13) ^ S(x, 22)); }
-	function Sigma1256(x) { return (S(x, 6) ^ S(x, 11) ^ S(x, 25)); }
-	function Gamma0256(x) { return (S(x, 7) ^ S(x, 18) ^ R(x, 3)); }
-	function Gamma1256(x) { return (S(x, 17) ^ S(x, 19) ^ R(x, 10)); }
- 
-	function core_sha256 (m, l) {
-		var K = new Array(0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5, 0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174, 0xE49B69C1, 0xEFBE4786, 0xFC19DC6, 0x240CA1CC, 0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA, 0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7, 0xC6E00BF3, 0xD5A79147, 0x6CA6351, 0x14292967, 0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13, 0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85, 0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3, 0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070, 0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5, 0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3, 0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208, 0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2);
-		var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
-		var W = new Array(64);
-		var a, b, c, d, e, f, g, h, i, j;
-		var T1, T2;
- 
-		m[l >> 5] |= 0x80 << (24 - l % 32);
-		m[((l + 64 >> 9) << 4) + 15] = l;
- 
-		for ( var i = 0; i<m.length; i+=16 ) {
-			a = HASH[0];
-			b = HASH[1];
-			c = HASH[2];
-			d = HASH[3];
-			e = HASH[4];
-			f = HASH[5];
-			g = HASH[6];
-			h = HASH[7];
- 
-			for ( var j = 0; j<64; j++) {
-				if (j < 16) W[j] = m[j + i];
-				else W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
- 
-				T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
-				T2 = safe_add(Sigma0256(a), Maj(a, b, c));
- 
-				h = g;
-				g = f;
-				f = e;
-				e = safe_add(d, T1);
-				d = c;
-				c = b;
-				b = a;
-				a = safe_add(T1, T2);
-			}
- 
-			HASH[0] = safe_add(a, HASH[0]);
-			HASH[1] = safe_add(b, HASH[1]);
-			HASH[2] = safe_add(c, HASH[2]);
-			HASH[3] = safe_add(d, HASH[3]);
-			HASH[4] = safe_add(e, HASH[4]);
-			HASH[5] = safe_add(f, HASH[5]);
-			HASH[6] = safe_add(g, HASH[6]);
-			HASH[7] = safe_add(h, HASH[7]);
+}
+
+
+function getTagList(callback) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			callback(JSON.parse(this.responseText));
 		}
-		return HASH;
+	};
+	xmlhttp.open("GET", "/php/tagGetAll.php", true);
+	xmlhttp.send();
+}
+
+
+function filterArray(arrayToFilter,tagFilter,finishedFilter,callback) {
+	var filteredArray = arrayToFilter;
+	if (tagFilter != "") {
+		filteredArray = filteredArray.filter(function( obj ) {
+		  	return obj.FKtagID == tagFilter;
+		});
 	}
- 
-	function str2binb (str) {
-		var bin = Array();
-		var mask = (1 << chrsz) - 1;
-		for(var i = 0; i < str.length * chrsz; i += chrsz) {
-			bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (24 - i%32);
+	if (finishedFilter != "") {
+		filteredArray = filteredArray.filter(function( obj ) {
+		  	return obj.finished == finishedFilter;
+		});
+	}
+
+	callback(filteredArray);
+}
+
+function isInteger(num) {
+  	return (num ^ 0) === num;
+}
+
+
+function createItemList(obj, callback) {
+	var listingsStr = "";
+	var currentPage = 1;
+	var currentItem = 0;
+	var itemsPerPage = 20;
+	var numOfItemsInObj = Object.keys(obj).length;
+	var maxPage = Math.ceil(numOfItemsInObj / itemsPerPage);
+
+	listingsStr += '<ul id="tableList">';
+	listingsStr += '<div id="itemPage' + currentPage + '" style="display: block">';
+	createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+		listingsStr += result;
+	});
+
+	Object.keys(obj).forEach(function(k){
+		var tempa = currentItem / itemsPerPage;
+		if (isInteger(tempa) && currentItem != 0){
+			createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+				listingsStr += result;
+				currentPage++;			
+				listingsStr += '<br></div><div id="itemPage' + currentPage + '" style="display: none">';
+				createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+					listingsStr += result;
+				});
+			});
 		}
-		return bin;
-	}
- 
-	function Utf8Encode(string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
- 
-		for (var n = 0; n < string.length; n++) {
- 
-			var c = string.charCodeAt(n);
- 
-			if (c < 128) {
-				utftext += String.fromCharCode(c);
-			}
-			else if((c > 127) && (c < 2048)) {
-				utftext += String.fromCharCode((c >> 6) | 192);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
-			else {
-				utftext += String.fromCharCode((c >> 12) | 224);
-				utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-				utftext += String.fromCharCode((c & 63) | 128);
-			}
- 
+
+		currentItem++;
+		listingsStr += '<li id="itemTableID' + obj[k].itemID + '">';
+		createItemTable(obj[k], function(result){
+			listingsStr += result;
+			listingsStr += '</li>';
+		});
+	});
+	
+	totalListingsPage = currentPage;
+	createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+		listingsStr += result;
+	});
+
+	listingsStr += '</div></ul>';
+	callback(listingsStr);
+}
+
+
+function createItemTable(itemObj, callback){
+	var newItemTable = "";
+	newItemTable += '<div class="table-responsive table-padding">';
+		newItemTable += '<button type="button" class="table-button" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
+	      	newItemTable += '<table class="table table-striped table-bordered table-hover">';
+	      	
+		      	newItemTable += '<tbody>';
+		      		newItemTable += '<tr><td ';
+		      			switch (itemObj.finished) {
+		            		case "0":
+		                        newItemTable += 'class="available" value="available">';
+		            			break;
+		            		case "1":
+		                        newItemTable += 'class="wanted" value="wanted">';
+		            			break;
+		            		default:
+		                        newItemTable += 'class="finished" value="finished">';
+		            	}
+						newItemTable += '<h3>' + itemObj.name + '</h3>';
+		      		newItemTable += '</td>';
+
+		      		newItemTable += '<td rowspan="2" class="tableImage">';
+		      			newItemTable += '<img class="lazy" data-src="php/imageGet.php?id=' + itemObj.itemID + '"  width="120" height="110" alt="TEST">';
+		      		newItemTable += '</td>';
+
+		      		newItemTable += '</tr>';
+		      		newItemTable += '<tr><td class="table-listings">';
+		      			if (itemObj.description.length > 200){
+		      				newItemTable += itemObj.description.substring(0,200) + '...<br>';	
+		      			}
+		      			else{
+		      				newItemTable += itemObj.description + '<br>';
+		      			}
+		      			newItemTable += '<a>Read more...</a>';
+		      		newItemTable += '</td></tr>';
+		      	newItemTable += '</tbody>';
+		      	
+	      	newItemTable += '</table>';
+      	newItemTable += '</button>';
+  	newItemTable += '</div>';
+  	callback(newItemTable);
+}
+
+$('#datetimepicker').datetimepicker();
+
+function createOrganisationList(obj, callback){
+	var currentPage = 1;
+	var currentOrg = 0;
+	var orgsPerPage = 20;
+	var organisationsStr;
+	var numOfItemsInObj = Object.keys(obj).length;
+	var maxPage = Math.ceil(numOfItemsInObj / orgsPerPage);
+
+	organisationsStr = '<div class="center wrapper">';
+	organisationsStr += '<input type="text" id="searchValue" onkeyup="searchOrgTables()" placeholder="Search for organisation..">';
+	organisationsStr += '<ul id="tableList">';
+	organisationsStr += '<div id="organisationPage' + currentPage + '" style="display: block">';
+
+	createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+		organisationsStr += result;
+	});
+
+	Object.keys(obj).forEach(function(k){
+		var tempa = currentOrg / orgsPerPage;
+		if (isInteger(tempa) && currentOrg != 0){			
+			createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+				organisationsStr += result;
+				currentPage++;			
+				organisationsStr += '<br></div><div id="organisationPage' + currentPage + '" style="display: none">';
+				createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+					organisationsStr += result;
+				});
+			});
 		}
- 
-		return utftext;
+
+		currentOrg++;
+		organisationsStr += '<li id="organisationTableID' + obj[k].itemID + '">';
+		createOrganisationTable(obj[k], function(result){
+			organisationsStr += result;
+			organisationsStr += '</li>';
+		});
+	});
+	
+	totalListingsPage = currentPage;
+	createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+		organisationsStr += result;
+	});
+
+	organisationsStr += '</div></ul>';
+	callback(organisationsStr);
+}
+
+
+function createOrganisationTable(organisationObj, callback){
+	var newOrganisationTable = "";
+	newOrganisationTable += '<div class="table-responsive table-padding" >';
+	newOrganisationTable += '<button type="button" class="table-button" onclick="getOrganisationModal(' + organisationObj.groupID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
+  	newOrganisationTable += '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
+  	newOrganisationTable += '<thead>';
+  	newOrganisationTable += '<tr><td><b>' + organisationObj.name + '</b></td></tr>';
+  	newOrganisationTable += '</thead>';
+  	newOrganisationTable += '<tbody>';
+  	newOrganisationTable += '<tr><td class="table-listings">';
+  	if (organisationObj.Information.length > 200){
+		newOrganisationTable += organisationObj.Information.substring(0,200) + '...<br>';	
+	} else {
+		newOrganisationTable +=  organisationObj.Information + '<br>';
 	}
- 
-	function binb2hex (binarray) {
-		var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
-		var str = "";
-		for(var i = 0; i < binarray.length * 4; i++) {
-			str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
-			hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
+  	newOrganisationTable += '<a>Read more...</a></td></tr>';
+  	newOrganisationTable += '</tbody>';
+  	newOrganisationTable += '</table>';
+  	newOrganisationTable += '</button>';
+  	newOrganisationTable += '</div>';
+  	callback(newOrganisationTable);
+}
+
+
+function createChangePageButtons(pageType,currentPage,maxPage,callback){
+	var pageButtons = "";
+	//maxButtons Must be an odd number
+	var maxButtons = 7;
+
+	if (maxPage > 1){
+		pageButtons += '<div id="organisationButton" class="listingButton testing">';
+		pageButtons += '<ul class="pagination pagination-lg">';
+
+		//If it is the first page then put up to the next 4 pages (If more than maxButtons pages then make the 5th page the last page)
+		if (currentPage == 1){
+			pageButtons += '<li><button disabled>1</button></li>';
+			if (maxPage > maxButtons){
+				for(var i = 2; i < maxButtons; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+				}
+				pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</button></li>';
+			} else {
+				for(var i = 2; i <= maxPage; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+				}
+			}
+		
+		//If it is the last page then put up to the previous 4 pages (If more than maxButtons pages then make the 1st page the first page)
+		} else if(currentPage == maxPage) {
+			pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</button></li>';
+			if (maxPage > maxButtons){
+				for(var i = currentPage - (maxButtons-2); i < currentPage; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+				}
+			} else {
+				for(var i = 2; i < maxPage; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+				}
+			}
+			pageButtons += '<li><button disabled>' + currentPage + '</button>';
+
+		//If the page is inbetween 1-maxPage then put up to maxButtons button (including first page and last page)
+		} else {
+			if (maxPage > maxButtons){
+				var buttonSplit = Math.floor(maxButtons/2) - 1;
+				var lowerButtons = buttonSplit;
+				var upperButtons = buttonSplit;
+				if (currentPage - buttonSplit <= 1) {
+					lowerButtons = buttonSplit - (currentPage - 2 - buttonSplit);
+					upperButtons = currentPage - 2;
+				} else if (currentPage + buttonSplit >= maxPage) {
+					lowerButtons = maxPage - currentPage - 1;
+					upperButtons = buttonSplit - (maxPage - currentPage - 1 - buttonSplit);
+				}
+
+				pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</button></li>';
+				for(var i = currentPage - upperButtons; i < currentPage; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</button></li>';
+				}
+				pageButtons += '<li><button disabled>' + currentPage + '</button>';
+				for(var i = currentPage + 1; i <= currentPage + lowerButtons; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</button></li>';
+				}
+				pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</button></li>';
+			} else {
+				for(var i = 1; i < currentPage; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+				}
+				pageButtons += '<li><button disabled>' + currentPage + '</button>';
+				for(var i = currentPage + 1; i <= maxPage; i++){
+					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+				}
+			}
+			
 		}
-		return str;
+		pageButtons += '</ul>';
+		pageButtons += '</div>';
 	}
- 
-	s = Utf8Encode(s);
-	return binb2hex(core_sha256(str2binb(s), s.length * chrsz));
- 
+	
+	callback(pageButtons);
+}
+
+
+function changePageVisibility(newPage,previousPage){
+	previousPage.style.display = "none";
+	newPage.style.display = "block";
+	activateLazyLoad();
+	window.scrollTo(0, 0);
 }

@@ -1,34 +1,49 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta name="viewport" content="width=device-width,initial-scale=1.0">
-	<title>Connect Me Ballarat</title>
-	<link rel="shortcut icon" href="img/favicon.ico">	
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<link rel="stylesheet" href="css/main.css" />
+	<head>
+		<title>Connect Me Ballarat</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="author" content="Peter Billett, Tim Russell, Tim McKnight, Gerard May, Baljit Kaur">
+		<meta name="keywords" content="Volunteer, Sharing, Community, Help, Locations">
+		<meta name="description" content="Ballarat volunteer organisations">
+		<meta charset="UTF-8">
 
-	<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
-</head>
+		<link rel="shortcut icon" href="img/favicon.ico"/>
+	    <link rel="stylesheet" href="css/bootstrap.css"/>
+	    <link rel="stylesheet" href="css/main.css"/>
+	    <link rel="stylesheet" href="css/bootstrap-datetimepicker.css"/>
 
-<body>
-	<nav class="navbar navbar-inverse">
-		<h1><a href="index">CONNECT ME Ballarat</a></h1>
-		<span id="navBar"></span>
-	</nav>
+	    <noscript><META HTTP-EQUIV="Refresh" CONTENT="0;URL=javascriptDisabled"></noscript>
+	    <!--[if IE 8]>
+		    <META HTTP-EQUIV="Refresh" CONTENT="0;URL=ie8Redirect">
+		<![endif]-->
 
-	<section style="margin:0px;padding:0px;overflow:hidden">
-		<!--<iframe class="maps-frame" src="//www.google.com/maps/embed/v1/place?q=YMCA,Ballarat%20,%20AU
-	      	&zoom=15
-	      	&key=AIzaSyDnIx1QkG-_64NuLSYxxQj4vkcdt9I5zV0">
-	  	</iframe>-->
-  	</section>
+	    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+	    <script type="text/javascript" src="/js/jquery.min.js"></script>
+	    <script type="text/javascript" src="/js/jquery.lazy.js"></script>
+	    <script type="text/javascript" src="/js/bootstrap.js"></script>
+	    <script type="text/javascript" src="/js/moment.js"></script>
+	    <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
+	    <script type="text/javascript" src="/js/script.js"></script>
+	</head>
 
-</body>
+	<body>
+		<nav class="navbar navbar-inverse">
+			<h1><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('pageDetails', 'php/pages/index.php')">CONNECT ME Ballarat</button></a></h1>
+			<span id="navBar"></span>
+		</nav>
 
-<footer>
-	Example Footer
-</footer>
+	    <section id="pageDetails">
 
+	    </section>
+
+	    <div class="modal fade" id="modal-modalDetails">
+	        <div id="modalDetails"></div>
+	    </div>
+
+	</body>
+
+	<footer>
+		Example Footer
+	</footer>
 </html>
