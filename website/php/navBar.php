@@ -19,16 +19,78 @@
 						<ul class="dropdown-menu">
 							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationsPage()">Volunteer Organisation List</button></a></li>';
 
-							//Checks to see if the user is logged in (Only logged in users can create Volunteer Groups
+							//Checks to see if the user is logged in (Only logged in users can create Volunteer Groups)
 							if (isset($_SESSION['userID'])){
-								//Makes 'Create a Volunteer Group' option visiable
-								echo '<li><a href="createVolOrgAccount">Create a Volunteer Group</a></li>';
-								echo '<li><a href="joinVolOrg">Join a Volunteer Group</a></li>';
+								$stmt = $db->prepare("SELECT FKgroup FROM client WHERE clientID = ?");
+						   		$stmt->execute(array($_SESSION['userID']));
+						   		$stmt = $stmt->fetch(PDO::FETCH_ASSOC); 
+						      	if ($stmt['FKgroup'] != ""){
+						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getYourGroup('.$stmt['FKgroup'].')">Your Volunteer Group</button></a></li></ul></li>';
+						      	} else {
+						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" data-toggle="modal" data-target="#modal-joinVol">Create/Join Volunteer Group</button></a></li></ul></li>
+
+									<!-- Join Volunteer Group Modal -->
+									<div class="modal" id="modal-joinVol">
+									  	<div class="modal-dialog">
+									    	<div class="modal-content">
+
+									      		<div class="modal-header background-color-blue">
+									      			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
+									        		<span class="modalTitle">Join Volunteer Group</span>
+									      		</div>
+
+									      		<div class="modal-body testing">
+									      			<label>Volunteer Organisation Name: <select id="volOrgList">';
+														foreach($db->query('SELECT name, groupID FROM organisation ORDER BY name ASC') as $row) {
+															echo '<option value="'.$row['groupID'].'">'.$row['name'].'</option>';
+														}
+									      			echo '</select></label>
+												  	<br>
+												  	<span id="volOrgJoinMessage"></span>
+			                                    </div>
+
+										      	<div class="modal-footer testing">
+										        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+										        	<a class="btn btn-primary" href="#modal-createVol" data-toggle="modal" data-dismiss="modal">Create New Volunteer Group</a>
+										        	<button class="btn btn-primary" onclick="joinVolunteerGroup()">Submit</button>
+										      	</div>
+
+										    </div>
+										</div>
+									</div>
+									  
+									<!-- Create A New Volunteer Group Modal -->
+									<div class="modal" id="modal-createVol">
+									  	<div class="modal-dialog">
+									    	<div class="modal-content">
+
+									      		<div class="modal-header background-color-blue">
+									        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
+									        		<span class="modalTitle">Create New Volunteer Group</span>
+									      		</div>
+
+										      	<div class="modal-body testing">
+													<label>Volunteer Organisation Name:<br><input type="text" id="volOrgName" required placeholder="Enter a valid name"></label>
+													<br><label>Information: <br><input type="text" id="volOrgInformation" required placeholder="Enter organisation info"></label>
+												  	<br>
+												  	<span id="volOrgCreateMessage"></span>
+										      	</div>
+
+										      	<div class="modal-footer testing">
+										        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+										        	<a class="btn btn-primary" href="#modal-joinVol" data-toggle="modal" data-dismiss="modal">Cancel</a>
+										        	<button class="btn btn-primary" onclick="createVolunteerGroup()">Submit</button>
+										      	</div>
+
+									    	</div>
+									  	</div>
+									</div>';
+						      	}
+							} else {
+								echo '</ul></li>';
 							}
 							
-						echo '</ul>
-					</li>
-					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Listings<span class="caret"></span></a>
+					echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Listings<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php'".')">All</button></a></li>
 							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php?type=Request'".')">Requesting</button></a></li>
@@ -37,7 +99,7 @@
 					</li>';
 
 					if (isset($_SESSION['userID'])){
-						echo '<li class="no-select-link"><a href="" class="no-select-link" data-toggle="modal" data-target="#modal-createListing">Create listing</a></li>
+						echo '<li class="no-select-link"><a href="" class="no-select-link" data-toggle="modal" data-target="#modal-createListing">Create Listing</a></li>
 
 						<!-- Create Listing Modal -->
 						<div class="modal fade" id="modal-createListing">
@@ -45,8 +107,8 @@
 						    	<div class="modal-content">
 
 						      		<div class="modal-header background-color-blue">
-						      			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><h4>&times;</h4></button>
-						        		<h4 class="myModalLabel">Create Listing</h4>
+						      			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
+						        		<span class="modalTitle">Create Listing</span>
 						      		</div>
 
 						      		<div class="modal-body testing">
@@ -95,20 +157,24 @@
 					echo '<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/FAQ.php'".')">FAQ</button></a></li>';
 
 					if (isset($_SESSION['userID'])){
-						echo '<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="logout()">Logout</button></a></li>';
+						echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Your Account<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/userProfile.php'".')">Your Profile</button></a></li>
+								<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="logout()">Logout</button></a></li>
+							</ul>
+						</li>';
 					}
 					else{
-                        echo '
-                        <li class="no-select-link"><a href="" onclick="loginRequiredMessage(false)" class="no-select-link" data-toggle="modal" data-target="#modal-login">Login</a></li>
-						 
+                        echo '<li class="no-select-link"><a href="" onclick="loginRequiredMessage(false)" class="no-select-link" data-toggle="modal" data-target="#modal-login">Login</a></li>
+
 						<!-- Login Modal -->
 						<div class="modal fade" id="modal-login">
 						  	<div class="modal-dialog">
 						    	<div class="modal-content">
 
 						      		<div class="modal-header background-color-blue">
-						      			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><h4>&times;</h4></button>
-						        		<h4 class="myModalLabel">LOGIN</h4>
+						      			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
+						        		<span class="modalTitle">LOGIN</span>
 						      		</div>
 
 						      		<div class="modal-body testing">
@@ -136,8 +202,8 @@
 						    	<div class="modal-content">
 
 						      		<div class="modal-header background-color-blue">
-						        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><h4>&times;</h4></button>
-						        		<h4 class="modal-title">Create Account</h4>
+						        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
+						        		<span class="modalTitle">Create Account</span>
 						      		</div>
 
 							      	<div class="modal-body testing">

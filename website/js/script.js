@@ -1,12 +1,13 @@
 var currentListingsPage = 1;
 var totalListingsPage = 1;
 var indexData = null;
+var lastItemPage = 0;
 
-//Setup pages on load
+//Setup SPA on site load
 $(function () {
 
 	//Load navBar on all pages
-	document.getElementById("navBar").innerHTML = '';
+	document.getElementById("loadingBar").style.display = "block";
 	var xmlhttpTEST = new XMLHttpRequest();
 	xmlhttpTEST.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -14,61 +15,23 @@ $(function () {
 			$('#datetimepicker1').datetimepicker({
 				sideBySide: true
 			});
+			document.getElementById("loadingBar").style.display = "none";
 		}
 	};
 	xmlhttpTEST.open("GET", "/php/navBar.php", true);
 	xmlhttpTEST.send();
 
 	sendOffPHP("pageDetails", "php/pages/index.php");
-
-	/*
-	if(document.getElementById('tagFilterList') != undefined){
-		var result = '';
-		getTagList(function(obj){
-			result = '<option selected="selected" value="">All</option>';
-			Object.keys(obj).forEach(function(k){
-				result += '<option value="' + obj[k].tagID + '">' + obj[k].name + ' (' + obj[k].totalItems + ')</option>';
-	    	});
-			document.getElementById("tagFilterList").innerHTML = result;
-		});
-	}
-
-	//Initalize tables of listings
-	if(document.getElementById('listAllItems') != undefined){
-		getAllListings("listAllItems","/php/itemGetAll.php",false);
-	} else if(document.getElementById('listRequestItems') != undefined){
-		getAllListings("listRequestItems","/php/itemGetAll.php?type=Request",false);
-	}else if(document.getElementById('listSupplyItems') != undefined){
-		getAllListings("listSupplyItems","/php/itemGetAll.php?type=Supplying",false);
-	}
-
-	//Initalize list of organisations
-	if(document.getElementById('volOrgList') != undefined){
-		sendOffPHP("volOrgList", "/php/linkClientVolOrg.php");
-	}	
-
-	//Initalize tables of organisations
-	if(document.getElementById('organisationList') != undefined){
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				createOrganisationList(JSON.parse(this.responseText), function(result){
-					document.getElementById("organisationList").innerHTML = result;
-				});
-			}
-		};
-		xmlhttp.open("GET", "/php/organisationGetAll.php", true);
-		xmlhttp.send();
-	}
-	*/
 });
 
 function getOrganisationsPage() {
+	document.getElementById("loadingBar").style.display = "block";
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			createOrganisationList(JSON.parse(this.responseText), function(result){
 				document.getElementById("pageDetails").innerHTML = result;
+				document.getElementById("loadingBar").style.display = "none";
 			});
 		}
 	};
@@ -78,6 +41,7 @@ function getOrganisationsPage() {
 
 function getListingsPage(listingType) {
 	document.getElementById("pageDetails").innerHTML = '';
+	document.getElementById("loadingBar").style.display = "block";
 	waitForCallback("pageDetails", "php/pages/listings.php", function(result){
 		var result = '';
 		getTagList(function(obj){
@@ -88,6 +52,7 @@ function getListingsPage(listingType) {
 			$("#tagFilterList").html(result);
 			console.log(result);
 			getAllListings("listingArea",listingType,false);
+			document.getElementById("loadingBar").style.display = "none";
 		});
 	});
 }
@@ -123,10 +88,12 @@ function getAllListings(postionID,phpFile,callSearch) {
 
 function sendOffPHP(elementID, phpDetails) {
 	document.getElementById(elementID).innerHTML = '';
+	document.getElementById("loadingBar").style.display = "block";
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById(elementID).innerHTML = this.responseText;
+			document.getElementById("loadingBar").style.display = "none";
 		}
 	};
 	xmlhttp.open("GET", phpDetails, true);
@@ -285,6 +252,46 @@ function checkAccountCreationSuccess() {
 }
 
 
+function joinVolunteerGroup() {
+	document.getElementById("volOrgJoinMessage").innerHTML = "";
+	organisationIDToLink = document.getElementById("volOrgList").value;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText.substring(0,5) != "Error") {
+				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getYourGroup(' + organisationIDToLink + ')">Your Volunteer Group</button></a></li></ul>';
+				$('#modal-createVol').modal('hide');
+			} else {
+				document.getElementById("volOrgJoinMessage").innerHTML = this.responseText;
+				console.log("FAILED");
+			}			
+		}
+	}
+	xmlhttp.open("POST", "/php/accountLinkOrganisation.php?groupID="+organisationIDToLink, true);
+	xmlhttp.send(); 
+}
+
+
+function createVolunteerGroup() {
+	document.getElementById("volOrgCreateMessage").innerHTML = "";
+	newOrganisationName = document.getElementById("volOrgName").value;
+	newOrganisationInformation = document.getElementById("volOrgInformation").value;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText.substring(0,5) != "Error") {
+				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getYourGroup(' + this.responseText + ')">Your Volunteer Group</button></a></li></ul>';
+				$('#modal-createVol').modal('hide');
+			} else {
+				document.getElementById("volOrgCreateMessage").innerHTML = this.responseText;
+			}			
+		}
+	}
+	xmlhttp.open("POST", "/php/organisationCreate.php?volOrgName="+newOrganisationName+"&volOrgInformation="+newOrganisationInformation, true);
+	xmlhttp.send();
+}
+
+
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
@@ -372,11 +379,17 @@ function createNewListing() {
 						$('#modal-createListing').modal('hide');
 						getItemModal(itemNum);
 						$('#modal-modalDetails').modal('show');
+						createNewListingButton.disabled = false;
+						createTitle.value = "";
+						createDescription.value = "";
+						createTagID.selectedIndex = "0";
+						createCategory.selectedIndex = "0";
+						document.getElementById("createListingMessage").innerHTML = "";
 					});					
 				}			
 			}
 		};
-		xmlhttp.open("GET", "/php/createListing.php?title="+createTitle.value+"&tagID="+createTagID.value+"&description="+createDescription.value+"&category="+createCategory.value+"&endtime="+createEndtime.value, true);
+		xmlhttp.open("GET", "/php/itemCreate.php?title="+createTitle.value+"&tagID="+createTagID.value+"&description="+createDescription.value+"&category="+createCategory.value+"&endtime="+createEndtime.value, true);
 		xmlhttp.send();
 	} else {
 		document.getElementById("createListingMessage").innerHTML = "All fields must be filled out";
@@ -560,6 +573,7 @@ function createItemList(obj, callback) {
 	var itemsPerPage = 20;
 	var numOfItemsInObj = Object.keys(obj).length;
 	var maxPage = Math.ceil(numOfItemsInObj / itemsPerPage);
+	lastItemPage = maxPage;
 
 	listingsStr += '<ul id="tableList">';
 	listingsStr += '<div id="itemPage' + currentPage + '" style="display: block">';
@@ -616,7 +630,7 @@ function createItemTable(itemObj, callback){
 		            		default:
 		                        newItemTable += 'class="finished" value="finished">';
 		            	}
-						newItemTable += '<h3>' + itemObj.name + '</h3>';
+						newItemTable += '<h2>' + itemObj.name + '</h2>';
 		      		newItemTable += '</td>';
 
 		      		newItemTable += '<td rowspan="2" class="tableImage">';

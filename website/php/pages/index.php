@@ -7,16 +7,16 @@
 	            <div class="carousel-inner">
 	                <div class="item active">
 	                	<button type="button" class="no-button no-select-link" onclick="getItemModal(3)" data-toggle="modal" data-target="#modal-modalDetails">
-            				<h4> Coaches </h4>
-                            Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.
+            				<span class="modalTitle"> Coaches </span>
+                            <br>Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.
             				<br>End date/time: 2017-04-14 00:00:00
                             <br>Organisation: YMCA Ballarat
                         </button>
 	                </div>
 	                <div class="item">
 	                	<button type="button" class="no-button no-select-link" onclick="getItemModal(5)" data-toggle="modal" data-target="#modal-modalDetails">
-            				<h4> Sausages </h4>
-            				10kg of sausages. Please contact for more information.
+            				<span class="modalTitle"> Sausages </span>
+            				<br>10kg of sausages. Please contact for more information.
                             <br>End date/time: 2017-04-10 00:00:00
                             <br>Organisation: Harvest Ministry of Food
 	                    </button>

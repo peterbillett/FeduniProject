@@ -20,8 +20,8 @@
     //Item heading
     if ($stmtItem->rowCount() == 1) {
         echo '<div class="modal-header background-color-blue">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><h4>&times;</h4></button>
-        <h4 class="myModalLabel">'.$itemResult['name'].'</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><modalTitle>&times;</modalTitle></button>
+        <modalTitle class="myModalLabel">'.$itemResult['name'].'</modalTitle>
         </div>';
 
         echo '<div class="modal-body">';

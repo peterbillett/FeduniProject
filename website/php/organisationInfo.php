@@ -11,7 +11,7 @@
 	echo '<div class="center wrapper">';
 
     	$stmt = $db->prepare("SELECT * FROM organisation WHERE groupID=?");
-    	$stmt->execute(array(@$_GET['id']));
+    	$stmt->execute(array($_GET['id']));
     	$organisationResult = $stmt->fetch(PDO::FETCH_ASSOC);  	
 
       if ($stmt->rowCount() == 1){
