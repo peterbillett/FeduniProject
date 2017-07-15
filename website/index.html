@@ -11,6 +11,7 @@
 		<meta charset="UTF-8">
 
 		<link rel="shortcut icon" href="img/favicon.ico"/>
+		<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 	    <link rel="stylesheet" href="css/bootstrap.css"/>
 	    <link rel="stylesheet" href="css/main.css"/>
 	    <link rel="stylesheet" href="css/bootstrap-datetimepicker.css"/>
@@ -23,6 +24,7 @@
 	    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
 	    <script type="text/javascript" src="/js/jquery.min.js"></script>
 	    <script type="text/javascript" src="/js/jquery.lazy.js"></script>
+	    <script type="text/javascript" src="/js/jquery.mobile.custom.min.js"></script>
 	    <script type="text/javascript" src="/js/bootstrap.js"></script>
 	    <script type="text/javascript" src="/js/moment.js"></script>
 	    <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
@@ -30,8 +32,9 @@
 	</head>
 
 	<body>
+		<MIME type=text/html>
 		<nav class="navbar navbar-inverse">
-			<h1><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('pageDetails', 'php/pages/index.php')">CONNECT ME Ballarat</button></a></h1>
+			<h1><a class="no-select-link"><button class="no-button no-select-link" onclick="getIndexPage()">CONNECT ME Ballarat</button></a></h1>
 			<span id="navBar"></span>
 		</nav>
 
@@ -42,7 +45,6 @@
 		</div>
 
 	    <section id="pageDetails">
-
 	    </section>
 
 	    <div class="modal fade" id="modal-modalDetails">

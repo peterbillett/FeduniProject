@@ -21,8 +21,53 @@ $(function () {
 	xmlhttpTEST.open("GET", "/php/navBar.php", true);
 	xmlhttpTEST.send();
 
-	sendOffPHP("pageDetails", "php/pages/index.php");
+	getIndexPage();
 });
+
+
+function getProfilePage() {
+	document.getElementById("loadingBar").style.display = "block";
+	waitForCallback("pageDetails", "php/pages/userProfile.php", function(result){
+		//Add collapse to sidemenu
+		var checkIfSideMenuIsReady = function(){
+		    if(document.getElementById("pageDetails").innerHTML != "") {
+		    	$("#menu-toggle").click(function(e) {
+	                e.preventDefault();
+	                $("#wrapper").toggleClass("toggled");
+	            });
+		    }
+		    else {
+		        setTimeout(checkIfSideMenuIsReady, 1000); //If it is not ready then check again in 1 second
+		    }
+		}
+		checkIfSideMenuIsReady();
+	});
+	
+}
+
+
+function getIndexPage() {
+	document.getElementById("loadingBar").style.display = "block";
+	waitForCallback("pageDetails", "php/pages/index.php", function(result){
+		//Add swiping to carousel
+		var checkIfCarouselIsReady = function(){
+		    if(document.getElementById("pageDetails").innerHTML != "") {
+		    	document.getElementById("loadingBar").style.display = "none";
+		       	$("#text-carousel").swiperight(function() {  
+			        $(this).carousel("prev");  
+			    });  
+			    $("#text-carousel").swipeleft(function() {  
+			        $(this).carousel("next");  
+			    });
+		    }
+		    else {
+		        setTimeout(checkIfCarouselIsReady, 1000); //If it is not ready then check again in 1 second
+		    }
+		}
+		checkIfCarouselIsReady();
+	});
+}
+
 
 function getOrganisationsPage() {
 	document.getElementById("loadingBar").style.display = "block";
@@ -259,7 +304,7 @@ function joinVolunteerGroup() {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText.substring(0,5) != "Error") {
-				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getYourGroup(' + organisationIDToLink + ')">Your Volunteer Group</button></a></li></ul>';
+				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal(' + organisationIDToLink + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li></ul>';
 				$('#modal-createVol').modal('hide');
 			} else {
 				document.getElementById("volOrgJoinMessage").innerHTML = this.responseText;
@@ -280,7 +325,7 @@ function createVolunteerGroup() {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText.substring(0,5) != "Error") {
-				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getYourGroup(' + this.responseText + ')">Your Volunteer Group</button></a></li></ul>';
+				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal(' + this.responseText + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li></ul>';
 				$('#modal-createVol').modal('hide');
 			} else {
 				document.getElementById("volOrgCreateMessage").innerHTML = this.responseText;

@@ -14,7 +14,7 @@
 		    </div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/index.php'".')"><span class="glyphicon glyphicon-home"></span></a></button></li>
+					<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getIndexPage()"><span class="glyphicon glyphicon-home"></span></a></button></li>
 					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Volunteer Organisations<span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationsPage()">Volunteer Organisation List</button></a></li>';
@@ -25,7 +25,7 @@
 						   		$stmt->execute(array($_SESSION['userID']));
 						   		$stmt = $stmt->fetch(PDO::FETCH_ASSOC); 
 						      	if ($stmt['FKgroup'] != ""){
-						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getYourGroup('.$stmt['FKgroup'].')">Your Volunteer Group</button></a></li></ul></li>';
+						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li></ul></li>';
 						      	} else {
 						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" data-toggle="modal" data-target="#modal-joinVol">Create/Join Volunteer Group</button></a></li></ul></li>
 
@@ -159,7 +159,7 @@
 					if (isset($_SESSION['userID'])){
 						echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Your Account<span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/userProfile.php'".')">Your Profile</button></a></li>
+								<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getProfilePage()">Your Profile</button></a></li>
 								<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="logout()">Logout</button></a></li>
 							</ul>
 						</li>';
