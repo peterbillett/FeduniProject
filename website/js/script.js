@@ -3,10 +3,9 @@ var totalListingsPage = 1;
 var indexData = null;
 var lastItemPage = 0;
 
-//Setup SPA on site load
 $(function () {
 
-	//Load navBar on all pages
+	//Load navBar
 	document.getElementById("loadingBar").style.display = "block";
 	var xmlhttpTEST = new XMLHttpRequest();
 	xmlhttpTEST.onreadystatechange = function() {
@@ -31,10 +30,12 @@ function getProfilePage() {
 		//Add collapse to sidemenu
 		var checkIfSideMenuIsReady = function(){
 		    if(document.getElementById("pageDetails").innerHTML != "") {
+		    	document.getElementById("loadingBar").style.display = "none";
 		    	$("#menu-toggle").click(function(e) {
 	                e.preventDefault();
 	                $("#wrapper").toggleClass("toggled");
 	            });
+	            setupAutoRefresh();
 		    }
 		    else {
 		        setTimeout(checkIfSideMenuIsReady, 1000); //If it is not ready then check again in 1 second
@@ -42,7 +43,24 @@ function getProfilePage() {
 		}
 		checkIfSideMenuIsReady();
 	});
-	
+}
+
+
+function setupAutoRefresh() {
+	var autoRefreshInterval = setInterval(function(){
+		if($('#selector').length) {
+			var xmlhttpTEST = new XMLHttpRequest();
+			xmlhttpTEST.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					document.getElementById("notificationTable").innerHTML = this.responseText;
+				}
+			};
+			xmlhttpTEST.open("GET", "/php/notificationTable.php", true);
+			xmlhttpTEST.send();
+		} else {
+			clearInterval(autoRefreshInterval);
+		}
+	}, 180000);
 }
 
 
@@ -66,6 +84,28 @@ function getIndexPage() {
 		}
 		checkIfCarouselIsReady();
 	});
+}
+
+
+function updatePassword() {
+	document.getElementById("passwordUpdateMessage").innerHTML = "";
+	password = document.getElementById("updatePassword").value;
+	if (validatePassword(password) == false){
+		document.getElementById("passwordUpdateMessage").innerHTML = "Please enter a vaild password or create a new account.";
+	} else {
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				if (this.responseText.substring(0,5) != "Error") {
+					document.getElementById("passwordUpdateMessage").innerHTML = "Password updated";
+				} else {
+					document.getElementById("modalDetails").innerHTML = this.responseText;
+				}
+			}
+		};
+		xmlhttp.open("GET", "/php/accountUpdatePassword.php?newPassword="+password, true);
+		xmlhttp.send();
+	}
 }
 
 
@@ -133,12 +173,12 @@ function getAllListings(postionID,phpFile,callSearch) {
 
 function sendOffPHP(elementID, phpDetails) {
 	document.getElementById(elementID).innerHTML = '';
-	document.getElementById("loadingBar").style.display = "block";
+	//document.getElementById("loadingBar").style.display = "block";
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById(elementID).innerHTML = this.responseText;
-			document.getElementById("loadingBar").style.display = "none";
+			//document.getElementById("loadingBar").style.display = "none";
 		}
 	};
 	xmlhttp.open("GET", phpDetails, true);

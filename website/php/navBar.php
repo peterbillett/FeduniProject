@@ -2,6 +2,63 @@
 	session_start();
 	if (isset($_SESSION['userID'])){
 		include("config.php");
+
+		echo '<!-- Join Volunteer Group Modal -->
+		<div class="modal" id="modal-joinVol">
+		  	<div class="modal-dialog">
+		    	<div class="modal-content">
+
+		      		<div class="modal-header background-color-blue">
+		      			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
+		        		<span class="modalTitle">Join Volunteer Group</span>
+		      		</div>
+
+		      		<div class="modal-body testing">
+		      			<label>Volunteer Organisation Name: <select id="volOrgList">';
+							foreach($db->query('SELECT name, groupID FROM organisation ORDER BY name ASC') as $row) {
+								echo '<option value="'.$row['groupID'].'">'.$row['name'].'</option>';
+							}
+		      			echo '</select></label>
+					  	<br>
+					  	<span id="volOrgJoinMessage"></span>
+                    </div>
+
+			      	<div class="modal-footer testing">
+			        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        	<a class="btn btn-primary" href="#modal-createVol" data-toggle="modal" data-dismiss="modal">Create New Volunteer Group</a>
+			        	<button class="btn btn-primary" onclick="joinVolunteerGroup()">Submit</button>
+			      	</div>
+
+			    </div>
+			</div>
+		</div>
+		  
+		<!-- Create A New Volunteer Group Modal -->
+		<div class="modal" id="modal-createVol">
+		  	<div class="modal-dialog">
+		    	<div class="modal-content">
+
+		      		<div class="modal-header background-color-blue">
+		        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
+		        		<span class="modalTitle">Create New Volunteer Group</span>
+		      		</div>
+
+			      	<div class="modal-body testing">
+						<label>Volunteer Organisation Name:<br><input type="text" id="volOrgName" required placeholder="Enter a valid name"></label>
+						<br><label>Information: <br><input type="text" id="volOrgInformation" required placeholder="Enter organisation info"></label>
+					  	<br>
+					  	<span id="volOrgCreateMessage"></span>
+			      	</div>
+
+			      	<div class="modal-footer testing">
+			        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        	<a class="btn btn-primary" href="#modal-joinVol" data-toggle="modal" data-dismiss="modal">Cancel</a>
+			        	<button class="btn btn-primary" onclick="createVolunteerGroup()">Submit</button>
+			      	</div>
+
+		    	</div>
+		  	</div>
+		</div>';
 	}
 
    	echo'<div class="container-fluid">
@@ -25,70 +82,13 @@
 						   		$stmt->execute(array($_SESSION['userID']));
 						   		$stmt = $stmt->fetch(PDO::FETCH_ASSOC); 
 						      	if ($stmt['FKgroup'] != ""){
-						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li></ul></li>';
+						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li>';
 						      	} else {
-						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" data-toggle="modal" data-target="#modal-joinVol">Create/Join Volunteer Group</button></a></li></ul></li>
-
-									<!-- Join Volunteer Group Modal -->
-									<div class="modal" id="modal-joinVol">
-									  	<div class="modal-dialog">
-									    	<div class="modal-content">
-
-									      		<div class="modal-header background-color-blue">
-									      			<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
-									        		<span class="modalTitle">Join Volunteer Group</span>
-									      		</div>
-
-									      		<div class="modal-body testing">
-									      			<label>Volunteer Organisation Name: <select id="volOrgList">';
-														foreach($db->query('SELECT name, groupID FROM organisation ORDER BY name ASC') as $row) {
-															echo '<option value="'.$row['groupID'].'">'.$row['name'].'</option>';
-														}
-									      			echo '</select></label>
-												  	<br>
-												  	<span id="volOrgJoinMessage"></span>
-			                                    </div>
-
-										      	<div class="modal-footer testing">
-										        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-										        	<a class="btn btn-primary" href="#modal-createVol" data-toggle="modal" data-dismiss="modal">Create New Volunteer Group</a>
-										        	<button class="btn btn-primary" onclick="joinVolunteerGroup()">Submit</button>
-										      	</div>
-
-										    </div>
-										</div>
-									</div>
-									  
-									<!-- Create A New Volunteer Group Modal -->
-									<div class="modal" id="modal-createVol">
-									  	<div class="modal-dialog">
-									    	<div class="modal-content">
-
-									      		<div class="modal-header background-color-blue">
-									        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="modalTitle">&times;</span></button>
-									        		<span class="modalTitle">Create New Volunteer Group</span>
-									      		</div>
-
-										      	<div class="modal-body testing">
-													<label>Volunteer Organisation Name:<br><input type="text" id="volOrgName" required placeholder="Enter a valid name"></label>
-													<br><label>Information: <br><input type="text" id="volOrgInformation" required placeholder="Enter organisation info"></label>
-												  	<br>
-												  	<span id="volOrgCreateMessage"></span>
-										      	</div>
-
-										      	<div class="modal-footer testing">
-										        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-										        	<a class="btn btn-primary" href="#modal-joinVol" data-toggle="modal" data-dismiss="modal">Cancel</a>
-										        	<button class="btn btn-primary" onclick="createVolunteerGroup()">Submit</button>
-										      	</div>
-
-									    	</div>
-									  	</div>
-									</div>';
+						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" data-toggle="modal" data-target="#modal-joinVol">Create/Join Volunteer Group</button></a></li>';
 						      	}
-							} else {
-								echo '</ul></li>';
-							}
+						    }
+							echo '</ul>
+						</li>';
 							
 					echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Listings<span class="caret"></span></a>
 						<ul class="dropdown-menu">

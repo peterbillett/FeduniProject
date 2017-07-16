@@ -527,7 +527,11 @@ footer{
     -moz-transition: all 0.6s ease;
     -o-transition: all 0.6s ease;
     transition: all 0.6s ease;
-    
+    height: 100%;
+}
+
+.panel-group {
+    margin-bottom: 0px;
 }
 
 #wrapper.toggled {
@@ -536,7 +540,7 @@ footer{
 
 #sidebar-wrapper {
     z-index: 10;
-    position: fixed;
+    position: absolute;
     left: 250px;
     
     width: 0;
@@ -564,9 +568,11 @@ footer{
     position: absolute;
 }
 
-
-
 /* Sidebar Styles */
+.sideMenuHeight {
+	height: 100%
+}
+
 .sidebar-navSide {
     position: absolute;
     top: 0;
@@ -577,16 +583,21 @@ footer{
     list-style: none;
 }
 
+.sideMenuSize{
+	font-size: 14px;
+}
+
 .sidebar-navSide li {
     text-indent: 20px;
     line-height: 40px;
 }
 
-.sidebar-navSide li a {
+.sidebar-navSide li a{
     display: block;
     text-decoration: none;
     color: #999999;
     height: 100%;
+    font-size: 14px;
 }
 
 .sidebar-navSide li a:hover {
@@ -598,6 +609,7 @@ footer{
 .sidebar-navSide li a:active,
 .sidebar-navSide li a:focus {
     text-decoration: none;
+    outline: 0px;
 }
 
 .sidebar-navSide > .sidebar-brand {
@@ -670,13 +682,26 @@ footer{
     content: "\e113";
 }
 
+.cursorPointer{
+    cursor: pointer;
+}
+
 @media only screen and (min-width:880px){
+	.sideMenuMainItem{
+	    border-bottom: solid 1px grey;
+	}
+
+	#wrapper.toggled .sideMenuMainItem {
+	    border-bottom: none;
+	}
+
     #wrapper {
         padding-left: 200px;
     }
 
     #wrapper.toggled #page-content-wrapper {
 		margin-left:0px;
+		padding-left: 20px;
 	}
 
     #wrapper.toggled {
@@ -709,7 +734,28 @@ footer{
     }
 }
 
-@media only screen and (max-width:879px){
+@media only screen and (max-width:879px) {
+	.sideMenuMainItem{
+	    border-bottom: none;
+	    line-height: 20px;
+	}
+
+	#wrapper.toggled .sideMenuMainItem {
+	    border-bottom: solid 1px grey;	    
+	}
+
+	.sideMenuMainItem a{
+	    line-height: 20px;
+	}
+
+	.sideMenuMainItem i{
+	    line-height: 0px;
+	}
+
+	.sideMenuSecondItem {
+		padding-top: 10px;
+	}
+
 	#wrapper.toggled #page-content-wrapper {
 	    position: absolute;
 	    margin-right:40px;
@@ -732,13 +778,12 @@ footer{
     }
 
     #wrapper.toggled #sidebar-wrapper {
-        width: 140px;
+        width: 200px;
     }
     
     #wrapper.toggled span {
         visibility:visible;
         position:relative;
-        left:70px;
         bottom:13px;
     }
 
@@ -755,13 +800,11 @@ footer{
 	} 
 
     #page-content-wrapper {
-        padding: 5px;
         position: relative;
         padding-left: 20px;
     }
 
     #wrapper.toggled #page-content-wrapper {
-        position: relative;
         margin-right: 0;
     }
 }
