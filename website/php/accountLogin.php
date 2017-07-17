@@ -16,6 +16,8 @@
    if($stmt->rowCount() == 1) {
       $result = $stmt->fetch(PDO::FETCH_ASSOC);
       $_SESSION['userID'] = $result['clientID'];
+      $stmt = $db->prepare("UPDATE client SET lastseen=now() WHERE clientID=?");
+      $stmt->execute(array($result['clientID']));
       echo "success";
    }else {
       echo "The email or password was incorrect";

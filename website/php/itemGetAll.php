@@ -1,5 +1,6 @@
 <?php
 	include("config.php");
+	include("updateItemFinished.php");
 	session_start();
 			
 	if (empty($_GET['type'])) {
@@ -14,6 +15,6 @@
 		$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		echo json_encode($rows);
 	} else {
-		echo "";
+		json_encode (json_decode ("{}"));
 	}
 ?>

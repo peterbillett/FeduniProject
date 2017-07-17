@@ -48,7 +48,7 @@ function getProfilePage() {
 
 function setupAutoRefresh() {
 	var autoRefreshInterval = setInterval(function(){
-		if($('#selector').length) {
+		if($('#notificationTable').length) {
 			var xmlhttpTEST = new XMLHttpRequest();
 			xmlhttpTEST.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
@@ -60,7 +60,7 @@ function setupAutoRefresh() {
 		} else {
 			clearInterval(autoRefreshInterval);
 		}
-	}, 180000);
+	}, 5000);
 }
 
 
@@ -280,7 +280,7 @@ function checkLoginSuccess() {
 			}			
 		}
 	};
-	xmlhttp.open("GET", "/php/login_user.php?email="+email+"&password="+password, true);
+	xmlhttp.open("GET", "/php/accountLogin.php?email="+email+"&password="+password, true);
 	xmlhttp.send();
 }
 
@@ -402,7 +402,7 @@ function logout() {
 			window.location.reload(false);
 		}
 	};
-	xmlhttp.open("POST", "/php/logout.php", true);
+	xmlhttp.open("POST", "/php/accountLogout.php", true);
 	xmlhttp.send();
 }
 

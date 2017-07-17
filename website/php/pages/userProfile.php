@@ -1,5 +1,6 @@
 <?php
     include("../config.php");
+    include("../updateItemFinished.php");
     session_start();
     $availableCount = 0;
     $wantedCount = 0;
@@ -27,7 +28,7 @@
             <div class="container-fluid">
                 <div class="testing table-padding"><b>Your Listings<b><br>';
                         
-                $stmt = $db->prepare('SELECT itemID, name, finished, category FROM item WHERE FKClient = ? ORDER BY itemID DESC');
+                $stmt = $db->prepare('SELECT itemID, name, finished, category FROM item WHERE FKClient = ? ORDER BY endtime DESC');
                 $stmt->execute(array($_SESSION['userID']));
                 $listingCount = $stmt->rowCount(); 
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -66,8 +67,9 @@
                 $availablePercent = GetPercentage($listingCount,$availableCount);
                 $wantedPercent = GetPercentage($listingCount,$wantedCount);
                 $finishedPercent = GetPercentage($listingCount,$finishedCount);
-                if (($availablePercent + $availablePercent + $availablePercent) > 100.00) {
-                    $removePercent = ($availablePercent + $wantedPercent + $finishedPercent) - 100;
+                $totalPercent = ($availablePercent + $wantedPercent + $finishedPercent);
+                if ($totalPercent > 100.00) {
+                    $removePercent = $totalPercent - 100;
                     if (max($availablePercent,$wantedPercent,$finishedPercent) == $availablePercent){
                         $availablePercent = $availablePercent - $removePercent;
                     } elseif (max($availablePercent,$wantedPercent,$finishedPercent) == $wantedPercent){
@@ -98,11 +100,11 @@
                                 </div>';
                             }                                        
                             echo '</div>
-                            <h4 class="panel-title">
-                                Available: '.$availableCount.' | Wanted: '.$wantedCount.' | Finished: '.$finishedCount.'
-                            </h4>';
+                        <h4 class="panel-title">
+                            Available: '.$availableCount.' | Wanted: '.$wantedCount.' | Finished: '.$finishedCount.'
+                        </h4>';
 
-                             echo '<div class="panel-heading" data-toggle="collapse" href="#collapseRequests">
+                         echo '<div class="panel-heading" data-toggle="collapse" href="#collapseRequests">
                             <h4 class="panel-title">
                                 <a class="accordion-toggle" data-parent="#panel-group">Your requests</a>
                             </h4>
@@ -164,8 +166,9 @@
                     echo '</div><br>
                 </div>
             </div>
-            <div id="notificationTable">
-            </div>
+            <div id="notificationTable">';
+                include("../notificationTable.php");
+            echo '</div>
         </div>
     </div>
 

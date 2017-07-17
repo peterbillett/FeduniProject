@@ -17,7 +17,9 @@
 
       if($stmt->rowCount() == 0){
          echo "Failed to edit listing";
-      } else {         
+      } else {     
+         $stmt = $db->prepare("UPDATE item SET lastModifiedTime=now() WHERE itemID=?");
+         $stmt->execute(array($_GET['id']));    
          echo "success";
       }
    }

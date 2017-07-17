@@ -15,6 +15,8 @@
 			$stmt = $db->prepare("UPDATE item SET finished=? WHERE itemID=?");
 			$stmt->execute(array($status, $_GET['id']));
 			if ($stmt->rowCount() > 0){
+				$stmt = $db->prepare("UPDATE item SET lastModifiedTime=now() WHERE itemID=?");
+         		$stmt->execute(array($_GET['id'])); 
 				echo "success";
 			} else {
 				echo "Error: Could not update the items status";
