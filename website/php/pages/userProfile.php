@@ -30,7 +30,7 @@
                         
                 $stmt = $db->prepare('SELECT itemID, name, finished, category FROM item WHERE FKClient = ? ORDER BY endtime DESC');
                 $stmt->execute(array($_SESSION['userID']));
-                $listingCount = $stmt->rowCount(); 
+                $listingCount = $stmt->rowCount();
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($results as $row) {
                     if ($row['category'] == "Request") {
@@ -82,7 +82,7 @@
                 echo '<div class="panel-group">
                     <div class="panel panel-default">';
 
-                        if ($availableCount > 0 & $wantedCount > 0 & $finishedCount > 0){
+                        if ($listingCount > 0){
                             echo '<div class="progress">';
                             if ($availableCount > 0 ) {
                                 echo '<div class="progress-bar progress-bar-success" role="progressbar" style="width:'.$availablePercent.'%">
@@ -98,8 +98,9 @@
                                 echo '<div class="progress-bar progress-bar-danger" role="progressbar" style="width:'.$finishedPercent.'%">
                                     &#8203;
                                 </div>';
-                            }                                        
-                            echo '</div>
+                            }
+                                                               
+                        echo '</div>
                         <h4 class="panel-title">
                             Available: '.$availableCount.' | Wanted: '.$wantedCount.' | Finished: '.$finishedCount.'
                         </h4>';
@@ -166,7 +167,7 @@
                     echo '</div><br>
                 </div>
             </div>
-            <div id="notificationTable">';
+            <div id="notificationTable" class="testing table-padding">';
                 include("../notificationTable.php");
             echo '</div>
         </div>

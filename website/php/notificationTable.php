@@ -8,12 +8,12 @@
 		$updateClientSeen = $db->prepare("UPDATE client SET lastseen=now() WHERE clientID=?");
 	    $updateClientSeen->execute(array($_SESSION['userID']));
 
-		$getNotifications = $db->prepare('SELECT itemID, name, finished, category FROM item A INNER JOIN notification B ON A.FKTagID = B.FKTag WHERE B.FKClient = ? AND finished < 2 ORDER BY itemID DESC LIMIT 25');
-        $getNotifications->execute(array($_SESSION['userID']));
+		$getNotifications = $db->prepare('SELECT itemID, name, finished, category FROM item A INNER JOIN notification B ON A.FKTagID = B.FKTag WHERE B.FKClient = ? AND finished < 2 AND A.FKclient != ? ORDER BY endtime ASC LIMIT 25');
+        $getNotifications->execute(array($_SESSION['userID'],$_SESSION['userID']));
         $notificationResults = $getNotifications->fetchAll(PDO::FETCH_ASSOC);
 		echo '<div class="panel-group">
 	        <div class="panel panel-default">
-				<div class="panel-heading testing" data-toggle="collapse" href="#collapseNotifications">
+				<div class="panel-heading" data-toggle="collapse" href="#collapseNotifications">
 	                <h4 class="panel-title">
 	                    <a class="accordion-toggle" data-parent="#panel-group">Your notifications</a>
 	                </h4>
@@ -35,7 +35,6 @@
 	                echo'</ul>
 	            </div>               
 	        </div>
-	    </div>
-	    </div>';
+	    </div><br>';
 	}
 ?>

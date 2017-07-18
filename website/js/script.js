@@ -12,9 +12,12 @@ $(function () {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("navBar").innerHTML = this.responseText;
 			$('#datetimepicker1').datetimepicker({
-				sideBySide: true
+				sideBySide: true,
+				minDate: moment().format("YYYY-MM-DD"),
+				defaultDate: moment().format("YYYY-MM-DD")
 			});
 			document.getElementById("loadingBar").style.display = "none";
+			
 		}
 	};
 	xmlhttpTEST.open("GET", "/php/navBar.php", true);
@@ -60,7 +63,7 @@ function setupAutoRefresh() {
 		} else {
 			clearInterval(autoRefreshInterval);
 		}
-	}, 5000);
+	}, 180000);
 }
 
 
@@ -340,15 +343,23 @@ function checkAccountCreationSuccess() {
 function joinVolunteerGroup() {
 	document.getElementById("volOrgJoinMessage").innerHTML = "";
 	organisationIDToLink = document.getElementById("volOrgList").value;
+	organisationSelectID = document.getElementById("volOrgList");
+	organisationName = organisationSelectID.options[organisationSelectID.selectedIndex].text;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			if (this.responseText.substring(0,5) != "Error") {
-				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal(' + organisationIDToLink + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li></ul>';
-				$('#modal-createVol').modal('hide');
+			console.log(this.responseText);
+			if (this.responseText == "success") {
+				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><a class="no-button no-select-link" onclick="getOrganisationModal(' + organisationIDToLink + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</a></a></li></ul>';
+				document.getElementById("volOrgJoinMessage").innerHTML = "<p>You have joined "+organisationName+".</p><p>Loading organisation page...</p>";
+				getOrganisationModal(organisationIDToLink);
+				setTimeout(function () {
+					$('#modal-joinVol').modal('hide');
+					$('#modal-modalDetails').modal('show');
+					document.getElementById("volOrgJoinMessage").innerHTML = "";					
+			    }, 2000);				
 			} else {
 				document.getElementById("volOrgJoinMessage").innerHTML = this.responseText;
-				console.log("FAILED");
 			}			
 		}
 	}
@@ -365,7 +376,7 @@ function createVolunteerGroup() {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText.substring(0,5) != "Error") {
-				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal(' + this.responseText + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li></ul>';
+				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><a class="no-button no-select-link" onclick="getOrganisationModal(' + this.responseText + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</a></a></li></ul>';
 				$('#modal-createVol').modal('hide');
 			} else {
 				document.getElementById("volOrgCreateMessage").innerHTML = this.responseText;
@@ -448,7 +459,8 @@ function createNewListing() {
 	var createDescription = document.getElementById("createDescription");
 	var createTagID = document.getElementById("createTagID");
 	var createCategory = document.getElementById("createCategory");
-	var createEndtime = new Date();//document.getElementById("createEndtime"); temp hard code
+	var createEndtime = document.getElementById("createDateTime");
+	console.log(createEndtime.value);
 
 	if (createTitle.value != "" & createDescription.value != "" & createTagID.value != "" & createCategory.value != "" & createEndtime.value != ""){
 		document.getElementById("createListingMessage").innerHTML = "Creating listing...";
@@ -481,6 +493,7 @@ function createNewListing() {
 		document.getElementById("createNewListingButton").disabled = false;
 	}
 }
+
 
 function clearModal(callback){
 	callback(getListingsPage('php/itemGetAll.php'));
@@ -699,8 +712,8 @@ function createItemList(obj, callback) {
 
 function createItemTable(itemObj, callback){
 	var newItemTable = "";
-	newItemTable += '<div class="table-responsive table-padding">';
-		newItemTable += '<button type="button" class="table-button" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
+	newItemTable += '<div class="table-responsive table-padding cursorPointer">';
+		newItemTable += '<a type="button" class="table-button" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
 	      	newItemTable += '<table class="table table-striped table-bordered table-hover">';
 	      	
 		      	newItemTable += '<tbody>';
@@ -735,7 +748,7 @@ function createItemTable(itemObj, callback){
 		      	newItemTable += '</tbody>';
 		      	
 	      	newItemTable += '</table>';
-      	newItemTable += '</button>';
+      	newItemTable += '</a>';
   	newItemTable += '</div>';
   	callback(newItemTable);
 }
@@ -792,8 +805,8 @@ function createOrganisationList(obj, callback){
 
 function createOrganisationTable(organisationObj, callback){
 	var newOrganisationTable = "";
-	newOrganisationTable += '<div class="table-responsive table-padding" >';
-	newOrganisationTable += '<button type="button" class="table-button" onclick="getOrganisationModal(' + organisationObj.groupID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
+	newOrganisationTable += '<div class="table-responsive table-padding cursorPointer">';
+	newOrganisationTable += '<a type="button" class="table-button" onclick="getOrganisationModal(' + organisationObj.groupID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
   	newOrganisationTable += '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
   	newOrganisationTable += '<thead>';
   	newOrganisationTable += '<tr><td><b>' + organisationObj.name + '</b></td></tr>';
@@ -808,7 +821,7 @@ function createOrganisationTable(organisationObj, callback){
   	newOrganisationTable += '<a>Read more...</a></td></tr>';
   	newOrganisationTable += '</tbody>';
   	newOrganisationTable += '</table>';
-  	newOrganisationTable += '</button>';
+  	newOrganisationTable += '</a>';
   	newOrganisationTable += '</div>';
   	callback(newOrganisationTable);
 }
@@ -821,35 +834,35 @@ function createChangePageButtons(pageType,currentPage,maxPage,callback){
 
 	if (maxPage > 1){
 		pageButtons += '<div id="organisationButton" class="listingButton testing">';
-		pageButtons += '<ul class="pagination pagination-lg">';
+		pageButtons += '<ul class="pagination pagination-sm">';
 
 		//If it is the first page then put up to the next 4 pages (If more than maxButtons pages then make the 5th page the last page)
 		if (currentPage == 1){
-			pageButtons += '<li><button disabled>1</button></li>';
+			pageButtons += '<li class="active"><a>1</a></li>';
 			if (maxPage > maxButtons){
 				for(var i = 2; i < maxButtons; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
 				}
-				pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</button></li>';
+				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</a></li>';
 			} else {
 				for(var i = 2; i <= maxPage; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
 				}
 			}
 		
 		//If it is the last page then put up to the previous 4 pages (If more than maxButtons pages then make the 1st page the first page)
 		} else if(currentPage == maxPage) {
-			pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</button></li>';
+			pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</a></li>';
 			if (maxPage > maxButtons){
 				for(var i = currentPage - (maxButtons-2); i < currentPage; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
 				}
 			} else {
 				for(var i = 2; i < maxPage; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
 				}
 			}
-			pageButtons += '<li><button disabled>' + currentPage + '</button>';
+			pageButtons += '<li class="active"><a>' + currentPage + '</a>';
 
 		//If the page is inbetween 1-maxPage then put up to maxButtons button (including first page and last page)
 		} else {
@@ -865,22 +878,22 @@ function createChangePageButtons(pageType,currentPage,maxPage,callback){
 					upperButtons = buttonSplit - (maxPage - currentPage - 1 - buttonSplit);
 				}
 
-				pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</button></li>';
+				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</a></li>';
 				for(var i = currentPage - upperButtons; i < currentPage; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</button></li>';
+					pageButtons += '<li class="cursorPointer" ><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</a></li>';
 				}
-				pageButtons += '<li><button disabled>' + currentPage + '</button>';
+				pageButtons += '<li class="active"><a>' + currentPage + '</a>';
 				for(var i = currentPage + 1; i <= currentPage + lowerButtons; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</button></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</a></li>';
 				}
-				pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</button></li>';
+				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</a></li>';
 			} else {
 				for(var i = 1; i < currentPage; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
 				}
-				pageButtons += '<li><button disabled>' + currentPage + '</button>';
+				pageButtons += '<li class="active"><a>' + currentPage + '</a>';
 				for(var i = currentPage + 1; i <= maxPage; i++){
-					pageButtons += '<li><button onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</button></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
 				}
 			}
 			

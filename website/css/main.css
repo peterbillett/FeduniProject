@@ -11,6 +11,10 @@
 	display: none;
 }
 
+.modalHeadings {
+	word-wrap: break-word;
+}
+
 .table-userListings {
   	display: block;
   	overflow-y: scroll;

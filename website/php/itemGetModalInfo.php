@@ -21,7 +21,7 @@
     if ($stmtItem->rowCount() == 1) {
         echo '<div class="modal-header background-color-blue">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><modalTitle>&times;</modalTitle></button>
-        <modalTitle class="myModalLabel">'.$itemResult['name'].'</modalTitle>
+        <modalTitle class="modalHeadings">'.$itemResult['name'].'</modalTitle>
         </div>';
 
         echo '<div class="modal-body">';

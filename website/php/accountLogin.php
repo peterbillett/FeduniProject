@@ -20,6 +20,13 @@
       $stmt->execute(array($result['clientID']));
       echo "success";
    }else {
-      echo "The email or password was incorrect";
+      echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+         </button>
+            <p>Opps! The email or password was incorrect.</p>
+            <h4>Please check your details then try again.</h4>
+            <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+      </div>';
    }
 ?>
