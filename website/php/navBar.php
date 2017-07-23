@@ -14,7 +14,7 @@
 		      		</div>
 
 		      		<div class="modal-body testing">
-		      			<label>Volunteer Organisation Name: <select id="volOrgList">';
+		      			<label>Volunteer Organisation Name: <select id="volOrgList" class="form-control removeSelectWidth">';
 							foreach($db->query('SELECT name, groupID FROM organisation ORDER BY name ASC') as $row) {
 								echo '<option value="'.$row['groupID'].'">'.$row['name'].'</option>';
 							}
@@ -44,8 +44,8 @@
 		      		</div>
 
 			      	<div class="modal-body testing">
-						<label>Volunteer Organisation Name:<br><input type="text" id="volOrgName" required placeholder="Enter a valid name"></label>
-						<br><label>Information: <br><input type="text" id="volOrgInformation" required placeholder="Enter organisation info"></label>
+						<label>Volunteer Organisation Name:<br><input type="text" class="form-control" id="volOrgName" required placeholder="Enter a valid name"></label>
+						<br><label>Information: <br><input type="text" class="form-control" id="volOrgInformation" required placeholder="Enter organisation info"></label>
 					  	<br>
 					  	<span id="volOrgCreateMessage"></span>
 			      	</div>
@@ -71,10 +71,10 @@
 		    </div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getIndexPage()"><span class="glyphicon glyphicon-home"></span></a></button></li>
+					<li class="no-select-link pointer" onclick="getIndexPage()"><a class="no-select-link"><span class="glyphicon glyphicon-home" title="Link to homepage"></span></a></li>
 					<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Volunteer Organisations<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationsPage()">Volunteer Organisation List</button></a></li>';
+							<li class="no-select-link pointer" onclick="getOrganisationsPage()"><a class="no-select-link">Volunteer Organisation List</a></li>';
 
 							//Checks to see if the user is logged in (Only logged in users can create Volunteer Groups)
 							if (isset($_SESSION['userID'])){
@@ -82,9 +82,9 @@
 						   		$stmt->execute(array($_SESSION['userID']));
 						   		$stmt = $stmt->fetch(PDO::FETCH_ASSOC); 
 						      	if ($stmt['FKgroup'] != ""){
-						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</button></a></li>';
+						      		echo '<li id="volOrgMenu" class="no-select-link pointer" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails"><a class="no-select-link">Your Volunteer Group</a></li>';
 						      	} else {
-						      		echo '<li id="volOrgMenu" class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" data-toggle="modal" data-target="#modal-joinVol">Create/Join Volunteer Group</button></a></li>';
+						      		echo '<li id="volOrgMenu" class="no-select-link pointer" data-toggle="modal" data-target="#modal-joinVol"><a class="no-select-link">Create/Join Volunteer Group</a></li>';
 						      	}
 						    }
 							echo '</ul>
@@ -92,14 +92,27 @@
 							
 					echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Listings<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php'".')">All</button></a></li>
-							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php?type=Request'".')">Requesting</button></a></li>
-							<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getListingsPage('."'php/itemGetAll.php?type=Supplying'".')">Supplying</button></a></li>
+							<li class="no-select-link pointer" onclick="getListingsPage('."'php/itemGetAll.php'".')"><a class="no-select-link">All</a></li>
+							<li class="no-select-link pointer" onclick="getListingsPage('."'php/itemGetAll.php?type=Request'".')"><a class="no-select-link">Requesting</a></li>
+							<li class="no-select-link pointer" onclick="getListingsPage('."'php/itemGetAll.php?type=Supplying'".')"><a class="no-select-link">Supplying</a></li>
 						</ul>
 					</li>';
 
 					if (isset($_SESSION['userID'])){
-						echo '<li class="no-select-link"><a href="" class="no-select-link" data-toggle="modal" data-target="#modal-createListing">Create Listing</a></li>
+						echo '<li class="no-select-link pointer"><a class="no-select-link" data-toggle="modal" data-target="#modal-createListing">Create Listing</a></li>';
+					} else {
+						echo '<li class="no-select-link pointer" onclick="loginRequiredMessage(true)" data-toggle="modal" data-target="#modal-login"><a class="no-select-link">Create listing</a></li>';
+					}
+
+					echo '<li class="no-select-link pointer" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/FAQ.php'".')"><a class="no-select-link">FAQ</a></li>';
+
+					if (isset($_SESSION['userID'])){
+						echo '<li class="dropdown pointer"><a class="dropdown-toggle" data-toggle="dropdown">Your Account<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="no-select-link pointer" onclick="getProfilePage()"><a class="no-select-link">Your Profile</a></li>
+								<li class="no-select-link pointer" onclick="logout()"><a class="no-select-link">Logout</a></li>
+							</ul>
+						</li>
 
 						<!-- Create Listing Modal -->
 						<div class="modal fade" id="modal-createListing">
@@ -113,17 +126,18 @@
 
 						      		<div class="modal-body testing">
 						      			
-										<input type="text" id="createTitle" required placeholder="Enter lisiting name..."></input>
-										<br><textarea type="text" placeholder="Enter description..." id="createDescription" rows="4" cols="30"></textarea><br>
-										<label>Tag: <select id="createTagID">';
+										<input type="text" class="form-control" id="createTitle" required placeholder="Enter lisiting name..."></input><br>
+										<textarea type="text" class="form-control" placeholder="Enter description..." id="createDescription" rows="4" cols="30"></textarea><br>
+										<label>Tag: <select id="createTagID" class="form-control removeSelectWidth">';
 
 										foreach($db->query('SELECT * FROM tag') as $row) {
 										    echo '<option value="'.$row['tagID'].'">'.$row['name'].'</option>';
 										}
 
 										echo '</select></label>
+
 										<label>Category: 
-											<select id="createCategory">
+											<select id="createCategory" class="form-control removeSelectWidth">
 												<option value="Request">Request</option>
 												<option value="Supplying">Supplying</option>
 											</select>
@@ -148,24 +162,10 @@
 
 							    </div>
 							</div>
-						</div>
-						';
-					} else {
-						echo '<li class="no-select-link"><a href="" onclick="loginRequiredMessage(true)" class="no-select-link" data-toggle="modal" data-target="#modal-login">Create listing</a></li>';
-					}
-
-					echo '<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="sendOffPHP('."'pageDetails'".', '."'php/pages/FAQ.php'".')">FAQ</button></a></li>';
-
-					if (isset($_SESSION['userID'])){
-						echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Your Account<span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="getProfilePage()">Your Profile</button></a></li>
-								<li class="no-select-link"><a class="no-select-link"><button class="no-button no-select-link" onclick="logout()">Logout</button></a></li>
-							</ul>
-						</li>';
+						</div>';
 					}
 					else{
-                        echo '<li class="no-select-link"><a href="" onclick="loginRequiredMessage(false)" class="no-select-link" data-toggle="modal" data-target="#modal-login">Login</a></li>
+                        echo '<li class="no-select-link pointer" onclick="loginRequiredMessage(false)" data-toggle="modal" data-target="#modal-login"><a class="no-select-link">Login</a></li>
 
 						<!-- Login Modal -->
 						<div class="modal fade" id="modal-login">
@@ -179,10 +179,10 @@
 
 						      		<div class="modal-body testing">
 										<label>Email: </label>
-										<br><input type="email" id="loginEmail" placeholder="Enter email" required ><br />
+										<br><input type="email" class="form-control" id="loginEmail" placeholder="Enter email" required ><br />
 										<br>
 										<label>Password: </label>
-										<br><input type="password" id="loginPassword" required placeholder="Enter password"><br />
+										<br><input type="password" class="form-control" id="loginPassword" required placeholder="Enter password"><br />
 									  	<br><button class="btn btn-primary" onclick="checkLoginSuccess()">Login</button>
 										<br><span id="loginMessage"></span>
                                     </div>
@@ -208,19 +208,19 @@
 
 							      	<div class="modal-body testing">
 										<label>Email</label>
-										<br><input type="email" id="newEmail" required placeholder="Enter a valid email address"><br/>
+										<br><input type="email" class="form-control" id="newEmail" required placeholder="Enter a valid email address"><br/>
 										<br>
 										<label>Password</label>
-										<br><input type="password" id="newPassword" required placeholder="Enter password"><br/>
+										<br><input type="password" class="form-control" id="newPassword" required placeholder="Enter password"><br/>
 										<br>
 										<label>Confirm Password</label>
-										<br><input type="password" id="newConfirm" required placeholder="Re-enter password"><br/>
+										<br><input type="password" class="form-control" id="newConfirm" required placeholder="Re-enter password"><br/>
 										<br>
 										<label>First name</label>
-										<br><input type="text" id="newFirstName" required placeholder="Enter your first name"><br/>
+										<br><input type="text" class="form-control" id="newFirstName" required placeholder="Enter your first name"><br/>
 										<br>
 										<label>Last name</label>
-										<br><input type="text" id="newLastName" required placeholder="Enter your last name"><br/>
+										<br><input type="text" class="form-control" id="newLastName" required placeholder="Enter your last name"><br/>
 										<br><button class="btn btn-primary" onclick="checkAccountCreationSuccess()">Submit</button>
 									  	<br><span id="accountCreationMessage"></span>
 							      	</div>
@@ -232,8 +232,7 @@
 
 						    	</div>
 						  	</div>
-						</div>		
-                        ';
+						</div>';
 					}
 					
 				echo '</ul>

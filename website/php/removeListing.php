@@ -11,7 +11,13 @@
       $stmt = $db->prepare("SELECT itemID FROM item WHERE FKclient=? AND itemID=?");
       $stmt->execute(array($_SESSION['userID'],$_GET['id']));
       if($stmt->rowCount() == 0){
-         echo "You can not remove someone else's listing";
+         echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+               </button>
+                  <p>You can not remove someone els'."'".'s listing</p>
+                  <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+            </div>';
       }
       else{
          $stmt = $db->prepare("DELETE FROM item WHERE itemID=:id");
@@ -21,7 +27,13 @@
             echo "success";
          }
          else{
-            echo "Failed to remove listing";
+            echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+               </button>
+                  <p>Failed to remove listing</p>
+                  <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+            </div>';
          }
       }
    }

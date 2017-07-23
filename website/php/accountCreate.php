@@ -16,7 +16,13 @@
 	if($stmt->rowCount() == 1)
 	{
 		 // Refuse the account creation
-		echo "An account already exists for that email address";
+		echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+              <p>An account already exists for that email address</p>
+              <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+        </div>';
 	}
 	else
 	{
@@ -35,7 +41,13 @@
 		else
 		{
 			// Notifies the user of the failure
-			echo ("There was an issue creating your account");
+			echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+               </button>
+                  <p>There was an issue creating your account</p>
+                  <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+            </div>';
 		}
 	}
 	

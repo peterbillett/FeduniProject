@@ -1,10 +1,25 @@
-.topnav, Shtml, body, div, span, h2, h3, h4, h5, h6, p, a, img, form, label, table, tr, th, td, article, footer, header, menu, nav, section, audio, video {
+.topnav, html, body, div, span, h2, h3, h4, h5, h6, p, a, img, form, label, table, tr, th, td, article, footer, header, menu, nav, section, audio, video {
 	margin: 0;
 	padding: 0;
 	border: 0;
 	font-size: 16px;
 	font-family: Arial;
 	vertical-align: baseline;
+}
+
+html {
+	overflow-y:scroll;
+}
+
+.notificationUpdateTime {
+	text-align: right;
+	font-weight: normal;
+	font-size: 12px; 
+}
+
+.removeSelectWidth{
+	width: auto;
+	display: inline-block;
 }
 
 .br-filter{
@@ -253,6 +268,9 @@ footer{
   	overflow-y: auto;
 }
 
+.noUnderline:hover {
+	text-decoration: none;
+}
 
 #searchValue {
     width: 100%; /* Full-width */
@@ -518,6 +536,9 @@ footer{
 	cursor:pointer;
 }
 
+.pointer {
+	cursor:pointer;
+} 
 
 
 
@@ -810,6 +831,16 @@ footer{
 
     #wrapper.toggled #page-content-wrapper {
         margin-right: 0;
+    }
+
+    #wrapper.toggled .dontHideBadge {
+    	visibility:visible;
+    	position: static;
+    }
+
+    #wrapper .dontHideBadge {
+    	visibility:visible;
+    	position: static;
     }
 }
 

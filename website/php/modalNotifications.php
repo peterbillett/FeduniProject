@@ -17,7 +17,9 @@
 		        	<button class="btn btn-primary" onclick="updateNotifications()">Update Notifications</button>
 		      	</div>';
 			} else {
-				echo 'YOU MUST BE LOGGED IN TO UPDATE YOUR NOTIFICATIONS
+				echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+	                <p>YOU MUST BE LOGGED IN TO UPDATE YOUR NOTIFICATIONS</p>
+	            </div>
 				</div>
 		      	<div class="modal-footer testing">
 		        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

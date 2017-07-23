@@ -35,7 +35,9 @@
       ';
     }
     else{
-      echo "<b>404 - Organisation not found</b>";
+      echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+        <p>404 - Organisation not found</p>
+      </div>';
     }
    echo'</div>';
 

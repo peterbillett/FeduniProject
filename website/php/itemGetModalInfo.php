@@ -1,5 +1,6 @@
 <?php
 	include("config.php");
+    include("updateItemFinished.php");
 	session_start();
 
     $stmtItem = $db->prepare("SELECT client.clientFirstName, client.clientLastName, client.email, item.* FROM client, item WHERE client.clientID = item.FKclient AND item.itemID = ?");
@@ -9,6 +10,8 @@
     $stmtOrg = $db->prepare("SELECT organisation.groupID, organisation.name FROM organisation WHERE groupID=?");
     $stmtOrg->execute(array($itemResult['organisation']));
     $organisationResult = $stmtOrg->fetch(PDO::FETCH_ASSOC);
+
+
 
    //For each item create table using name, description and itemID
 	echo '<div class="modal-dialog">
@@ -88,12 +91,13 @@
         }
 
         //Item description
-        echo '<tr><td colspan="2"><b>Description: </b>'.$itemResult['description'].'</td></tr>';
-        echo '</tbody>';
-        echo '</table>';
-        echo '<div class="testing" id="itemInfoMessage"></div>';
-        echo '</div>'; 
-        echo '</div>';
+        echo '<tr><td colspan="2"><b>Description: </b>'.$itemResult['description'].'</td></tr>
+        </tbody>
+        </table>
+        <button type="button" class="btn btn-default testing" data-dismiss="modal" aria-hidden="true"">Close window</button>
+        <div class="testing" id="itemInfoMessage"></div>
+        </div>
+        </div>';
 
         //Editing details
         if (isset($_SESSION['userID']) & $stmtItem->rowCount() == 1) {
@@ -106,23 +110,19 @@
                 </div>
 
                 <div class="modal-body testing">
-                <label>Title<input type="text" id="newTitle" required value="'.$itemResult['name'].'" placeholder="Lisiting name..."><br/></label>
-                <br>
+                <input type="text" class="form-control" id="newTitle" required value="'.$itemResult['name'].'" placeholder="Enter lisiting name..."></input><br>
+                <textarea type="text" class="form-control" placeholder="Enter description..." id="newDescription" required rows="4" cols="30">'.$itemResult['description'].'</textarea><br>
 
-                <label>Description
-                <input type="text" id="newDescription" required value="'.$itemResult['description'].'" placeholder="Enter description..."><br/></label>
-                <br>
-
-                <label>Type
-                <select id="newCategory">';
-                if ($itemResult['category'] == "Request") {
-                    echo '<option selected="selected" value="Request">Request</option>
-                    <option value="Supplying">Supplying</option>';
-                } else {
-                    echo '<option value="Request">Request</option>
-                    <option selected="selected" value="Supplying">Supplying</option>';
-                }
-                echo '</select>
+                <label>Category: 
+                    <select class="form-control removeSelectWidth" id="newCategory">';
+                        if ($itemResult['category'] == "Request") {
+                            echo '<option selected="selected" value="Request">Request</option>
+                            <option value="Supplying">Supplying</option>';
+                        } else {
+                            echo '<option value="Request">Request</option>
+                            <option selected="selected" value="Supplying">Supplying</option>';
+                        }
+                    echo '</select>
                 </label>
 
                 <br>
@@ -145,6 +145,7 @@
         <h4 class="myModalLabel">Item not found</h4>
         </div>
         <div class="modal-body"></div>
+            <button type="button" class="btn btn-default testing" data-dismiss="modal" aria-hidden="true"">Close window</button>
         </div>'; 
     }
 

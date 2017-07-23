@@ -24,13 +24,31 @@
 					$stmt -> execute (array($insertId, $_SESSION['userID']));
 					echo $insertId;	
 				} else {
-					echo "Error: Failed to create the new volunteer group";	
+					echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+		               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		                  <span aria-hidden="true">×</span>
+		               </button>
+		                  <p>Error: Failed to create the new volunteer group</p>
+		                  <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+		            </div>';
 				}
 			}
 		} else {
-			echo "Error: The message received was not a POST";	
+			echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+               </button>
+                  <p>Error: The message received was not a POST</p>
+                  <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+            </div>';
 		}
 	} else {
-		echo "Error: You must be logged in to create an volunteer group";
+		echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+              <p>Error: You must be logged in to create an volunteer group</p>
+              <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+        </div>';
 	}
 ?>

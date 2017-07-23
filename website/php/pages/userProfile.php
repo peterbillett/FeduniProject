@@ -11,22 +11,45 @@
     $availableSupplyingCount = 0;
     $wantedSupplyingCount = 0;
     $finishedSupplyingCount = 0;
-
+    
     echo '<div id="wrapper">
         <div id="sidebar-wrapper" class="sideMenuHeight" unselectable="on" onselectstart="return false;" onmousedown="return false;">
             <ul class="sidebar-navSide" style="margin-left:0; color:white;">
                 <br>
                 <li class="sideMenuMainItem cursorPointer"><a id="menu-toggle" data-toggle="tooltip" data-html="true" title="Toggles sidemenu"><i class="fa fa-cog" aria-hidden="true"></i><span class="sideMenuItem">SETTINGS MENU</span></a></li>
-                <li class="sideMenuSecondItem cursorPointer"><a onclick="sendOffPHP('."'modalDetails'".', '."'/php/modalUpdatePassword.php'".')" title="Update your password" data-toggle="modal" data-target="#modal-modalDetails" class="no-select-link"><i class="fa fa-key" aria-hidden="true"></i> <span class="sideMenuSize">Update Password</span></a></li>
-                <li class="cursorPointer"><a title="Change which organisation you are linked to" class="no-select-link" data-toggle="modal" data-target="#modal-joinVol"><i class="fa fa-users" aria-hidden="true"></i> <span class="sideMenuSize">Change organisation</span></a></li>
-                <li class="cursorPointer"><a onclick="sendOffPHP('."'modalDetails'".', '."'/php/modalNotifications.php'".')" title="Change your notification settings" data-toggle="modal" data-target="#modal-modalDetails" class="no-select-link"><i class="fa fa-envelope" aria-hidden="true"></i> <span class="sideMenuSize">Notifications</span></a></li>
+                <li class="sideMenuSecondItem cursorPointer"><a onclick="getPasswordUpdater()" title="Update your password" data-toggle="modal" data-target="#modal-modalDetails" class="no-select-link"><i class="fa fa-key" aria-hidden="true"></i> <span class="sideMenuSize">Update Password</span></a></li>';
+                
+                $stmt = $db->prepare('SELECT * FROM client WHERE clientID = ? AND FKgroup IS NOT NULL');
+                $stmt->execute(array($_SESSION['userID']));
+                if($stmt->rowCount() > 0 ) {
+                    echo '<li class="cursorPointer"><a onclick="sendOffPHP('."'modalDetails'".', '."'/php/modalLeaveOrganisation.php'".')" title="Leave your organisation"  data-toggle="modal" data-target="#modal-modalDetails" class="no-select-link"><i class="fa fa-users" aria-hidden="true"></i> <span class="sideMenuSize">Leave organisation</span></a></li>';
+                } else {
+                    echo '<li class="cursorPointer"><a title="Join an organisation" class="no-select-link" data-toggle="modal" data-target="#modal-joinVol"><i class="fa fa-users" aria-hidden="true"></i> <span class="sideMenuSize">Join organisation</span></a></li>';
+                }
+                echo '<li class="cursorPointer"><a onclick="sendOffPHP('."'modalDetails'".', '."'/php/modalNotifications.php'".')" title="Change your notification settings" data-toggle="modal" data-target="#modal-modalDetails" class="no-select-link"><i class="fa fa-envelope" aria-hidden="true"></i> <span class="sideMenuSize">Notifications</span></a></li>
                 <li class="cursorPointer"><a onclick="sendOffPHP('."'modalDetails'".', '."'/php/modalDeleteAccount.php'".')" title="Delete your account" data-toggle="modal" data-target="#modal-modalDetails" class="no-select-link"><i class="fa fa-user-times" aria-hidden="true"></i> <span class="sideMenuSize">Delete Account</span></a></li>              
             </ul>
         </div>
 
         <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="testing table-padding"><b>Your Listings<b><br>';
+            <div class="container-fluid">';
+
+                /*
+                $stmt = $db->prepare("SELECT FKgroup FROM client WHERE clientID = ?");
+                $stmt->execute(array($_SESSION['userID']));
+                if ($stmt->rowCount() > 0){
+                    $stmt = $stmt->fetch(PDO::FETCH_ASSOC); 
+                    echo '<br><div class="panel-group">
+                        <div class="panel panel-default">
+                            <ul class="list-group">                                        
+                                <li class="list-group-item cursorPointer testing" style="background-color:#312A25; color:white" <button type="button" class="table-button" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails">Your organisation</button></li>
+                            </ul>
+                        </div>
+                    </div><br>';
+                }
+                */
+
+                echo' <div class="testing table-padding"><b>Your Listings<b><br>';
                         
                 $stmt = $db->prepare('SELECT itemID, name, finished, category FROM item WHERE FKClient = ? ORDER BY endtime DESC');
                 $stmt->execute(array($_SESSION['userID']));
@@ -102,10 +125,10 @@
                                                                
                         echo '</div>
                         <h4 class="panel-title">
-                            Available: '.$availableCount.' | Wanted: '.$wantedCount.' | Finished: '.$finishedCount.'
+                            Available: <span class="badge dontHideBadge">'.$availableCount.'</span> | Wanted: <span class="badge dontHideBadge">'.$wantedCount.'</span> | Finished: <span class="badge dontHideBadge">'.$finishedCount.'</span>
                         </h4>';
 
-                         echo '<div class="panel-heading" data-toggle="collapse" href="#collapseRequests">
+                         echo '<div class="panel-heading" unselectable="on" onselectstart="return false;" onmousedown="return false;" data-toggle="collapse" href="#collapseRequests">
                             <h4 class="panel-title">
                                 <a class="accordion-toggle" data-parent="#panel-group">Your requests</a>
                             </h4>
@@ -131,7 +154,7 @@
                             echo'</ul>
                         </div>
 
-                        <div class="panel-heading" data-toggle="collapse" href="#collapseSupplying">
+                        <div class="panel-heading" unselectable="on" onselectstart="return false;" onmousedown="return false;" data-toggle="collapse" href="#collapseSupplying" onclick="changeNotificationCollase()">
                             <h4 class="panel-title">
                                 <a class="accordion-toggle" data-parent="#panel-group">Your supplying</a>
                             </h4>

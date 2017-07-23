@@ -2,15 +2,18 @@
 	include("config.php");
 	session_start();
 
-	//If the user is logged in then link the organisation to the user
 	if(isset($_SESSION['userID'])) {
-		$stmt = $db -> prepare ('UPDATE client SET FKgroup=? WHERE clientID=?');
-		$stmt -> execute (array($_GET['groupID'], $_SESSION['userID']));
+		$stmt = $db -> prepare ('DELETE FROM item WHERE FKclient=?');
+		$stmt -> execute (array($_SESSION['userID']));
+
+		$stmt = $db -> prepare ('DELETE FROM notification WHERE FKclient=?');
+		$stmt -> execute (array($_SESSION['userID']));
+
+		$stmt = $db -> prepare ('DELETE FROM client WHERE clientID=?');
+		$stmt -> execute (array($_SESSION['userID']));
 		
 		if($stmt -> rowCount() > 0) {
-			//Update the users items to include their organisation and return success
-			//$stmt = $db -> prepare ('UPDATE item SET organisation=? WHERE clientID=?');
-			//$stmt -> execute (array($_GET['groupID'], $_SESSION['userID']));
+			session_destroy();
 			echo "success";	
 		} else {
 			//Notify the user of the failure
@@ -18,7 +21,7 @@
                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">×</span>
                </button>
-                  <p>Error: There was an error linking the organisation to your account</p>
+                  <p>Error: There was an error deleting your account</p>
                   <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
             </div>';
 		}
@@ -28,7 +31,7 @@
            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
               <span aria-hidden="true">×</span>
            </button>
-              <p>Error: You must be logged in to link an organisation to your account</p>
+              <p>Error: You must be logged in to delete your account</p>
               <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
         </div>';
 	}

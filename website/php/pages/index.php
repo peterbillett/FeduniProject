@@ -4,6 +4,7 @@
     session_start();
     $firstLoop = true;
 
+    $stmt = $db->exec('UPDATE item SET finished = 2 WHERE endtime < now()');
     $stmtItem = $db->prepare('SELECT itemID, name, description, endtime, organisation FROM item WHERE endtime > NOW() ORDER BY endtime ASC LIMIT 5');
     $stmtItem->execute();
     $itemResult = $stmtItem->fetchAll(PDO::FETCH_ASSOC);
@@ -20,7 +21,7 @@
                         } else {
                             echo '<div class="item">';
                         }
-    	                echo '<button type="button" class="no-button no-select-link" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails">
+    	                echo '<button class="no-button no-select-link" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails" data-keyboard="true">
                 			<span class="modalTitle">'.$row['name'].'</span>';
                             if (strlen($row['description']) > 100) {
                                 echo '<br>'.substr($row['description'],0,97).'...';

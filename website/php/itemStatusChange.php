@@ -19,11 +19,23 @@
          		$stmt->execute(array($_GET['id'])); 
 				echo "success";
 			} else {
-				echo "Error: Could not update the items status";
+				echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+	               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	                  <span aria-hidden="true">×</span>
+	               </button>
+	                  <p>Error: Could not update the items status</p>
+	                  <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+	            </div>';
 			}
 		}
 	} else {
-		echo "Error: You are not logged in";
+		echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+              <p>Error: You are not logged in</p>
+              <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+        </div>';
 	}
 
 ?>

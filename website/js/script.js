@@ -1,7 +1,9 @@
 var currentListingsPage = 1;
-var totalListingsPage = 1;
-var indexData = null;
-var lastItemPage = 0;
+	var totalListingsPage = 1;
+	var indexData = null;
+	var lastItemPage = 0;
+	var notifcationFiltered = null;
+	var isNotificationTableCollapsed = false;
 
 $(function () {
 
@@ -16,8 +18,31 @@ $(function () {
 				minDate: moment().format("YYYY-MM-DD"),
 				defaultDate: moment().format("YYYY-MM-DD")
 			});
-			document.getElementById("loadingBar").style.display = "none";
+			if ($('#modal-login').length) {
+				$('#newPassword').pwstrength({
+				 	common: { usernameField: '#newEmail' },
+			        ui: { showVerdictsInsideProgressBar: true }
+			    });
+				$("#modal-login").keypress(function(event) {
+				    if (event.which == 13) {
+				     	checkLoginSuccess();
+				    } 
+				});
+				$("#modal-AccountCreate").keypress(function(event) {
+				    if (event.which == 13) {
+				     	checkAccountCreationSuccess();
+				    }
+				});
+			}
+			if ($('#modal-createListing').length) {
+				$("#modal-createListing").keypress(function(event) {
+				    if (event.which == 13) {
+				     	createNewListing();
+				    }
+				});
+			}
 			
+			document.getElementById("loadingBar").style.display = "none";
 		}
 	};
 	xmlhttpTEST.open("GET", "/php/navBar.php", true);
@@ -27,9 +52,26 @@ $(function () {
 });
 
 
+function getPasswordUpdater() {
+	waitForCallback('modalDetails', '/php/modalUpdatePassword.php', function(result){
+	    var checkIfPasswordUpdaterIsReady = function(){
+		    if($('#updatePassword').length) {
+		    	$('#updatePassword').pwstrength({
+			        ui: { showVerdictsInsideProgressBar: true }
+			    });
+		    } else {
+		        setTimeout(checkIfPasswordUpdaterIsReady, 1000); //If it is not ready then check again in 1 second
+		    }
+		}
+	    checkIfPasswordUpdaterIsReady();
+    });
+}
+
+
 function getProfilePage() {
 	document.getElementById("loadingBar").style.display = "block";
-	waitForCallback("pageDetails", "php/pages/userProfile.php", function(result){
+	isNotificationTableCollapsed = false;
+	waitForCallback("pageDetails", "php/pages/userProfile.php?collapsed="+isNotificationTableCollapsed, function(result){
 		//Add collapse to sidemenu
 		var checkIfSideMenuIsReady = function(){
 		    if(document.getElementById("pageDetails").innerHTML != "") {
@@ -38,9 +80,10 @@ function getProfilePage() {
 	                e.preventDefault();
 	                $("#wrapper").toggleClass("toggled");
 	            });
+	            var updateDate = new Date();
+				document.getElementById("lastUpdatedTime").innerHTML = "Last updated: " + updateDate.today() + " " + updateDate.timeNow();
 	            setupAutoRefresh();
-		    }
-		    else {
+		    } else {
 		        setTimeout(checkIfSideMenuIsReady, 1000); //If it is not ready then check again in 1 second
 		    }
 		}
@@ -49,16 +92,33 @@ function getProfilePage() {
 }
 
 
+function changeNotificationCollase() {
+	isNotificationTableCollapsed = !isNotificationTableCollapsed
+}
+
+
+Date.prototype.today = function () { 
+    return ((this.getDate() < 10)?"0":"") + this.getDate() +"/"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"/"+ this.getFullYear();
+}
+
+
+Date.prototype.timeNow = function () {
+     return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+}
+
+
 function setupAutoRefresh() {
-	var autoRefreshInterval = setInterval(function(){
+	var autoRefreshInterval = setInterval(function() {
 		if($('#notificationTable').length) {
 			var xmlhttpTEST = new XMLHttpRequest();
 			xmlhttpTEST.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					document.getElementById("notificationTable").innerHTML = this.responseText;
+					var updateDate = new Date();
+					document.getElementById("lastUpdatedTime").innerHTML = "Last updated: " + updateDate.today() + " " + updateDate.timeNow();
 				}
 			};
-			xmlhttpTEST.open("GET", "/php/notificationTable.php", true);
+			xmlhttpTEST.open("GET", "/php/notificationTable.php?collapsed="+isNotificationTableCollapsed, true);
 			xmlhttpTEST.send();
 		} else {
 			clearInterval(autoRefreshInterval);
@@ -67,11 +127,41 @@ function setupAutoRefresh() {
 }
 
 
+function filterNotificationTable(tagToToggle) {
+	if (notifcationFiltered == tagToToggle) {
+		notifcationFiltered = null;
+		$('#collapseNotifications').find('li').each(function() {
+		    $(this).css({"display": ''});
+		});
+		$('#notificationTagFilters').find('b').each(function() {
+		    $(this).css({"color": 'black'});
+		});
+	} else {
+		notifcationFiltered = tagToToggle;
+		$('#collapseNotifications').find('li').each(function() {
+		    if ($(this).attr('id') != tagToToggle) {
+		    	$(this).css({"display": 'none'});
+		    } else { 
+		    	$(this).css({"display": ''});
+		    }
+		});
+		$('#notificationTagFilters').find('b').each(function() {
+			if ($(this).attr('id') != tagToToggle) {
+		    	$(this).css({"color": 'grey'});
+		    } else { 
+		    	$(this).css({"color": 'black'});
+		    }
+		});
+	}
+	
+}
+
+
 function getIndexPage() {
 	document.getElementById("loadingBar").style.display = "block";
-	waitForCallback("pageDetails", "php/pages/index.php", function(result){
+	waitForCallback("pageDetails", "php/pages/index.php", function(result) {
 		//Add swiping to carousel
-		var checkIfCarouselIsReady = function(){
+		var checkIfCarouselIsReady = function() {
 		    if(document.getElementById("pageDetails").innerHTML != "") {
 		    	document.getElementById("loadingBar").style.display = "none";
 		       	$("#text-carousel").swiperight(function() {  
@@ -90,6 +180,43 @@ function getIndexPage() {
 }
 
 
+function deleteAccount() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText.substring(0,21) != '<br><div class="alert') {
+				document.getElementById("deleteAccountMessage").innerHTML = "Account deleted. Reloading site...";
+				location.reload();
+			} else {
+				document.getElementById("deleteAccountMessage").innerHTML = this.responseText;
+			}
+		}
+	};
+	xmlhttp.open("POST", "/php/accountDelete.php", true);
+	xmlhttp.send();
+}
+
+
+function leaveOrganisation() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText.substring(0,21) != '<br><div class="alert') {
+				document.getElementById("leaveOrganisationMessage").innerHTML = "You've left the organisation...";
+				getProfilePage();
+				setTimeout(function () {
+					$('#modal-modalDetails').modal('hide');
+				}, 2000);	
+			} else {
+				document.getElementById("leaveOrganisationMessage").innerHTML = this.responseText;
+			}
+		}
+	};
+	xmlhttp.open("POST", "/php/accountLeaveOrganisation.php", true);
+	xmlhttp.send();
+}
+
+
 function updatePassword() {
 	document.getElementById("passwordUpdateMessage").innerHTML = "";
 	password = document.getElementById("updatePassword").value;
@@ -99,7 +226,7 @@ function updatePassword() {
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				if (this.responseText.substring(0,5) != "Error") {
+				if (this.responseText.substring(0,21) != '<br><div class="alert') {
 					document.getElementById("passwordUpdateMessage").innerHTML = "Password updated";
 				} else {
 					document.getElementById("modalDetails").innerHTML = this.responseText;
@@ -133,12 +260,22 @@ function getListingsPage(listingType) {
 	waitForCallback("pageDetails", "php/pages/listings.php", function(result){
 		var result = '';
 		getTagList(function(obj){
+
 			result = '<option selected="selected" value="">All</option>';
 			Object.keys(obj).forEach(function(k){
 				result += '<option value="' + obj[k].tagID + '">' + obj[k].name + ' (' + obj[k].totalItems + ')</option>';
 	    	});
-			$("#tagFilterList").html(result);
-			console.log(result);
+			
+			var checkIfTagsAreReady = function(){
+			    if($('#tagFilterList').length) {
+			    	$("#tagFilterList").html(result);
+			    }
+			    else {
+			        setTimeout(checkIfTagsAreReady, 1000); //If it is not ready then check again in 1 second
+			    }
+			}
+			checkIfTagsAreReady();
+
 			getAllListings("listingArea",listingType,false);
 			document.getElementById("loadingBar").style.display = "none";
 		});
@@ -176,12 +313,10 @@ function getAllListings(postionID,phpFile,callSearch) {
 
 function sendOffPHP(elementID, phpDetails) {
 	document.getElementById(elementID).innerHTML = '';
-	//document.getElementById("loadingBar").style.display = "block";
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById(elementID).innerHTML = this.responseText;
-			//document.getElementById("loadingBar").style.display = "none";
 		}
 	};
 	xmlhttp.open("GET", phpDetails, true);
@@ -288,6 +423,17 @@ function checkLoginSuccess() {
 }
 
 
+function accountCreationError(errorMessage) {
+	document.getElementById("accountCreationMessage").innerHTML = '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+           	'<span aria-hidden="true">×</span>' +
+        '</button>' +
+           	'<p>'+errorMessage+'</p>' +
+           	'<p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>' +
+    '</div>';
+}
+
+
 function checkAccountCreationSuccess() {
 	document.getElementById("accountCreationMessage").innerHTML = "";
 	email = document.getElementById("newEmail").value;
@@ -299,44 +445,33 @@ function checkAccountCreationSuccess() {
 
 	//Validation
 	if (validateEmail(email) == false) {
-		document.getElementById("accountCreationMessage").innerHTML = "Invalid email address.";
-		return false;
-	}
-	
-	if (validatePassword(password) == false || validatePassword(confirmPassword) == false) {
-		document.getElementById("accountCreationMessage").innerHTML = "Invalid passwords.";
-		return false;
-	}
+		accountCreationError("Invalid email address");
+	} else if (password != confirmPassword) {
+        accountCreationError("Your passwords do not match");
+	} else if (validateEmail(email) == false) {
+        accountCreationError("You can not use your email as your password");
+	} else if (validatePassword(password) == false || validatePassword(confirmPassword) == false) {
+        accountCreationError("Invalid password");
+	} else if (validateName(firstName) == false) {
+        accountCreationError("Invalid first name");
+	} else if (validateName(lastName) == false) {
+        accountCreationError("Invalid last name");
+	} else {
 
-	if (password != confirmPassword) {
-		document.getElementById("accountCreationMessage").innerHTML = "Your passwords do not match.";
-		return false;
+		//Check if login is successful
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				if (this.responseText == "success") {
+					window.location.reload(false);
+				} else {
+					document.getElementById("accountCreationMessage").innerHTML = this.responseText;
+				}			
+			}
+		};
+		xmlhttp.open("GET", "/php/accountCreate.php?email="+email+"&password="+password+"&firstName="+firstName+"&lastName="+lastName, true);
+		xmlhttp.send();
 	}
-
-	if (validateName(firstName) == false) {
-		document.getElementById("accountCreationMessage").innerHTML = "Invalid first name.";
-		return false;
-	}
-
-	if (validateName(lastName) == false) {
-		document.getElementById("accountCreationMessage").innerHTML = "Invalid last name.";
-		return false;
-	}
-
-	//Check if login is successful
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			if (this.responseText == "success") {
-				window.location.reload(false);
-			} else {
-				document.getElementById("accountCreationMessage").innerHTML = this.responseText;
-				return false;
-			}			
-		}
-	};
-	xmlhttp.open("GET", "/php/accountCreate.php?email="+email+"&password="+password+"&firstName="+firstName+"&lastName="+lastName, true);
-	xmlhttp.send();
 }
 
 
@@ -348,16 +483,16 @@ function joinVolunteerGroup() {
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			console.log(this.responseText);
 			if (this.responseText == "success") {
 				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><a class="no-button no-select-link" onclick="getOrganisationModal(' + organisationIDToLink + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</a></a></li></ul>';
 				document.getElementById("volOrgJoinMessage").innerHTML = "<p>You have joined "+organisationName+".</p><p>Loading organisation page...</p>";
+				getProfilePage();
 				getOrganisationModal(organisationIDToLink);
 				setTimeout(function () {
 					$('#modal-joinVol').modal('hide');
 					$('#modal-modalDetails').modal('show');
 					document.getElementById("volOrgJoinMessage").innerHTML = "";					
-			    }, 2000);				
+			    }, 1000);				
 			} else {
 				document.getElementById("volOrgJoinMessage").innerHTML = this.responseText;
 			}			
@@ -375,7 +510,7 @@ function createVolunteerGroup() {
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			if (this.responseText.substring(0,5) != "Error") {
+			if (this.responseText.substring(0,21) != '<br><div class="alert') {
 				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><a class="no-button no-select-link" onclick="getOrganisationModal(' + this.responseText + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</a></a></li></ul>';
 				$('#modal-createVol').modal('hide');
 			} else {
@@ -426,7 +561,7 @@ function getItemModal(itemID) {
 			if (this.responseText == ""){
 				document.getElementById("modalDetails").innerHTML = "There was an error getting the details for this item";
 			} else {
-				document.getElementById("modalDetails").innerHTML = this.responseText;
+				document.getElementById("modalDetails").innerHTML = "<mime type=text/html>"+this.responseText+"</mime>";
 			}			
 		}
 	};
@@ -441,14 +576,20 @@ function getOrganisationModal(organisationID) {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText == ""){
-				document.getElementById("modalDetails").innerHTML = "There was an error getting the details for this item";
+				document.getElementById("modalDetails").innerHTML = "There was an error getting the details for this organisation";
 			} else {
 				document.getElementById("modalDetails").innerHTML = this.responseText;
-			}			
+			}
 		}
 	};
 	xmlhttp.open("GET", "/php/organisationGetModalInfo.php?id="+organisationID, true);
 	xmlhttp.send();
+}
+
+
+function isNormalInteger(str) {
+    var n = Math.floor(Number(str));
+    return String(n) === str && n >= 0;
 }
 
 
@@ -460,42 +601,62 @@ function createNewListing() {
 	var createTagID = document.getElementById("createTagID");
 	var createCategory = document.getElementById("createCategory");
 	var createEndtime = document.getElementById("createDateTime");
-	console.log(createEndtime.value);
-
 	if (createTitle.value != "" & createDescription.value != "" & createTagID.value != "" & createCategory.value != "" & createEndtime.value != ""){
 		document.getElementById("createListingMessage").innerHTML = "Creating listing...";
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				if (this.responseText == "failed") {
-					document.getElementById("createListingMessage").innerHTML = "Failed to create listing";
-					createNewListingButton.disabled = false;
-				} else {
+				if (isNormalInteger(this.responseText)) {
 					var itemNum = this.responseText;
-					clearModal(function(){
-						$('#modal-createListing').modal('hide');
+					document.getElementById("createListingMessage").innerHTML = "Item created. Redirecting you to the item...";
+					document.getElementById("pageDetails").innerHTML = "";
+					listingsPageCallback(function(callback){
 						getItemModal(itemNum);
-						$('#modal-modalDetails').modal('show');
-						createNewListingButton.disabled = false;
-						createTitle.value = "";
-						createDescription.value = "";
-						createTagID.selectedIndex = "0";
-						createCategory.selectedIndex = "0";
-						document.getElementById("createListingMessage").innerHTML = "";
-					});					
+						var checkIfListingPageIsReady = function(){
+						    if(document.getElementById("pageDetails").innerHTML != "") {
+						    	if (lastItemPage > 1){
+									changePageVisibility("itemPage"+lastItemPage,"itemPage1");
+								}
+								$('#modal-createListing').modal('hide');
+								$('#modal-modalDetails').modal('show');
+								setTimeout(function () {
+									createNewListingButton.disabled = false;
+									createTitle.value = "";
+									createDescription.value = "";
+									createTagID.selectedIndex = "0";
+									createCategory.selectedIndex = "0";
+									document.getElementById("createListingMessage").innerHTML = "";
+					    		}, 3000);	
+						    }
+						    else {
+						        setTimeout(checkIfListingPageIsReady, 1000); //If it is not ready then check again in 1 second
+						    }
+						}
+						checkIfListingPageIsReady();
+					});
+				} else {
+					document.getElementById("createListingMessage").innerHTML = this.responseText;
+					createNewListingButton.disabled = false;
 				}			
 			}
 		};
 		xmlhttp.open("GET", "/php/itemCreate.php?title="+createTitle.value+"&tagID="+createTagID.value+"&description="+createDescription.value+"&category="+createCategory.value+"&endtime="+createEndtime.value, true);
 		xmlhttp.send();
 	} else {
-		document.getElementById("createListingMessage").innerHTML = "All fields must be filled out";
+		document.getElementById("createListingMessage").innerHTML = '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+               	'<span aria-hidden="true">×</span>' +
+            '</button>' +
+               	'<p>All fields must be filled out</p>' +
+               	'<p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>' +
+        '</div>';
 		document.getElementById("createNewListingButton").disabled = false;
 	}
 }
 
 
-function clearModal(callback){
+
+function listingsPageCallback(callback){
 	callback(getListingsPage('php/itemGetAll.php'));
 }
 
@@ -531,24 +692,18 @@ function getXMLHttpRequest() {
 function changeStatus(itemID, newItemStatus) {
 	document.getElementById("itemInfoMessage").innerHTML = "";
 	var xmlhttp = getXMLHttpRequest();
-	if (xmlhttp != null) {
-	    xmlhttp.open("GET", "/php/itemStatusChange.php?id="+itemID+"&status="+newItemStatus, true);
-	    xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				if (this.responseText == "success") {
-					getItemModal(itemID);
-					updateItemTable(itemID);
-				} else {
-					console.log(this.responseText);
-					document.getElementById("itemInfoMessage").innerHTML = this.responseText;
-				}			
-			}
+    xmlhttp.open("GET", "/php/itemStatusChange.php?id="+itemID+"&status="+newItemStatus, true);
+    xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText == "success") {
+				getItemModal(itemID);
+				updateItemTable(itemID);
+			} else {
+				document.getElementById("itemInfoMessage").innerHTML = this.responseText;
+			}			
 		}
-	    xmlhttp.send();
 	}
-	else {
-	    console.log("AJAX (XMLHTTP) not supported.");
-	}
+    xmlhttp.send();
 }
 
 
@@ -574,7 +729,6 @@ function removeListing(itemID) {
 
 
 function editListing(itemID) {
-	console.log("FIRED");
 	document.getElementById("itemEditMessage").innerHTML = "";
 	var newDescription = document.getElementById("newDescription");
 	var newTitle = document.getElementById("newTitle");
@@ -713,7 +867,7 @@ function createItemList(obj, callback) {
 function createItemTable(itemObj, callback){
 	var newItemTable = "";
 	newItemTable += '<div class="table-responsive table-padding cursorPointer">';
-		newItemTable += '<a type="button" class="table-button" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
+		newItemTable += '<a type="button" class="table-button noUnderline" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
 	      	newItemTable += '<table class="table table-striped table-bordered table-hover">';
 	      	
 		      	newItemTable += '<tbody>';
@@ -806,7 +960,7 @@ function createOrganisationList(obj, callback){
 function createOrganisationTable(organisationObj, callback){
 	var newOrganisationTable = "";
 	newOrganisationTable += '<div class="table-responsive table-padding cursorPointer">';
-	newOrganisationTable += '<a type="button" class="table-button" onclick="getOrganisationModal(' + organisationObj.groupID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
+	newOrganisationTable += '<a type="button" class="table-button noUnderline" onclick="getOrganisationModal(' + organisationObj.groupID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
   	newOrganisationTable += '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
   	newOrganisationTable += '<thead>';
   	newOrganisationTable += '<tr><td><b>' + organisationObj.name + '</b></td></tr>';
@@ -841,25 +995,25 @@ function createChangePageButtons(pageType,currentPage,maxPage,callback){
 			pageButtons += '<li class="active"><a>1</a></li>';
 			if (maxPage > maxButtons){
 				for(var i = 2; i < maxButtons; i++){
-					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i + '</a></li>';
 				}
-				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</a></li>';
+				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + maxPage) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + maxPage + '</a></li>';
 			} else {
 				for(var i = 2; i <= maxPage; i++){
-					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i + '</a></li>';
 				}
 			}
 		
 		//If it is the last page then put up to the previous 4 pages (If more than maxButtons pages then make the 1st page the first page)
 		} else if(currentPage == maxPage) {
-			pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</a></li>';
+			pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + '1') + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">1</a></li>';
 			if (maxPage > maxButtons){
 				for(var i = currentPage - (maxButtons-2); i < currentPage; i++){
-					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i + '</a></li>';
 				}
 			} else {
 				for(var i = 2; i < maxPage; i++){
-					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i + '</a></li>';
 				}
 			}
 			pageButtons += '<li class="active"><a>' + currentPage + '</a>';
@@ -878,22 +1032,22 @@ function createChangePageButtons(pageType,currentPage,maxPage,callback){
 					upperButtons = buttonSplit - (maxPage - currentPage - 1 - buttonSplit);
 				}
 
-				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + '1') + ',' + (pageType + currentPage) + ')">1</a></li>';
+				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + '1') + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">1</a></li>';
 				for(var i = currentPage - upperButtons; i < currentPage; i++){
-					pageButtons += '<li class="cursorPointer" ><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</a></li>';
+					pageButtons += '<li class="cursorPointer" ><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i +  '</a></li>';
 				}
 				pageButtons += '<li class="active"><a>' + currentPage + '</a>';
 				for(var i = currentPage + 1; i <= currentPage + lowerButtons; i++){
-					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i +  '</a></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i +  '</a></li>';
 				}
-				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + maxPage) + ',' + (pageType + currentPage) + ')">' + maxPage + '</a></li>';
+				pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + maxPage) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + maxPage + '</a></li>';
 			} else {
 				for(var i = 1; i < currentPage; i++){
-					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i + '</a></li>';
 				}
 				pageButtons += '<li class="active"><a>' + currentPage + '</a>';
 				for(var i = currentPage + 1; i <= maxPage; i++){
-					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + (pageType + i) + ',' + (pageType + currentPage) + ')">' + i + '</a></li>';
+					pageButtons += '<li class="cursorPointer"><a onclick="changePageVisibility(' + "'" + (pageType + i) + "'" + ',' + "'" + (pageType + currentPage) + "'" + ')">' + i + '</a></li>';
 				}
 			}
 			
@@ -907,8 +1061,8 @@ function createChangePageButtons(pageType,currentPage,maxPage,callback){
 
 
 function changePageVisibility(newPage,previousPage){
-	previousPage.style.display = "none";
-	newPage.style.display = "block";
+	document.getElementById(previousPage).style.display = "none";
+	document.getElementById(newPage).style.display = "block";
 	activateLazyLoad();
 	window.scrollTo(0, 0);
 }
