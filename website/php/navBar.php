@@ -174,7 +174,7 @@
 								    	</div>';
 								    	
 
-								    	echo '<div class="row" data-toggle="buttons">
+								    	echo '<div class="row trigger" data-toggle="buttons">
 								      		Show location on map:<br>
 								      		<label id="createAddressOrgToggle" class="btn"';
 								       		 	if ($stmt['FKgroup'] == NULL){

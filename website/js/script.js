@@ -40,6 +40,13 @@ $(function () {
 				     	createNewListing();
 				    }
 				});
+				$("input[name='createAddress']").change(function () {
+					if($("input[name='createAddress']:checked").val() == "[Custom]"){
+						document.getElementById("createCustomAdress").style.display = 'block';
+					} else {
+						document.getElementById("createCustomAdress").style.display = 'none';
+					}
+   				});
 			}
 			
 			document.getElementById("loadingBar").style.display = "none";
@@ -607,9 +614,10 @@ function createNewListing() {
 	var createEndtime = document.getElementById("createDateTime");
 	var createPerishable = document.querySelector('input[name="createPerishable"]:checked');
 	var createLinkToOrganisation = document.querySelector('input[name="createLinkToOrganisation"]:checked');
-	var createShowMap = document.querySelector('input[name="createAddress"]:checked');
-	if (createShowMap.value == "[Custom]") {
-		createShowMap = document.getElementById("createCustomAdress");
+	if (document.querySelector('input[name="createAddress"]:checked').value == "[Custom]") {
+		var createShowMap = document.getElementById("createCustomAdress").value;
+	} else {
+		var createShowMap = document.querySelector('input[name="createAddress"]:checked').value;
 	}
 	if (createTitle.value != "" & createDescription.value != "" & createTagID.value != "" & createCategory.value != "" & createEndtime.value != "" & createShowMap.value != ""){
 		document.getElementById("createListingMessage").innerHTML = "Creating listing...";
@@ -650,7 +658,7 @@ function createNewListing() {
 				}			
 			}
 		};
-		xmlhttp.open("GET", "/php/itemCreate.php?title="+createTitle.value+"&tagID="+createTagID.value+"&description="+createDescription.value+"&category="+createCategory.value+"&endtime="+createEndtime.value+"&perishable="+createPerishable.value+"&linkToOrg="+createLinkToOrganisation.value+"&mapLocation="+createShowMap.value, true);
+		xmlhttp.open("GET", "/php/itemCreate.php?title="+createTitle.value+"&tagID="+createTagID.value+"&description="+createDescription.value+"&category="+createCategory.value+"&endtime="+createEndtime.value+"&perishable="+createPerishable.value+"&linkToOrg="+createLinkToOrganisation.value+"&mapLocation="+createShowMap, true);
 		xmlhttp.send();
 	} else {
 		document.getElementById("createListingMessage").innerHTML = '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">' +

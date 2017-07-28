@@ -29,7 +29,7 @@
          } else {
             $address = NULL;
          }
-      } elseif ($_GET['mapLocation'] = "NULL") {
+      } elseif ($_GET['mapLocation'] == "NULL") {
          $address = NULL;
       } else {
          $address = $_GET['mapLocation'];
@@ -40,6 +40,7 @@
       } else {
          $perishable = false;
       }
+
       
       $stmt = $db->prepare("INSERT INTO item(name,endtime,description,category,FKclient,organisation,FKTagID,perishable,location)
                            VALUES(:name,:endtime,:description,:category,:FKclient,:organisation,:FKTagID,:perishable,:location)");
