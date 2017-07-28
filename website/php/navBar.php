@@ -81,7 +81,7 @@
 								$stmt = $db->prepare("SELECT FKgroup FROM client WHERE clientID = ?");
 						   		$stmt->execute(array($_SESSION['userID']));
 						   		$stmt = $stmt->fetch(PDO::FETCH_ASSOC); 
-						      	if ($stmt['FKgroup'] != ""){
+						      	if ($stmt['FKgroup'] != NULL){
 						      		echo '<li id="volOrgMenu" class="no-select-link pointer" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails"><a class="no-select-link">Your Volunteer Group</a></li>';
 						      	} else {
 						      		echo '<li id="volOrgMenu" class="no-select-link pointer" data-toggle="modal" data-target="#modal-joinVol"><a class="no-select-link">Create/Join Volunteer Group</a></li>';
@@ -127,13 +127,14 @@
 						      		<div class="modal-body testing">
 						      			
 										<input type="text" class="form-control" id="createTitle" required placeholder="Enter lisiting name..."></input><br>
-										<textarea type="text" class="form-control" placeholder="Enter description..." id="createDescription" rows="4" cols="30"></textarea><br>
-										<label>Tag: <select id="createTagID" class="form-control removeSelectWidth">';
 
+										<textarea type="text" class="form-control" placeholder="Enter description..." id="createDescription" rows="4" cols="30"></textarea>
+										<br>
+										
+										<label>Tag: <select id="createTagID" class="form-control removeSelectWidth">';
 										foreach($db->query('SELECT * FROM tag') as $row) {
 										    echo '<option value="'.$row['tagID'].'">'.$row['name'].'</option>';
 										}
-
 										echo '</select></label>
 
 										<label>Category: 
@@ -142,7 +143,58 @@
 												<option value="Supplying">Supplying</option>
 											</select>
 										</label>
+										<br>
 										
+								        <div class="row">
+								      		This item is perishable:
+								      		<div class="btn-group" data-toggle="buttons">
+								       		 	<label class="btn">
+								          			<input type="radio" id="createPerishableYes" name="createPerishable" value="true">Yes
+								        		</label>
+								        		<label class="btn active">
+								          			<input type="radio" id="createPerishableNo" name="createPerishable" value="false" checked="checked">No
+								        		</label>
+									      	</div>
+								    	</div>';
+
+								       	echo '<div id="createLinkToOrganisationToggle" class="row"';
+								       	if ($stmt['FKgroup'] == NULL){
+							      			echo ' style="display:none"';
+							      		}
+								       	echo '>
+								      		Link to your organisation:
+								      		<div class="btn-group" data-toggle="buttons">
+								        		<label class="btn">
+								          			<input type="radio" id="createOrgLinkYes" name="createLinkToOrganisation" value="true">Yes
+								        		</label>
+								        		<label class="btn active">
+								          			<input type="radio" id="createOrgLinkNo" name="createLinkToOrganisation" value="false" checked="checked">No
+								        		</label>
+									      	</div>
+								    	</div>';
+								    	
+
+								    	echo '<div class="row" data-toggle="buttons">
+								      		Show location on map:<br>
+								      		<label id="createAddressOrgToggle" class="btn"';
+								       		 	if ($stmt['FKgroup'] == NULL){
+								       		 	echo ' style="display:none"';
+								       		 }
+							       		 	echo '>
+							          			<input type="radio" id="createAddressOrg" name="createAddress" value="[Org]">Your organisations address
+							        		</label>
+							        		
+
+											<label class="btn">
+							          			<input type="radio" id="createAddressCustom" name="createAddress" value="[Custom]">Custom address
+							        		</label>
+							        		<label class="btn active">
+							          			<input type="radio" id="createAddressNo" name="createAddress" value="Null" checked="checked">Don'."'".'t show map
+							        		</label>
+								    	</div>
+										
+										<input style="display: none" type="text" class="form-control" id="createCustomAdress" required placeholder="Enter custom address..."></input><br>
+
 										<label>End datetime: 
 							                <div class="input-group date" id="datetimepicker1">
 							                    <input id="createDateTime" type="text" class="form-control">

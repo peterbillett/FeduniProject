@@ -247,14 +247,22 @@ footer{
 
 .available {
 	background-color: #5CB85C;
+	color: white;
 }
 
 .wanted {
 	background-color: #F0AD4E;
+	color: white;
 }
 
 .finished {
 	background-color: #D9534F;
+	color: white;
+}
+
+.primary {
+	background-color: #337ab7;
+	color: white;
 }
 
 .edit {
@@ -842,6 +850,34 @@ footer{
     	visibility:visible;
     	position: static;
     }
+}
+
+
+
+
+
+
+
+
+div[data-toggle="buttons"] label.active{
+    color: #337AB7;
+}
+
+div[data-toggle="buttons"] label {
+	font-size: 14px;
+	cursor: pointer;
+	background-color: none;
+	color: #c8c8c8;
+	font-weight: bold;
+}
+
+div[data-toggle="buttons"] label:hover {
+	color: #337AB7;
+}
+
+div[data-toggle="buttons"] label:active, div[data-toggle="buttons"] label.active {
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
 /*!

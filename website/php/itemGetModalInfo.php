@@ -52,9 +52,9 @@
         echo '<br>';
         if(isset($_SESSION['userID'])) {
             if ($_SESSION['userID'] == $itemResult['FKclient']) {
-                echo '<button type="button" class="btn btn-primary" onclick="changeHiddenState()">Edit</button>';
+                echo '<button type="button" class="btn btn-default" onclick="changeHiddenState()">Edit</button>';
                 if ($itemResult['finished'] != 2) {
-                    echo '<button class="btn btn-danger" onclick="changeStatus('.$_GET['id'].',2)">Set as completed</button>';
+                    echo '<button class="btn btn-primary" onclick="changeStatus('.$_GET['id'].',2)">Set as completed</button>';
                 }
 
                 if ($itemResult['finished'] != 1) {
@@ -69,7 +69,7 @@
                     echo '<button class="btn btn-warning" onclick="changeStatus('.$_GET['id'].',1)">Set you want it</button>';
                 }
                 elseif ($itemResult['finished'] == 1) {
-                    echo '<button class="btn btn-danger" onclick="changeStatus('.$_GET['id'].',3)">Reset to available</button>';
+                    echo '<button class="btn btn-success" onclick="changeStatus('.$_GET['id'].',3)">Reset to available</button>';
                 }
             }
         }
@@ -86,7 +86,7 @@
                 echo '<span>Marked as wanted<span></td></tr>';
                 break;
             default:
-                echo '<tr id="currentItemStatus"><td colspan="2" class="itemStatus finished">';
+                echo '<tr id="currentItemStatus"><td colspan="2" class="itemStatus primary">';
                 echo '<span>Finished<span></td></tr>';
         }
 
@@ -123,6 +123,15 @@
                             <option selected="selected" value="Supplying">Supplying</option>';
                         }
                     echo '</select>
+                </label>
+
+                <label>End datetime: 
+                    <div class="input-group date" id="datetimepicker1">
+                        <input id="createDateTime" type="text" class="form-control">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
                 </label>
 
                 <br>

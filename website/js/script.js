@@ -203,6 +203,8 @@ function leaveOrganisation() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText.substring(0,21) != '<br><div class="alert') {
 				document.getElementById("leaveOrganisationMessage").innerHTML = "You've left the organisation...";
+				document.getElementById("createLinkToOrganisationToggle").style.display = 'none';
+				document.getElementById("createAddressOrgToggle").style.display = 'none';
 				getProfilePage();
 				setTimeout(function () {
 					$('#modal-modalDetails').modal('hide');
@@ -486,6 +488,8 @@ function joinVolunteerGroup() {
 			if (this.responseText == "success") {
 				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><a class="no-button no-select-link" onclick="getOrganisationModal(' + organisationIDToLink + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</a></a></li></ul>';
 				document.getElementById("volOrgJoinMessage").innerHTML = "<p>You have joined "+organisationName+".</p><p>Loading organisation page...</p>";
+				document.getElementById("createLinkToOrganisationToggle").style.display = 'inline-block';
+				document.getElementById("createAddressOrgToggle").style.display = 'inline-block';
 				getProfilePage();
 				getOrganisationModal(organisationIDToLink);
 				setTimeout(function () {
@@ -601,7 +605,13 @@ function createNewListing() {
 	var createTagID = document.getElementById("createTagID");
 	var createCategory = document.getElementById("createCategory");
 	var createEndtime = document.getElementById("createDateTime");
-	if (createTitle.value != "" & createDescription.value != "" & createTagID.value != "" & createCategory.value != "" & createEndtime.value != ""){
+	var createPerishable = document.querySelector('input[name="createPerishable"]:checked');
+	var createLinkToOrganisation = document.querySelector('input[name="createLinkToOrganisation"]:checked');
+	var createShowMap = document.querySelector('input[name="createAddress"]:checked');
+	if (createShowMap.value == "[Custom]") {
+		createShowMap = document.getElementById("createCustomAdress");
+	}
+	if (createTitle.value != "" & createDescription.value != "" & createTagID.value != "" & createCategory.value != "" & createEndtime.value != "" & createShowMap.value != ""){
 		document.getElementById("createListingMessage").innerHTML = "Creating listing...";
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
@@ -640,7 +650,7 @@ function createNewListing() {
 				}			
 			}
 		};
-		xmlhttp.open("GET", "/php/itemCreate.php?title="+createTitle.value+"&tagID="+createTagID.value+"&description="+createDescription.value+"&category="+createCategory.value+"&endtime="+createEndtime.value, true);
+		xmlhttp.open("GET", "/php/itemCreate.php?title="+createTitle.value+"&tagID="+createTagID.value+"&description="+createDescription.value+"&category="+createCategory.value+"&endtime="+createEndtime.value+"&perishable="+createPerishable.value+"&linkToOrg="+createLinkToOrganisation.value+"&mapLocation="+createShowMap.value, true);
 		xmlhttp.send();
 	} else {
 		document.getElementById("createListingMessage").innerHTML = '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">' +
@@ -880,7 +890,7 @@ function createItemTable(itemObj, callback){
 		                        newItemTable += 'class="wanted" value="wanted">';
 		            			break;
 		            		default:
-		                        newItemTable += 'class="finished" value="finished">';
+		                        newItemTable += 'class="primary" value="finished">';
 		            	}
 						newItemTable += '<h2>' + itemObj.name + '</h2>';
 		      		newItemTable += '</td>';

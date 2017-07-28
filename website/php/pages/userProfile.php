@@ -118,7 +118,7 @@
                                 </div>';
                             }
                             if ($finishedCount > 0 ) {
-                                echo '<div class="progress-bar progress-bar-danger" role="progressbar" style="width:'.$finishedPercent.'%">
+                                echo '<div class="progress-bar progress-bar" role="progressbar" style="width:'.$finishedPercent.'%">
                                     &#8203;
                                 </div>';
                             }
@@ -146,7 +146,7 @@
                                             echo 'wanted" value="wanted">';
                                             break;
                                         default:
-                                            echo 'finished" value="finished">';
+                                            echo 'primary" value="finished">';
                                     }
                                     echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails">'.$row['name'].'</button></li>';
                                 }
@@ -172,7 +172,7 @@
                                             echo 'wanted" value="wanted">';
                                             break;
                                         default:
-                                            echo 'finished" value="finished">';
+                                            echo 'primary" value="finished">';
                                     }
                                     echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails">'.$row['name'].'</button></li>';
                                 }

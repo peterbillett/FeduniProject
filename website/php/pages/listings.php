@@ -12,9 +12,9 @@
                             </select>
                         </li>
                         <li>
-                            <input type="radio" name="statusFilter" value="" checked>All
-                            <input type="radio" name="statusFilter" value="0">Available
-                            <input type="radio" name="statusFilter" value="1">Wanted
+                            <label><input type="radio" name="statusFilter" value="" checked>All</label>
+                            <label><input type="radio" name="statusFilter" value="0">Available</label>
+                            <label><input type="radio" name="statusFilter" value="1">Wanted</label>
                         </li>
                         <li>
                             <input type="submit" value="Submit">
