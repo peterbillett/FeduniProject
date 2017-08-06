@@ -34,7 +34,7 @@
         //item Image
         echo '<tbody>';
         echo '<tr><td class="tableImage">';
-        echo '<div><img src="php/imageGet.php?id='.$_GET['id'].'" class="itemImage" /></div>';
+        echo '<div><img id="modalImage'.$_GET['id'].'" src="php/imageGet.php?id='.$_GET['id'].'&'.date('Y-m-d H:i:s').' class="itemImage" /></div>';
         echo '</td>';
 
         //Item details: client, organisation+url, end date/time
@@ -64,6 +64,7 @@
                 if ($itemResult['finished'] != 0) {
                     echo '<button class="btn btn-success" onclick="changeStatus('.$_GET['id'].',3)">Set as available</button>';
                 }
+
             } else {
                 if ($itemResult['finished'] == 0) {
                     echo '<button class="btn btn-warning" onclick="changeStatus('.$_GET['id'].',1)">Set you want it</button>';
@@ -93,8 +94,16 @@
         //Item description
         echo '<tr><td colspan="2"><b>Description: </b>'.$itemResult['description'].'</td></tr>
         </tbody>
-        </table>
-        <button type="button" class="btn btn-default testing" data-dismiss="modal" aria-hidden="true"">Close window</button>
+        </table>';
+        if ($itemResult['location'] !== NULL){
+             echo '<iframe class="maps-frame" src="https://www.google.com/maps/embed/v1/search?q='.str_replace(' ', '+', $itemResult['location']);
+            if (strpos($itemResult['location'], '3350') == false){
+                echo '+3350';
+            }
+            echo '+Australia&zoom=16&key=AIzaSyDnIx1QkG-_64NuLSYxxQj4vkcdt9I5zV0"></iframe>';
+        }
+
+        echo '<button type="button" class="btn btn-default testing" data-dismiss="modal" aria-hidden="true"">Close window</button>
         <div class="testing" id="itemInfoMessage"></div>
         </div>
         </div>';
@@ -126,8 +135,8 @@
                 </label>
 
                 <label>End datetime: 
-                    <div class="input-group date" id="datetimepicker1">
-                        <input id="createDateTime" type="text" class="form-control">
+                    <div class="input-group date" id="datetimepicker2">
+                        <input id="newDateTime" type="text" class="form-control">
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>
@@ -136,7 +145,20 @@
 
                 <br>
                 <br><button type="button" class="btn btn-primary" onclick="editListing('.$_GET['id'].')">Submit changes</button>
-                <br><span id="itemEditMessage"></span>
+
+                <br>
+                <br><label class="btn btn-block btn-primary">
+                    Browse&hellip; <input type="file" name="fileToUpload" id="fileToUpload" style="display: none;">
+                </label>
+                <input class="btn btn-block btn-default" type="button" onclick="submitFile('.$_GET['id'].')" value="';
+                if ($itemResult['image'] == NULL) {
+                    echo 'Upload Image';
+                } else {
+                    echo 'Update Image';
+                }
+                echo '" name="submit">
+
+                <span id="itemEditMessage"></span>
                 </div>
 
                 <div class="modal-footer testing">

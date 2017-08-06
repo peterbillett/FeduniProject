@@ -15,7 +15,7 @@
    }
 
    $stmt = $db->prepare("SELECT itemID FROM item WHERE FKclient=? AND itemID=?");
-   $stmt->execute(array($_SESSION['userID'],$_GET['id']));
+   $stmt->execute(array($_SESSION['userID'], $_GET['id']));
    if($stmt->rowCount() == 0) {
       echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -25,8 +25,8 @@
             <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
       </div>';
    } else {
-      $stmt = $db->prepare("UPDATE item SET name=?, description=?, category=? WHERE itemID=?");
-      $stmt->execute(array($_GET['title'],$_GET['description'],$_GET['category'], $_GET['id']));
+      $stmt = $db->prepare("UPDATE item SET name=?, description=?, category=?, endtime=? WHERE itemID=?");
+      $stmt->execute(array($_GET['title'], $_GET['description'], $_GET['category'], date('Y-m-d h:m:s', strtotime($_GET['endtime'])), $_GET['id']));
 
       if($stmt->rowCount() == 0){
          echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">

@@ -40,12 +40,11 @@
       } else {
          $perishable = false;
       }
-
       
       $stmt = $db->prepare("INSERT INTO item(name,endtime,description,category,FKclient,organisation,FKTagID,perishable,location)
                            VALUES(:name,:endtime,:description,:category,:FKclient,:organisation,:FKTagID,:perishable,:location)");
       $stmt->execute(array(':name' => $_GET['title'], ':endtime' => date('Y-m-d h:m:s', strtotime($_GET['endtime'])), ':description' => $_GET['description'],
-                           ':category' => $_GET['category'],':FKclient' => $_SESSION['userID'], ':organisation' => $groupID, ':FKTagID' => $_GET['tagID'],
+                          ':category' => $_GET['category'],':FKclient' => $_SESSION['userID'], ':organisation' => $groupID, ':FKTagID' => $_GET['tagID'],
                            ':perishable' => $perishable, ':location' => $address));
       $insertId = $db->lastInsertId();
 
@@ -57,6 +56,7 @@
                <p>Failed to create item</p>
                <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
          </div>';
+         echo strtotime($_GET['endtime']);
       }
       else{
          echo $insertId;

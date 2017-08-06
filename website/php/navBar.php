@@ -177,14 +177,12 @@
 								    	echo '<div class="row trigger" data-toggle="buttons">
 								      		Show location on map:<br>
 								      		<label id="createAddressOrgToggle" class="btn"';
-								       		 	if ($stmt['FKgroup'] == NULL){
+								       		if ($stmt['FKgroup'] == NULL){
 								       		 	echo ' style="display:none"';
-								       		 }
+								       		}
 							       		 	echo '>
 							          			<input type="radio" id="createAddressOrg" name="createAddress" value="[Org]">Your organisations address
 							        		</label>
-							        		
-
 											<label class="btn">
 							          			<input type="radio" id="createAddressCustom" name="createAddress" value="[Custom]">Custom address
 							        		</label>

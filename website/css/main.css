@@ -7,8 +7,42 @@
 	vertical-align: baseline;
 }
 
-html {
-	overflow-y:scroll;
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.pac-container {
+	z-index: 1051;
+}
+
+.alert {
+	margin-bottom: 0px;
+}
+
+.overlayAlert {
+	z-index: 1001;
+	position: absolute;;
+	width: 100%;
+}
+
+body {
+	padding-right: 0 !important;
+	overflow-y: scroll !important;
 }
 
 .notificationUpdateTime {

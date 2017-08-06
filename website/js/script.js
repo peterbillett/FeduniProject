@@ -1,22 +1,23 @@
 var currentListingsPage = 1;
-	var totalListingsPage = 1;
-	var indexData = null;
-	var lastItemPage = 0;
-	var notifcationFiltered = null;
-	var isNotificationTableCollapsed = false;
+var totalListingsPage = 1;
+var indexData = null;
+var lastItemPage = 0;
+var notifcationFiltered = null;
+var isNotificationTableCollapsed = false;
 
 $(function () {
 
 	//Load navBar
 	document.getElementById("loadingBar").style.display = "block";
-	var xmlhttpTEST = new XMLHttpRequest();
-	xmlhttpTEST.onreadystatechange = function() {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("navBar").innerHTML = this.responseText;
+			autoNotification();
 			$('#datetimepicker1').datetimepicker({
 				sideBySide: true,
-				minDate: moment().format("YYYY-MM-DD"),
-				defaultDate: moment().format("YYYY-MM-DD")
+				minDate: moment().format("YYYY-MM-DD HH:mm"),
+				defaultDate: moment().add(1,'days').format("YYYY-MM-DD HH:mm")
 			});
 			if ($('#modal-login').length) {
 				$('#newPassword').pwstrength({
@@ -35,6 +36,14 @@ $(function () {
 				});
 			}
 			if ($('#modal-createListing').length) {
+				var defaultBounds = new google.maps.LatLngBounds(
+					new google.maps.LatLng(-37.636980, 143.691664),
+					new google.maps.LatLng(-37.483302, 143.976130));
+				var options = {
+					bounds: defaultBounds
+				};
+				var input = document.getElementById('createCustomAdress');
+				var autocomplete = new google.maps.places.Autocomplete(input, options);
 				$("#modal-createListing").keypress(function(event) {
 				    if (event.which == 13) {
 				     	createNewListing();
@@ -52,11 +61,34 @@ $(function () {
 			document.getElementById("loadingBar").style.display = "none";
 		}
 	};
-	xmlhttpTEST.open("GET", "/php/navBar.php", true);
-	xmlhttpTEST.send();
+	xmlhttp.open("GET", "/php/navBar.php", true);
+	xmlhttp.send();
 
 	getIndexPage();
 });
+
+
+function submitFile(itemID) {
+	var input = document.querySelector("input[name='fileToUpload']"),
+    file = input.files[0];
+    if (!file || !file.type.match(/image.*/)) return;
+    var fd = new FormData();
+    fd.append("fileToUpload", file);
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", "/php/imageUpload.php?id=3", true);
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText == "SUCCESS"){
+				document.getElementById("itemEditMessage").innerHTML = '<br><div class="alert alert-success alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><p>Image uploaded successfuly.</p><p><button type="button" class="btn btn-success" data-dismiss="alert">Dismiss</button></p></div>';
+				document.getElementById('modalImage' + itemID).src = "php/imageGet.php?id=" + itemID + "&" + new Date().getTime();
+				document.getElementById('listingImage' + itemID).src = "php/imageGet.php?id=" + itemID + "&" + new Date().getTime();
+			} else {
+				document.getElementById("itemEditMessage").innerHTML = this.responseText;
+			}
+		}
+    }
+	xmlhttp.send(fd);
+}
 
 
 function getPasswordUpdater() {
@@ -114,6 +146,61 @@ Date.prototype.timeNow = function () {
 }
 
 
+function removeNotification(notificationID) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText == "SUCCESS") {
+				sendOffPHP('modalDetails','/php/modalNotifications.php');
+
+			} else {				
+				document.getElementById("notificationMsgID").innerHTML = this.responseText;
+			}
+		}
+	}
+	xmlhttp.open("GET", "/php/accountNotificationRemove.php?id="+notificationID, true);
+	xmlhttp.send();
+}
+
+
+function addNotification() {
+	var xmlhttpTEST = new XMLHttpRequest();
+	xmlhttpTEST.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText == "SUCCESS") {
+				sendOffPHP('modalDetails','/php/modalNotifications.php');
+			} else {				
+				document.getElementById("notificationMsgID").innerHTML = this.responseText;
+			}
+		}
+	}
+	xmlhttpTEST.open("GET", "/php/accountNotificationAdd.php?id="+document.getElementById("notificationTags").value, true);
+	xmlhttpTEST.send();
+}
+
+
+function autoNotification() {
+	var audio = new Audio('/alert.mp3');
+	var notificationTime = moment().format('YYYY-MM-DD HH:mm:ss');
+	var autoNotificationInterval = setInterval(function() {
+		var xmlhttpTEST = new XMLHttpRequest();
+		xmlhttpTEST.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				if (this.responseText == "STOP") {
+					clearInterval(autoNotificationInterval);
+				} else if (this.responseText != "") {
+					$("#notificationAlert").html(this.responseText);
+					audio.play(); 
+				}
+				notificationTime = moment().format('YYYY-MM-DD HH:mm:ss');
+			}
+		}
+		xmlhttpTEST.open("GET", "/php/notificationCheck.php?notificationTime="+notificationTime, true);
+		xmlhttpTEST.send();
+	}, 30000);
+}
+
+
 function setupAutoRefresh() {
 	var autoRefreshInterval = setInterval(function() {
 		if($('#notificationTable').length) {
@@ -160,7 +247,6 @@ function filterNotificationTable(tagToToggle) {
 		    }
 		});
 	}
-	
 }
 
 
@@ -212,6 +298,7 @@ function leaveOrganisation() {
 				document.getElementById("leaveOrganisationMessage").innerHTML = "You've left the organisation...";
 				document.getElementById("createLinkToOrganisationToggle").style.display = 'none';
 				document.getElementById("createAddressOrgToggle").style.display = 'none';
+				$('#createAddressNo').attr('checked', true).button("refresh");
 				getProfilePage();
 				setTimeout(function () {
 					$('#modal-modalDetails').modal('hide');
@@ -291,9 +378,11 @@ function getListingsPage(listingType) {
 	});
 }
 
+
 function waitForCallback(positionID,phpFile,callback){
 	callback(sendOffPHP(positionID, phpFile));
 }
+
 
 $('.dropdown-content').click(function(e) {
     e.stopPropagation();
@@ -572,7 +661,12 @@ function getItemModal(itemID) {
 			if (this.responseText == ""){
 				document.getElementById("modalDetails").innerHTML = "There was an error getting the details for this item";
 			} else {
-				document.getElementById("modalDetails").innerHTML = "<mime type=text/html>"+this.responseText+"</mime>";
+				$("#modalDetails").html(this.responseText);
+				$('#datetimepicker2').datetimepicker({
+					sideBySide: true,
+					minDate: moment().format("YYYY-MM-DD"),
+					defaultDate: moment().format("YYYY-MM-DD")
+				});
 			}			
 		}
 	};
@@ -616,6 +710,7 @@ function createNewListing() {
 	var createLinkToOrganisation = document.querySelector('input[name="createLinkToOrganisation"]:checked');
 	if (document.querySelector('input[name="createAddress"]:checked').value == "[Custom]") {
 		var createShowMap = document.getElementById("createCustomAdress").value;
+
 	} else {
 		var createShowMap = document.querySelector('input[name="createAddress"]:checked').value;
 	}
@@ -751,9 +846,8 @@ function editListing(itemID) {
 	var newDescription = document.getElementById("newDescription");
 	var newTitle = document.getElementById("newTitle");
 	var newCategory = document.getElementById("newCategory");
-	//tagID
-
-	if (newDescription.value != ""){
+	var newDateTime = document.getElementById("newDateTime");
+	if (newDescription.value != "" && newTitle.value != "" && newDateTime.value != "" ){
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -765,12 +859,11 @@ function editListing(itemID) {
 				}			
 			}
 		};
-		xmlhttp.open("GET", "/php/itemEdit.php?id="+itemID+"&title="+newTitle.value+"&description="+newDescription.value+"&category="+newCategory.value, true);
+		xmlhttp.open("GET", "/php/itemEdit.php?id="+itemID+"&title="+newTitle.value+"&description="+newDescription.value+"&category="+newCategory.value+"&endtime="+newDateTime.value, true);
 		xmlhttp.send();
 	} else {
-		document.getElementById("itemEditMessage").innerHTML = "Information fields must not be empty";
+		document.getElementById("itemEditMessage").innerHTML = '<div class="alert alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><p>All fields must not be empty!</p><p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p></div>';
 	}
-	
 }
 
 
@@ -780,10 +873,12 @@ function updateItemTable(itemID) {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText != "failed") {
 				getItemModal(itemID);
-				createItemTable(JSON.parse(this.responseText), function(result){
-					document.getElementById("itemTableID"+itemID).innerHTML = result;
-					activateLazyLoad();
-				});
+				if (document.getElementById("itemTableID"+itemID) != null){
+					createItemTable(JSON.parse(this.responseText), function(result){
+						document.getElementById("itemTableID"+itemID).innerHTML = result;
+						activateLazyLoad();
+					});
+				}
 			} else {
 				location.reload();
 			}			
@@ -904,7 +999,7 @@ function createItemTable(itemObj, callback){
 		      		newItemTable += '</td>';
 
 		      		newItemTable += '<td rowspan="2" class="tableImage">';
-		      			newItemTable += '<img class="lazy" data-src="php/imageGet.php?id=' + itemObj.itemID + '"  width="120" height="110" alt="TEST">';
+		      			newItemTable += '<img id="listingImage' + itemObj.itemID + '" class="lazy" data-src="php/imageGet.php?id=' + itemObj.itemID + '&' + new Date().getTime() + '"  width="120" height="110" alt="TEST">';
 		      		newItemTable += '</td>';
 
 		      		newItemTable += '</tr>';
