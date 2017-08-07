@@ -2,7 +2,7 @@
 	include("config.php");
 	session_start();
 	if(isset($_SESSION['userID'])){
-		if($_SERVER['REQUEST_METHOD'] === 'POST') {
+		if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fileToUpload'])) {
 			$stmt = $db->prepare("SELECT itemID FROM item WHERE FKclient=? AND itemID=?");
 		   	$stmt->execute(array($_SESSION['userID'], $_GET['id']));
 		   	if($stmt->rowCount() == 0) {
@@ -69,6 +69,15 @@
 					}
 				}
 		   	}
+		} else {
+			echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
+	     		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	        		<span aria-hidden="true">×</span>
+	     		</button>
+	        	<p>No file was received.</p>
+	        	<p>Please select the file again then resubmit</p>
+	        	<p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
+	  		</div>';
 		}
 	} else {
 		echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">

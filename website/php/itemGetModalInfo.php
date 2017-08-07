@@ -3,15 +3,19 @@
     include("updateItemFinished.php");
 	session_start();
 
-    $stmtItem = $db->prepare("SELECT client.clientFirstName, client.clientLastName, client.email, item.* FROM client, item WHERE client.clientID = item.FKclient AND item.itemID = ?");
+    $stmtItem = $db->prepare("SELECT client.clientFirstName, client.clientLastName, client.email, client.accountType, client.FKgroup, item.*, tag.name imgTag FROM client, item INNER JOIN tag ON item.FKTagID = tag.tagID WHERE client.clientID = item.FKclient AND item.itemID = ?");
     $stmtItem->execute(array($_GET['id']));
     $itemResult = $stmtItem->fetch(PDO::FETCH_ASSOC);
 
-    $stmtOrg = $db->prepare("SELECT organisation.groupID, organisation.name FROM organisation WHERE groupID=?");
+    $stmtOrg = $db->prepare("SELECT name FROM organisation WHERE groupID=?");
     $stmtOrg->execute(array($itemResult['organisation']));
     $organisationResult = $stmtOrg->fetch(PDO::FETCH_ASSOC);
 
-
+    if (isset($_SESSION['userID'])) {
+        $stmtItem = $db->prepare("SELECT FKgroup FROM client WHERE clientID = ?");
+        $stmtItem->execute(array($_SESSION['userID']));
+        $clientResult = $stmtItem->fetch(PDO::FETCH_ASSOC);
+    }
 
    //For each item create table using name, description and itemID
 	echo '<div class="modal-dialog">
@@ -34,14 +38,14 @@
         //item Image
         echo '<tbody>';
         echo '<tr><td class="tableImage">';
-        echo '<div><img id="modalImage'.$_GET['id'].'" src="php/imageGet.php?id='.$_GET['id'].'&'.date('Y-m-d H:i:s').' class="itemImage" /></div>';
+        echo '<div><img id="modalImage'.$_GET['id'].'" src="php/imageGet.php?id='.$_GET['id'].'&'.date('Y-m-d H:i:s').'" class="itemImage" alt="'.$itemResult['imgTag'].'"/></div>';
         echo '</td>';
 
         //Item details: client, organisation+url, end date/time
         echo '<td>';
         echo 'Supplier: '.$itemResult['clientFirstName'].' '.$itemResult['clientLastName'];
         if ($stmtOrg->rowCount() == 1) {
-            echo '<br>Organisation: <a><button type="button" class="table-button inlineBlock" onclick="getOrganisationModal('.$organisationResult['groupID'].')">'.$organisationResult['name'].'</button></a>';
+            echo '<br>Organisation: <a><button type="button" class="table-button inlineBlock" onclick="getOrganisationModal('.$itemResult['organisation'].')">'.$organisationResult['name'].'</button></a>';
         } else {
             echo '<br>Organisation: [NONE]';
         }
@@ -51,7 +55,7 @@
         //Depending on if the user is logged in (and if so if the group they are in belongs to the item) show buttons
         echo '<br>';
         if(isset($_SESSION['userID'])) {
-            if ($_SESSION['userID'] == $itemResult['FKclient']) {
+            if ($_SESSION['userID'] == $itemResult['FKclient'] || $itemResult['accountType'] == 3  || $_SESSION['accountType'] == 2 && $clientResult['FKgroup'] == $itemResult['organisation'] && $itemResult['organisation'] != NULL) {
                 echo '<button type="button" class="btn btn-default" onclick="changeHiddenState()">Edit</button>';
                 if ($itemResult['finished'] != 2) {
                     echo '<button class="btn btn-primary" onclick="changeStatus('.$_GET['id'].',2)">Set as completed</button>';
@@ -109,8 +113,8 @@
         </div>';
 
         //Editing details
-        if (isset($_SESSION['userID']) & $stmtItem->rowCount() == 1) {
-            if ($_SESSION['userID'] == $itemResult['FKclient']) {
+        if (isset($_SESSION['userID'])) {
+            if ($_SESSION['userID'] == $itemResult['FKclient'] || $itemResult['accountType'] == 3 || $_SESSION['accountType'] == 2 && $clientResult['FKgroup'] == $itemResult['organisation'] && $itemResult['organisation'] != NULL) {
                 echo '<div id="itemEditing" style="display: none;">
 
                 <div class="modal-header background-color-blue">

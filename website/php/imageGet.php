@@ -30,8 +30,8 @@
         imagecolortransparent($new_image, $transparencyIndex); 
     }
 
-	$resizedWidth = 120;
-	$resizedHeight = 110;
+	$resizedWidth = 140;
+	$resizedHeight = 120;
 	$image_source = imagecreatefrompng($imageLocation); 
 	$resizedImage = imagecreatetruecolor($resizedWidth, $resizedHeight); 
 	setTransparency($resizedImage,$image_source); 

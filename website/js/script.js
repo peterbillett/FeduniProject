@@ -1,9 +1,10 @@
 var currentListingsPage = 1;
 var totalListingsPage = 1;
 var indexData = null;
-var lastItemPage = 0;
+var lastlistingPage = 0;
 var notifcationFiltered = null;
 var isNotificationTableCollapsed = false;
+var listingType = null;
 
 $(function () {
 
@@ -75,7 +76,7 @@ function submitFile(itemID) {
     var fd = new FormData();
     fd.append("fileToUpload", file);
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/php/imageUpload.php?id=3", true);
+    xmlhttp.open("POST", "/php/imageUpload.php?id=" + itemID, true);
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText == "SUCCESS"){
@@ -296,13 +297,14 @@ function leaveOrganisation() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText.substring(0,21) != '<br><div class="alert') {
 				document.getElementById("leaveOrganisationMessage").innerHTML = "You've left the organisation...";
+				document.getElementById("volOrgMenu").innerHTML = '<a data-toggle="modal" data-target="#modal-joinVol" class="no-select-link">Create/Join Volunteer Group</a>';
 				document.getElementById("createLinkToOrganisationToggle").style.display = 'none';
 				document.getElementById("createAddressOrgToggle").style.display = 'none';
-				$('#createAddressNo').attr('checked', true).button("refresh");
 				getProfilePage();
 				setTimeout(function () {
 					$('#modal-modalDetails').modal('hide');
-				}, 2000);	
+				}, 2000);
+				if (document.querySelector('input[id="createAddressOrg"]').checked == true) $("#createAddressNo").attr('checked', true).trigger('click');
 			} else {
 				document.getElementById("leaveOrganisationMessage").innerHTML = this.responseText;
 			}
@@ -350,7 +352,7 @@ function getOrganisationsPage() {
 	xmlhttp.send();
 }
 
-function getListingsPage(listingType) {
+function getListingsPage(setListingType) {
 	document.getElementById("pageDetails").innerHTML = '';
 	document.getElementById("loadingBar").style.display = "block";
 	waitForCallback("pageDetails", "php/pages/listings.php", function(result){
@@ -371,8 +373,8 @@ function getListingsPage(listingType) {
 			    }
 			}
 			checkIfTagsAreReady();
-
-			getAllListings("listingArea",listingType,false);
+			listingType = setListingType;
+			getAllListings("listingArea",false);
 			document.getElementById("loadingBar").style.display = "none";
 		});
 	});
@@ -389,7 +391,7 @@ $('.dropdown-content').click(function(e) {
 });
 
 
-function getAllListings(postionID,phpFile,callSearch) {
+function getAllListings(postionID,callSearch) {
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -398,12 +400,13 @@ function getAllListings(postionID,phpFile,callSearch) {
 					document.getElementById(postionID).innerHTML = result;
 					activateLazyLoad();
 					if (callSearch) {
-						searchItemTables();
+						searchTables();
 					}
 				});
 			});
 		}
 	};
+	phpFile = "php/itemGetAll.php?type=" + listingType;
 	xmlhttp.open("GET", phpFile, true);
 	xmlhttp.send();
 }
@@ -431,29 +434,12 @@ function activateLazyLoad() {
 }
 
 
-function searchItemTables() {
+function searchTables() {
     var input, filter, ul, li, a, i;
     input = document.getElementById('searchValue');
     filter = input.value.toUpperCase();
     ul = document.getElementById("tableList");
     li = ul.getElementsByTagName('li');
-
-    if (filter == "") {
-    	for (i = 1; i <= totalListingsPage; i++) { 
-    		var tempVis = document.getElementById('itemPage' + i);
-    		tempVis.style.display = "none";
-    	}
-    	tempVis = document.getElementById('itemPage' + currentListingsPage);
-    	tempVis.style.display = "block";  
-    	$('.listingButton').show();
-    } else {
-    	
-    	for (i = 1; i <= totalListingsPage; i++) { 
-    		var tempVis = document.getElementById('itemPage' + i);
-    		tempVis.style.display = "block";
-    	}
-    	$('.listingButton').hide();
-    }
 
     for (i = 0; i < li.length; i++) {
         a = li[i];
@@ -464,26 +450,24 @@ function searchItemTables() {
         }
     }
 
-    activateLazyLoad();
-}
-
-
-function searchOrgTables() {
-	var input, filter, ul, li, a, i;
-	input = document.getElementById('searchValue');
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("tableList");
-    li = ul.getElementsByTagName('li');
-    
-	for (i = 0; i < li.length; i++) {
-        a = li[i];
-        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
-            li[i].style.display = "";
-            li[i].style.display
-        } else {
-            li[i].style.display = "none";
-        }
+    if (filter == "") {
+    	for (i = 1; i <= totalListingsPage; i++) { 
+    		$('#listingPage' + i).hide();
+    	}
+    	$('#listingPage' + currentListingsPage).show();
+    	$('.listingButton').show();
+    } else {
+    	for (i = 1; i <= totalListingsPage; i++) { 
+    		$('#listingPage' + i).show();
+    		var pageVis = false;
+    		$('#listingPage' + i + '> li').each(function () {
+    			if ($(this).is(":visible")) pageVis = true;
+	    	});
+	    	if (pageVis == false) $('#listingPage' + i).hide();
+    	}
+    	$('.listingButton').hide();
     }
+    activateLazyLoad();
 }
 
 
@@ -582,7 +566,7 @@ function joinVolunteerGroup() {
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText == "success") {
-				document.getElementById("volOrgMenu").innerHTML = '<a class="no-select-link"><a class="no-button no-select-link" onclick="getOrganisationModal(' + organisationIDToLink + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</a></a></li></ul>';
+				document.getElementById("volOrgMenu").innerHTML = '<a class="no-button no-select-link" onclick="getOrganisationModal(' + organisationIDToLink + ')" data-toggle="modal" data-target="#modal-modalDetails">Your Volunteer Group</a>';
 				document.getElementById("volOrgJoinMessage").innerHTML = "<p>You have joined "+organisationName+".</p><p>Loading organisation page...</p>";
 				document.getElementById("createLinkToOrganisationToggle").style.display = 'inline-block';
 				document.getElementById("createAddressOrgToggle").style.display = 'inline-block';
@@ -727,8 +711,8 @@ function createNewListing() {
 						getItemModal(itemNum);
 						var checkIfListingPageIsReady = function(){
 						    if(document.getElementById("pageDetails").innerHTML != "") {
-						    	if (lastItemPage > 1){
-									changePageVisibility("itemPage"+lastItemPage,"itemPage1");
+						    	if (lastlistingPage > 1){
+									changePageVisibility("listingPage"+lastlistingPage,"listingPage1");
 								}
 								$('#modal-createListing').modal('hide');
 								$('#modal-modalDetails').modal('show');
@@ -835,7 +819,7 @@ function removeListing(itemID) {
 				}			
 			}
 		};
-		xmlhttp.open("POST", "/php/removeListing.php?id="+itemID, true);
+		xmlhttp.open("POST", "/php/itemDelete.php?id="+itemID, true);
 		xmlhttp.send();
 	}
 }
@@ -938,22 +922,22 @@ function createItemList(obj, callback) {
 	var itemsPerPage = 20;
 	var numOfItemsInObj = Object.keys(obj).length;
 	var maxPage = Math.ceil(numOfItemsInObj / itemsPerPage);
-	lastItemPage = maxPage;
+	lastlistingPage = maxPage;
 
 	listingsStr += '<ul id="tableList">';
-	listingsStr += '<div id="itemPage' + currentPage + '" style="display: block">';
-	createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+	listingsStr += '<div id="listingPage' + currentPage + '" style="display: block">';
+	createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 		listingsStr += result;
 	});
 
 	Object.keys(obj).forEach(function(k){
 		var tempa = currentItem / itemsPerPage;
 		if (isInteger(tempa) && currentItem != 0){
-			createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+			createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 				listingsStr += result;
 				currentPage++;			
-				listingsStr += '<br></div><div id="itemPage' + currentPage + '" style="display: none">';
-				createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+				listingsStr += '<br></div><div id="listingPage' + currentPage + '" style="display: none">';
+				createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 					listingsStr += result;
 				});
 			});
@@ -968,7 +952,7 @@ function createItemList(obj, callback) {
 	});
 	
 	totalListingsPage = currentPage;
-	createChangePageButtons('itemPage',currentPage,maxPage, function(result){
+	createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 		listingsStr += result;
 	});
 
@@ -979,12 +963,12 @@ function createItemList(obj, callback) {
 
 function createItemTable(itemObj, callback){
 	var newItemTable = "";
-	newItemTable += '<div class="table-responsive table-padding cursorPointer">';
-		newItemTable += '<a type="button" class="table-button noUnderline" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
-	      	newItemTable += '<table class="table table-striped table-bordered table-hover">';
-	      	
-		      	newItemTable += '<tbody>';
-		      		newItemTable += '<tr><td ';
+	newItemTable += '<div class="table-responsive table-padding noUnderline">';
+      	newItemTable += '<table class="table table-striped table-hover cursorPointer" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
+      	
+	      	newItemTable += '<tbody>';
+	      		newItemTable += '<tr class="table-bordered">';
+		      		newItemTable += '<td colspan="2" ';
 		      			switch (itemObj.finished) {
 		            		case "0":
 		                        newItemTable += 'class="available" value="available">';
@@ -997,13 +981,14 @@ function createItemTable(itemObj, callback){
 		            	}
 						newItemTable += '<h2>' + itemObj.name + '</h2>';
 		      		newItemTable += '</td>';
+	      		newItemTable += '</tr>';
 
-		      		newItemTable += '<td rowspan="2" class="tableImage">';
-		      			newItemTable += '<img id="listingImage' + itemObj.itemID + '" class="lazy" data-src="php/imageGet.php?id=' + itemObj.itemID + '&' + new Date().getTime() + '"  width="120" height="110" alt="TEST">';
+	      		newItemTable += '<tr class="table-bordered">';
+		      		newItemTable += '<td class="tableImage" style="padding:0px">';
+		      			newItemTable += '<img id="listingImage' + itemObj.itemID + '" class="lazy" style="display:block" data-src="php/imageGet.php?id=' + itemObj.itemID + '&' + new Date().getTime() + '"  width="140" height="120" alt="' + itemObj.imgTag + '">';
 		      		newItemTable += '</td>';
 
-		      		newItemTable += '</tr>';
-		      		newItemTable += '<tr><td class="table-listings">';
+		      		newItemTable += '<td class="table-listings">';
 		      			if (itemObj.description.length > 200){
 		      				newItemTable += itemObj.description.substring(0,200) + '...<br>';	
 		      			}
@@ -1011,11 +996,11 @@ function createItemTable(itemObj, callback){
 		      				newItemTable += itemObj.description + '<br>';
 		      			}
 		      			newItemTable += '<a>Read more...</a>';
-		      		newItemTable += '</td></tr>';
-		      	newItemTable += '</tbody>';
-		      	
-	      	newItemTable += '</table>';
-      	newItemTable += '</a>';
+		      		newItemTable += '</td>';
+	      		newItemTable += '</tr>';
+	      	newItemTable += '</tbody>';
+	      	
+      	newItemTable += '</table>';
   	newItemTable += '</div>';
   	callback(newItemTable);
 }
@@ -1031,22 +1016,22 @@ function createOrganisationList(obj, callback){
 	var maxPage = Math.ceil(numOfItemsInObj / orgsPerPage);
 
 	organisationsStr = '<div class="center wrapper">';
-	organisationsStr += '<input type="text" id="searchValue" onkeyup="searchOrgTables()" placeholder="Search for organisation..">';
+	organisationsStr += '<input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search for organisation..">';
 	organisationsStr += '<ul id="tableList">';
-	organisationsStr += '<div id="organisationPage' + currentPage + '" style="display: block">';
+	organisationsStr += '<div id="listingPage' + currentPage + '" style="display: block">';
 
-	createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+	createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 		organisationsStr += result;
 	});
 
 	Object.keys(obj).forEach(function(k){
 		var tempa = currentOrg / orgsPerPage;
 		if (isInteger(tempa) && currentOrg != 0){			
-			createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+			createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 				organisationsStr += result;
 				currentPage++;			
-				organisationsStr += '<br></div><div id="organisationPage' + currentPage + '" style="display: none">';
-				createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+				organisationsStr += '<br></div><div id="listingPage' + currentPage + '" style="display: none">';
+				createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 					organisationsStr += result;
 				});
 			});
@@ -1061,7 +1046,7 @@ function createOrganisationList(obj, callback){
 	});
 	
 	totalListingsPage = currentPage;
-	createChangePageButtons('organisationPage',currentPage,maxPage, function(result){
+	createChangePageButtons('listingPage',currentPage,maxPage, function(result){
 		organisationsStr += result;
 	});
 
@@ -1100,7 +1085,7 @@ function createChangePageButtons(pageType,currentPage,maxPage,callback){
 	var maxButtons = 7;
 
 	if (maxPage > 1){
-		pageButtons += '<div id="organisationButton" class="listingButton testing">';
+		pageButtons += '<div id="organisationButton" class="testing listingButton">';
 		pageButtons += '<ul class="pagination pagination-sm">';
 
 		//If it is the first page then put up to the next 4 pages (If more than maxButtons pages then make the 5th page the last page)

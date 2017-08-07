@@ -14,17 +14,24 @@
       return;
    }
 
-   $stmt = $db->prepare("SELECT itemID FROM item WHERE FKclient=? AND itemID=?");
-   $stmt->execute(array($_SESSION['userID'], $_GET['id']));
+   if ($_SESSION['accountType'] > 1){
+      $stmt = $db->prepare("SELECT itemID, FKclient FROM item WHERE itemID=?");
+      $stmt->execute(array($_GET['id']));
+   } else {
+      $stmt = $db->prepare("SELECT itemID, FKclient FROM item WHERE itemID=? AND FKclient=?");
+      $stmt->execute(array($_GET['id'],$_SESSION['userID']));
+   }
+   
    if($stmt->rowCount() == 0) {
       echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">×</span>
          </button>
-            <p>You can not edit someone else'."'".'s listing</p>
+            <p>You cannot edit someone else'."'".'s item</p>
             <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
       </div>';
    } else {
+      $stmt = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt = $db->prepare("UPDATE item SET name=?, description=?, category=?, endtime=? WHERE itemID=?");
       $stmt->execute(array($_GET['title'], $_GET['description'], $_GET['category'], date('Y-m-d h:m:s', strtotime($_GET['endtime'])), $_GET['id']));
 

@@ -82,9 +82,9 @@
 						   		$stmt->execute(array($_SESSION['userID']));
 						   		$stmt = $stmt->fetch(PDO::FETCH_ASSOC); 
 						      	if ($stmt['FKgroup'] != NULL){
-						      		echo '<li id="volOrgMenu" class="no-select-link pointer" onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails"><a class="no-select-link">Your Volunteer Group</a></li>';
+						      		echo '<li id="volOrgMenu" class="no-select-link pointer"><a onclick="getOrganisationModal('.$stmt['FKgroup'].')" data-toggle="modal" data-target="#modal-modalDetails" class="no-select-link">Your Volunteer Group</a></li>';
 						      	} else {
-						      		echo '<li id="volOrgMenu" class="no-select-link pointer" data-toggle="modal" data-target="#modal-joinVol"><a class="no-select-link">Create/Join Volunteer Group</a></li>';
+						      		echo '<li id="volOrgMenu" class="no-select-link pointer"><a data-toggle="modal" data-target="#modal-joinVol" class="no-select-link">Create/Join Volunteer Group</a></li>';
 						      	}
 						    }
 							echo '</ul>
@@ -92,9 +92,9 @@
 							
 					echo '<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Listings<span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li class="no-select-link pointer" onclick="getListingsPage('."'php/itemGetAll.php'".')"><a class="no-select-link">All</a></li>
-							<li class="no-select-link pointer" onclick="getListingsPage('."'php/itemGetAll.php?type=Request'".')"><a class="no-select-link">Requesting</a></li>
-							<li class="no-select-link pointer" onclick="getListingsPage('."'php/itemGetAll.php?type=Supplying'".')"><a class="no-select-link">Supplying</a></li>
+							<li class="no-select-link pointer" onclick="getListingsPage(null)"><a class="no-select-link">All</a></li>
+							<li class="no-select-link pointer" onclick="getListingsPage('."'Request'".')"><a class="no-select-link">Requesting</a></li>
+							<li class="no-select-link pointer" onclick="getListingsPage('."'Supplying'".')"><a class="no-select-link">Supplying</a></li>
 						</ul>
 					</li>';
 

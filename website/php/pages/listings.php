@@ -1,6 +1,6 @@
 <?php
     echo '<div class="center wrapper">
-        <input type="text" id="searchValue" onkeyup="searchItemTables()" placeholder="Search for listing..">
+        <input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search for listing..">
         
             <div class="dropdown">
                 <form class="form" id="formLogin" onsubmit="getAllListings('."'listingArea','/php/itemGetAll.php'".',true); return false;">
