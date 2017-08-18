@@ -7,10 +7,41 @@
 	vertical-align: baseline;
 }
 
+.websiteLegend{
+	vertical-align: middle;
+	text-align: center;
+}
+
+.legendDetails{
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.facebook {
+	background:#4267b2;
+	color:white;
+}
+
+.facebook:focus, .facebook:hover {
+	background:#5277c2;
+	color:white;
+}
+
+.twitter {
+	background:#00aced;
+	color:white;
+}
+
+.twitter:focus, .twitter:hover {
+	background:#10bcfd;
+	color:white;
+}
+
 .btn-file {
     position: relative;
     overflow: hidden;
 }
+
 .btn-file input[type=file] {
     position: absolute;
     top: 0;

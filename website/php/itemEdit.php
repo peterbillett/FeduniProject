@@ -14,11 +14,21 @@
       return;
    }
 
-   if ($_SESSION['accountType'] > 1){
-      $stmt = $db->prepare("SELECT itemID, FKclient FROM item WHERE itemID=?");
+   if ($_SESSION['accountType'] === "3"){
+      $stmt = $db->prepare("SELECT itemID FROM item WHERE itemID=?");
       $stmt->execute(array($_GET['id']));
+   } elseif ($_SESSION['accountType'] === "2"){
+      $stmt = $db->prepare("SELECT groupID FROM organisation LEFT JOIN client ON client.FKgroup = organisation.groupID WHERE client.clientID=?");
+      $stmt->execute(array($_SESSION['userID']));
+      $clientOrg = $stmt->fetch(PDO::FETCH_ASSOC);
+      $stmt = $db->prepare("SELECT itemID FROM item WHERE itemID=? AND organisation=?");
+      $stmt->execute(array($_GET['id'],$clientOrg['groupID']));
+      if($stmt->rowCount() == 0){
+         $stmt = $db->prepare("SELECT itemID FROM item WHERE itemID=? AND FKclient=?");
+         $stmt->execute(array($_GET['id'],$_SESSION['userID']));
+      }
    } else {
-      $stmt = $db->prepare("SELECT itemID, FKclient FROM item WHERE itemID=? AND FKclient=?");
+      $stmt = $db->prepare("SELECT itemID FROM item WHERE itemID=? AND FKclient=?");
       $stmt->execute(array($_GET['id'],$_SESSION['userID']));
    }
    

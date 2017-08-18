@@ -7,7 +7,7 @@
          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">×</span>
          </button>
-            <p>You muat be logged in to create an account</p>
+            <p>You must be logged in to create an item</p>
             <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
       </div>';
    } else {
@@ -56,7 +56,6 @@
                <p>Failed to create item</p>
                <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
          </div>';
-         echo strtotime($_GET['endtime']);
       }
       else{
          echo $insertId;

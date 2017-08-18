@@ -16,7 +16,7 @@
 				</div>
 		      	<div class="modal-footer testing">
 		        	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-		        	<button class="btn btn-primary" onclick="deleteAccount()">Yes delete my account</button>
+		        	<button class="btn btn-primary" onclick="deleteAccount('.$_SESSION['userID'].')">Yes delete my account</button>
 		      	</div>';
 			} else {
 				echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">

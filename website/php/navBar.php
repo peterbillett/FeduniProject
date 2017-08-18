@@ -108,8 +108,11 @@
 
 					if (isset($_SESSION['userID'])){
 						echo '<li class="dropdown pointer"><a class="dropdown-toggle" data-toggle="dropdown">Your Account<span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li class="no-select-link pointer" onclick="getProfilePage()"><a class="no-select-link">Your Profile</a></li>
+							<ul class="dropdown-menu">';
+								if ($_SESSION['accountType'] === "3"){
+									echo '<li class="no-select-link pointer" onclick="sendOffPHP('."'pageDetails', 'php/pages/admin.php'".')"><a class="no-select-link">Admin Page</a></li>';
+								}
+								echo '<li class="no-select-link pointer" onclick="getProfilePage()"><a class="no-select-link">Your Profile</a></li>
 								<li class="no-select-link pointer" onclick="logout()"><a class="no-select-link">Logout</a></li>
 							</ul>
 						</li>

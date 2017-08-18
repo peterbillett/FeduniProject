@@ -20,7 +20,7 @@
 				// Checks to see if data insertion was successful
 				if($stmt->rowCount() == 1) {
 					$insertId = $db->lastInsertId();
-					$stmt = $db -> prepare ('UPDATE client SET FKgroup=? WHERE clientID=?');
+					$stmt = $db -> prepare ('UPDATE client SET FKgroup=?, accountType=2 WHERE clientID=?');
 					$stmt -> execute (array($insertId, $_SESSION['userID']));
 					echo $insertId;	
 				} else {

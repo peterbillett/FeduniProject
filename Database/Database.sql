@@ -1,14 +1,33 @@
+-- phpMyAdmin SQL Dump
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Aug 18, 2017 at 02:10 AM
+-- Server version: 10.1.21-MariaDB
+-- PHP Version: 7.1.1
+
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Database: `project01`
+--
 CREATE DATABASE IF NOT EXISTS `project01` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `project01`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `client`
+--
 
 DROP TABLE IF EXISTS `client`;
 CREATE TABLE IF NOT EXISTS `client` (
@@ -23,16 +42,50 @@ CREATE TABLE IF NOT EXISTS `client` (
   PRIMARY KEY (`clientID`),
   UNIQUE KEY `ClientID` (`clientID`),
   KEY `FKgroup` (`FKgroup`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `client`
+--
 
 INSERT INTO `client` (`clientID`, `clientFirstName`, `clientLastName`, `email`, `clientPassword`, `FKgroup`, `lastSeen`, `accountType`) VALUES
-(3, 'Gerard', 'May', 'gerdington@gmail.com', 'password', NULL, '2017-07-17 23:13:59', 1),
-(4, 'Tim', 'Russell', 'timjarussell@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 1, '2017-07-17 23:13:59', 1),
-(5, 'Tim', 'McKnight', 'tmcknight@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 2, '2017-07-17 23:13:59', 1),
-(6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 10, '2017-07-17 23:13:59', 1),
-(7, 'Peter', 'Billett', 'peterbillettsemail@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 17, '2017-07-17 23:13:59', 1),
-(8, 'Test', 'Test', 'test@test.com', 'password', 1, '2017-08-07 18:41:22', 2),
-(9, 'red', 'red', 'red@red.net', 'redalbert1', NULL, '2017-07-17 23:13:59', 1);
+(3, 'Gerard', 'May', 'gerdington@gmail.com', 'password', 36, '2017-08-15 14:52:39', 1),
+(4, 'Tim', 'Russell', 'timjarussell@gmail.com', 'password', 1, '2017-07-17 23:13:59', 1),
+(5, 'Tim', 'McKnight', 'tmcknight@gmail.com', 'password', 2, '2017-07-17 23:13:59', 1),
+(6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', 'password', 10, '2017-07-17 23:13:59', 1),
+(7, 'Peter', 'Billett', 'peterbillettsemail@gmail.com', 'password', 17, '2017-07-17 23:13:59', 1),
+(8, 'Test', 'Test', 'test@test.com', 'password', 1, '2017-08-18 10:00:38', 2),
+(9, 'red', 'red', 'red@red.net', 'redalbert1', NULL, '2017-08-16 10:42:47', 1),
+(11, 'Admin', 'Admin', 'admin@admin.com', 'password', NULL, '2017-08-18 09:03:02', 3),
+(13, 'red', 'albert', 'anaccount@email.net', 'redalbert1', 34, '2017-08-14 14:39:26', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `homepagenews`
+--
+
+DROP TABLE IF EXISTS `homepagenews`;
+CREATE TABLE IF NOT EXISTS `homepagenews` (
+  `newID` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL,
+  `news` varchar(20000) NOT NULL,
+  `newsDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`newID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `homepagenews`
+--
+
+INSERT INTO `homepagenews` (`newID`, `title`, `news`, `newsDate`) VALUES
+(1, 'Welcome', 'This is Connect Me Ballarat.', '2017-08-08 10:01:02');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `item`
+--
 
 DROP TABLE IF EXISTS `item`;
 CREATE TABLE IF NOT EXISTS `item` (
@@ -53,23 +106,27 @@ CREATE TABLE IF NOT EXISTS `item` (
   KEY `FKClient` (`FKclient`),
   KEY `FKGroupID` (`organisation`),
   KEY `FKTagID` (`FKTagID`)
-) ENGINE=InnoDB AUTO_INCREMENT=236 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `item`
+--
 
 INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKclient`, `finished`, `organisation`, `FKTagID`, `lastModifiedTime`, `perishable`, `location`, `image`) VALUES
-(3, 'Coaches', '2017-08-30 23:19:52', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 8, 1, 1, 6, '2017-08-17 23:21:55', 0, NULL, '3.png'),
+(3, 'Coaches', '2017-08-18 12:08:00', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 8, 1, 1, 6, '2017-08-18 09:29:26', 0, NULL, '3.png'),
 (4, 'Sausages', '2017-10-13 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 1, 2, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
-(5, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-01 17:39:23', 1, NULL, NULL),
-(6, 'Workers', '2017-10-05 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 0, NULL, 15, '2017-07-17 23:19:52', 0, NULL, NULL),
-(14, 'New name ', '2018-01-05 23:19:52', 'New description ', 'Supplying', 7, 0, 1, 1, '2017-07-17 23:19:52', 0, NULL, NULL),
-(15, 'TESTa', '2018-02-28 23:19:52', 'et', 'Request', 4, 0, 1, 1, '2017-07-24 23:19:52', 0, NULL, NULL),
+(5, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-01 17:39:23', 1, NULL, '5.png'),
+(6, 'Workers', '2017-10-05 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 1, NULL, 15, '2017-08-15 17:56:51', 0, NULL, NULL),
+(14, 'New name ', '2018-01-05 23:19:52', 'New description ', 'Supplying', 7, 1, 1, 1, '2017-08-15 17:56:53', 0, NULL, NULL),
+(15, 'TESTa', '2018-02-28 23:19:52', 'et', 'Request', 4, 0, 1, 1, '2017-08-09 18:03:59', 0, NULL, NULL),
 (17, 'testaaaa', '2017-10-21 01:06:00', 'as', 'Request', 3, 0, 1, 1, '2017-07-24 23:19:52', 0, NULL, NULL),
 (20, 'Testa', '2017-09-28 01:06:00', 'test', 'Request', 5, 0, 1, 1, '2017-07-31 23:19:52', 0, NULL, NULL),
-(22, 'Test0', '2017-09-25 10:06:00', 'Test0', 'Supplying', 9, 0, 1, 1, '2017-07-31 00:00:00', 0, NULL, NULL),
-(23, 'test', '2017-08-12 23:19:52', 'test', 'Request', 4, 0, 1, 7, '2017-07-31 23:19:52', 1, NULL, NULL),
+(22, 'Test0', '2017-09-25 10:06:00', 'Test0', 'Supplying', 9, 0, 1, 1, '2017-08-15 17:57:01', 0, NULL, NULL),
+(23, 'test', '2017-08-12 23:19:52', 'test', 'Request', 4, 2, 1, 7, '2017-07-31 23:19:52', 1, NULL, NULL),
 (24, 'Coaches', '2017-10-19 23:19:52', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 4, 0, 1, 6, '2017-07-17 23:19:52', 0, NULL, NULL),
 (25, 'Sausages', '2018-01-19 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 0, 2, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
-(26, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 0, 17, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
-(27, 'Workers', '2017-08-28 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 0, NULL, 15, '2017-07-17 23:19:52', 0, NULL, NULL),
+(26, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-15 17:57:07', 1, NULL, NULL),
+(27, 'Workers', '2017-08-28 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 1, NULL, 15, '2017-08-15 17:57:10', 0, NULL, NULL),
 (29, 'TesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttest', '2017-09-01 12:06:00', 'etsgsgswhwjbwdbdb', 'Request', 8, 0, 1, 1, '2017-07-18 11:49:03', 0, NULL, NULL),
 (30, 'testing', '2018-05-11 01:06:00', 'test', 'Request', 3, 0, 1, 1, '2017-07-27 23:19:52', 0, NULL, NULL),
 (31, 'test', '2017-11-10 01:06:00', 'test', 'Request', 6, 0, 1, 1, '2017-07-31 23:19:52', 0, NULL, NULL),
@@ -80,7 +137,7 @@ INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKc
 (37, 'test', '2017-08-01 10:06:00', 'test', 'Request', 9, 2, 1, 13, '2017-07-31 23:19:52', 0, NULL, NULL),
 (38, 'Coaches', '2017-07-30 23:19:52', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 4, 2, 1, 6, '2017-07-28 12:26:10', 0, NULL, NULL),
 (39, 'Sausages', '2017-04-13 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 2, 2, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
-(40, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 0, 17, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
+(40, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-15 17:57:16', 1, NULL, NULL),
 (41, 'Workers', '2017-04-28 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 2, NULL, 15, '2017-07-17 23:19:52', 0, NULL, NULL),
 (42, 'a', '2017-06-01 12:06:00', 'TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TEST', 'Request', 6, 2, 1, 1, '2017-07-17 23:19:52', 0, NULL, NULL),
 (43, 'et', '2017-06-01 12:06:00', 'et', 'Request', 6, 2, 1, 1, '2017-07-17 23:19:52', 0, NULL, NULL),
@@ -93,12 +150,12 @@ INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKc
 (50, 'Test', '2017-06-01 10:06:00', 'Test', 'Supplying', 9, 2, 1, 1, '2017-08-17 23:19:52', 0, NULL, NULL),
 (52, 'Coaches', '2017-07-30 23:19:52', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Supplying', 4, 2, 1, 6, '1900-01-31 00:00:00', 0, NULL, NULL),
 (53, 'Sausages', '2017-04-13 00:00:00', 'Looking for sausages for a fund raiser', 'Supplying', 5, 2, 2, 7, '2017-07-31 00:00:00', 1, NULL, NULL),
-(54, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 0, 17, 7, '2017-07-31 23:19:52', 1, NULL, NULL),
+(54, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-15 17:57:19', 1, NULL, NULL),
 (55, 'Workers', '2017-04-28 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 2, NULL, 15, '1900-01-31 00:00:00', 0, NULL, NULL),
 (56, 'a', '2017-06-01 12:06:00', 'TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TEST', 'Supplying', 3, 2, 1, 1, '1900-01-31 00:00:00', 0, NULL, NULL),
 (59, 'Coaches', '2017-07-30 23:19:52', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 4, 2, 1, 6, '2017-07-31 00:00:00', 0, NULL, NULL),
 (60, 'Sausages', '2017-04-13 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 2, 2, 7, '2017-07-31 23:19:52', 1, NULL, NULL),
-(61, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 0, 17, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
+(61, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-15 17:57:22', 1, NULL, NULL),
 (62, 'Workers', '2017-04-28 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 2, NULL, 15, '2017-08-17 23:19:00', 0, NULL, NULL),
 (63, 'a', '2017-06-01 12:06:00', 'TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TEST', 'Request', 3, 2, 1, 1, '2017-08-17 23:19:52', 0, NULL, NULL),
 (64, 'et', '2017-07-30 23:19:52', 'et', 'Request', 4, 2, 1, 1, '2017-07-17 23:19:52', 0, NULL, NULL),
@@ -112,7 +169,7 @@ INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKc
 (72, 'test', '2017-06-01 10:06:00', 'test', 'Request', 9, 2, 1, 1, '2017-07-17 23:19:52', 0, NULL, NULL),
 (73, 'Coaches', '2017-07-30 23:19:52', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 4, 2, 1, 6, '2017-07-17 23:19:52', 0, NULL, NULL),
 (74, 'Sausages', '2017-04-13 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 2, 2, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
-(75, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 0, 17, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
+(75, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-15 17:57:25', 1, NULL, NULL),
 (76, 'Workers', '2017-04-28 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 2, NULL, 15, '2017-07-17 23:19:52', 0, NULL, NULL),
 (77, 'a', '2017-06-01 12:06:00', 'TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TESTING TEST', 'Request', 6, 2, 1, 1, '2017-07-17 23:19:52', 0, NULL, NULL),
 (78, 'et', '2017-06-01 12:06:00', 'et', 'Request', 8, 2, 1, 1, '2017-07-17 23:19:52', 0, NULL, NULL),
@@ -251,10 +308,20 @@ INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKc
 (229, 'a', '2017-08-28 12:07:00', 'a', 'Request', 8, 1, NULL, 1, '2017-07-28 14:53:12', 0, NULL, NULL),
 (230, 'Organisation owner test', '2017-08-28 12:07:00', 'a', 'Request', 3, 0, 1, 1, '2017-07-28 14:55:03', 0, NULL, NULL),
 (231, 'Notification test', '2017-08-04 00:00:00', 'Test', 'Supplying', 5, 2, NULL, 1, '2017-08-02 20:21:46', 0, NULL, NULL),
-(232, 'Notification test', '2017-08-15 00:00:00', 'Test', 'Supplying', 8, 1, NULL, 1, '2017-08-02 20:39:44', 0, '7 Lyons St N, Ballarat Central VIC 3350', NULL),
-(233, 'a', '2017-08-11 12:08:00', 'a', 'Request', 8, 2, NULL, 1, '2017-08-05 15:08:16', 0, NULL, NULL),
-(234, 'TEST', '2017-08-16 03:08:00', 'TEST', 'Request', 8, 0, NULL, 1, '2017-08-05 15:39:27', 0, 'Ballarat YMCA, Lyons Street North, Ballarat Central, Victoria, Australia', NULL),
-(235, 'Picture upload test', '2017-10-20 01:10:00', 'TESTING', 'Supplying', 8, 0, 1, 1, '2017-08-07 13:21:47', 0, 'Ballarat YMCA, Lyons Street North, Ballarat Central, Victoria, Australia', '235.png');
+(232, 'Notification test', '2017-08-15 00:00:00', 'Test', 'Supplying', 8, 2, NULL, 1, '2017-08-02 20:39:44', 0, '7 Lyons St N, Ballarat Central VIC 3350', NULL),
+(235, 'Picture upload test', '2017-10-20 01:10:00', 'TESTING', 'Supplying', 8, 0, 1, 1, '2017-08-07 13:21:47', 0, 'Ballarat YMCA, Lyons Street North, Ballarat Central, Victoria, Australia', '235.png'),
+(236, 'test', '2017-08-09 05:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-08 17:15:16', 0, 'Null', NULL),
+(238, 'test', '2017-08-11 07:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-10 07:59:45', 0, 'Null', NULL),
+(239, 'Cleaning Products', '2017-08-23 05:08:00', 'A variety of Cleaning Products are available to anyone who wants them.', 'Supplying', 13, 0, NULL, 11, '2017-08-14 14:24:37', 1, '12 Doveton Street North, Ballarat Central, Victoria, Australia', NULL),
+(240, 'A Thing', '2017-08-15 12:08:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum commodo ut metus eu gravida. Duis feugiat eget mi sit amet lacinia. Phasellus suscipit tincidunt lorem at aliquam. Quisque posuere sem eget orci ultrices faucibus. Mauris venenatis tellus quis turpis feugiat, et ultricies orci tincidunt. In vel ligula rutrum, placerat arcu sed, facilisis quam. Vestibulum a odio eget diam interdum pellentesque. Aenean quis ipsum lobortis, volutpat magna non, dignissim lorem. Suspendisse id mi eli', 'Supplying', 9, 2, NULL, 10, '2017-08-15 17:41:36', 0, '10 Sturt Street, Ballarat Central, Victoria, Australia', '240.png'),
+(241, 'Onions', '2018-07-18 11:07:00', 'Several bags of onions available', 'Supplying', 9, 0, NULL, 7, '2017-08-16 10:41:14', 1, '1 Sturt Street, Ballarat Central, Victoria, Australia', NULL),
+(242, 'Clothing', '2017-08-17 10:08:00', 'Clean secondhand baby clothing wanted', 'Request', 9, 2, NULL, 14, '2017-08-16 10:45:05', 0, '1 Sturt Street, Ballarat Central, Victoria, Australia', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification`
+--
 
 DROP TABLE IF EXISTS `notification`;
 CREATE TABLE IF NOT EXISTS `notification` (
@@ -266,11 +333,22 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `FKTagID` (`FKTag`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `notification`
+--
+
 INSERT INTO `notification` (`NotificationID`, `FKClient`, `FKTag`) VALUES
 (4, 8, 8),
 (6, 3, 13),
 (8, 8, 7),
-(11, 8, 6);
+(11, 8, 6),
+(12, 13, 7);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `organisation`
+--
 
 DROP TABLE IF EXISTS `organisation`;
 CREATE TABLE IF NOT EXISTS `organisation` (
@@ -280,10 +358,14 @@ CREATE TABLE IF NOT EXISTS `organisation` (
   `currentNews` varchar(2000) DEFAULT NULL,
   `address` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`groupID`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `organisation`
+--
 
 INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`, `address`) VALUES
-(1, 'YMCA Ballarat', '03 5329 2800 ballarat.hr@ymca.org.au', NULL, 'YMCA Ballarat'),
+(1, 'YMCA Ballarat', '(03) 5329 2800 ballarat.hr@ymca.org.au', '', 'YMCA Ballarat'),
 (2, 'Ballarat Health Services', 'https://www.bhs.org.au/how-we-can-help', NULL, 'Ballarat Health Services'),
 (3, 'Uniting Care Ballarat', '105 Dana Street PO Box 608 Ballarat VIC 3353 Phone 03 5332 1286', NULL, 'Uniting Care Ballarat'),
 (4, 'Southern Cross Care', 'https://www.sccv.org.au/contact-us-(1)', NULL, 'Southern Cross Care'),
@@ -310,8 +392,15 @@ INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`, `ad
 (28, 'Senior Citizens Clubs', 'http://www.ballarat.vic.gov.au/pc/community-directory.aspx?Parent=110202&Child=110203', NULL, 'Senior Citizens Clubs'),
 (29, 'Ballarat Community Garden', 'http://ballaratcommunitygarden.org.au/contact-us/', NULL, 'Ballarat Community Garden'),
 (30, 'Carl Sagan Appreciation Group', 'Appreciating the work and life of Carl Sagan', NULL, 'Carl Sagan Appreciation Group'),
-(33, 'TEST', 'TEST', NULL, NULL),
-(34, 'TEST2', 'TEST', NULL, NULL);
+(34, 'TEST2', 'TEST', NULL, NULL),
+(35, 'REEEEEE', 'REEE', NULL, NULL),
+(36, 'gdsfg', 'dsfgsv', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tag`
+--
 
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE IF NOT EXISTS `tag` (
@@ -319,6 +408,10 @@ CREATE TABLE IF NOT EXISTS `tag` (
   `name` varchar(50) NOT NULL,
   PRIMARY KEY (`tagID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tag`
+--
 
 INSERT INTO `tag` (`tagID`, `name`) VALUES
 (1, 'Other'),
@@ -335,15 +428,27 @@ INSERT INTO `tag` (`tagID`, `name`) VALUES
 (14, 'Baby goods'),
 (15, 'Workers');
 
+--
+-- Constraints for dumped tables
+--
 
+--
+-- Constraints for table `client`
+--
 ALTER TABLE `client`
   ADD CONSTRAINT `FKGroup` FOREIGN KEY (`FKgroup`) REFERENCES `organisation` (`groupID`);
 
+--
+-- Constraints for table `item`
+--
 ALTER TABLE `item`
   ADD CONSTRAINT `FKClient` FOREIGN KEY (`FKclient`) REFERENCES `client` (`clientID`),
   ADD CONSTRAINT `FKGroupID` FOREIGN KEY (`organisation`) REFERENCES `organisation` (`groupID`),
   ADD CONSTRAINT `item_ibfk_1` FOREIGN KEY (`FKTagID`) REFERENCES `tag` (`tagID`);
 
+--
+-- Constraints for table `notification`
+--
 ALTER TABLE `notification`
   ADD CONSTRAINT `FKClientID` FOREIGN KEY (`FKClient`) REFERENCES `client` (`clientID`),
   ADD CONSTRAINT `FKTagID` FOREIGN KEY (`FKTag`) REFERENCES `tag` (`tagID`);

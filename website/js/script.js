@@ -65,8 +65,38 @@ $(function () {
 	xmlhttp.open("GET", "/php/navBar.php", true);
 	xmlhttp.send();
 
-	getIndexPage();
+	//Load correct page content
+	var itemID = getUrlParameter("item");
+	var orgID = getUrlParameter("organisation");
+	if (itemID != null) {
+		getListingsPage(null);
+		getItemModal(itemID);
+		$('#modal-modalDetails').modal('show');
+	} else if (orgID != null) {
+		getOrganisationsPage();
+		getOrganisationModal(orgID);
+		$('#modal-modalDetails').modal('show');
+	} else {
+		getIndexPage();
+	}	
 });
+
+
+//https://stackoverflow.com/questions/19491336/get-url-parameter-jquery-or-how-to-get-query-string-values-in-js 15-08-2017
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
 
 
 function submitFile(itemID) {
@@ -249,7 +279,8 @@ function filterNotificationTable(tagToToggle) {
 		});
 	}
 }
-
+var hpAvailable = "0";
+var hpFinished = "0";
 
 function getIndexPage() {
 	document.getElementById("loadingBar").style.display = "block";
@@ -264,6 +295,15 @@ function getIndexPage() {
 			    $("#text-carousel").swipeleft(function() {  
 			        $(this).carousel("next");  
 			    });
+			    $('.typist').typist({
+					speed: 17,
+					text: " - ",
+					cursor: false
+				});
+				hpAvailable = $("#hpAvailableID").text();
+				hpFinished = $("#hpFinishedID").text();
+				$('.typist').animate({backgroundColor: "#5CB85C", color: "white"});
+				homepageTypist();
 		    }
 		    else {
 		        setTimeout(checkIfCarouselIsReady, 1000); //If it is not ready then check again in 1 second
@@ -274,19 +314,53 @@ function getIndexPage() {
 }
 
 
-function deleteAccount() {
+function homepageTypist() {
+	if($('.typist').length) {
+		$('.typist').typistAdd('Available: ' + hpAvailable);
+		$('.typist').typistPause(5000);
+		$('.typist').typistRemove(11 + hpAvailable.length, function(){
+			$(".typist").animate({backgroundColor: "#337ab7"});
+		});
+		$('.typist').typistAdd('Finished: ' + hpFinished);
+		$('.typist').typistPause(5000);
+		$('.typist').typistRemove(10 + hpFinished.length, function(){
+			$(".typist").animate({backgroundColor: "#5CB85C"});
+			homepageTypist();
+		});
+	}
+}
+
+
+function deleteAccount(userID) {
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText.substring(0,21) != '<br><div class="alert') {
-				document.getElementById("deleteAccountMessage").innerHTML = "Account deleted. Reloading site...";
 				location.reload();
+				document.getElementById("deleteAccountMessage").innerHTML = "Account deleted. Reloading site...";
 			} else {
 				document.getElementById("deleteAccountMessage").innerHTML = this.responseText;
 			}
 		}
 	};
-	xmlhttp.open("POST", "/php/accountDelete.php", true);
+	xmlhttp.open("POST", "/php/accountDelete.php?id="+userID, true);
+	xmlhttp.send();
+}
+
+
+function organisationRemove(orgID) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText.substring(0,21) != '<br><div class="alert') {
+				location.reload();
+				document.getElementById("organisationEditMessage").innerHTML = "Organisation deleted. Reloading site...";
+			} else {
+				document.getElementById("organisationEditMessage").innerHTML = this.responseText;
+			}
+		}
+	};
+	xmlhttp.open("POST", "/php/organisationDelete.php?id="+orgID, true);
 	xmlhttp.send();
 }
 
@@ -637,6 +711,23 @@ function logout() {
 }
 
 
+function getUserModal(userID) {
+	$("#modalDetails").html("");
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText == ""){
+				$('#modalDetails').modal('hide');
+			} else {
+			 	$("#modalDetails").html(this.responseText);
+			}			
+		}
+	};
+	xmlhttp.open("GET", "/php/userModal.php?id="+userID, true);
+	xmlhttp.send();
+}
+
+
 function getItemModal(itemID) {
 	document.getElementById("modalDetails").innerHTML = '<img class="loading" src="/img/loading.gif" alt="Loading items...">';
 	var xmlhttp = new XMLHttpRequest();
@@ -752,23 +843,21 @@ function createNewListing() {
 }
 
 
-
 function listingsPageCallback(callback){
-	callback(getListingsPage('php/itemGetAll.php'));
+	callback(getListingsPage(null));
 }
 
 
-function changeHiddenState() {
-    var itemD = document.getElementById("itemInfo");
-    var itemE = document.getElementById("itemEditing");
-    document.getElementById("itemInfoMessage").innerHTML = "";
+function changeHiddenState(idType) {
+    var changeInfo = document.getElementById(idType + "Info");
+    var changeEditing = document.getElementById(idType + "Editing");
     
-    if (itemD.style.display === 'none') {
-        itemD.style.display = 'block';
-        itemE.style.display = 'none';
+    if (changeInfo.style.display === 'none') {
+        changeInfo.style.display = 'block';
+        changeEditing.style.display = 'none';
     } else {
-        itemE.style.display = 'block';
-        itemD.style.display = 'none';
+        changeEditing.style.display = 'block';
+        changeInfo.style.display = 'none';
     }
 }
 
@@ -812,7 +901,13 @@ function removeListing(itemID) {
 		xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				if (this.responseText == "success") {
-					//UPDATE HERE
+					if ($('#itemTableID'+itemID).length) {
+						$('#itemTableID'+itemID).remove();
+					} else if($('#profileListingID'+itemID).length) {
+						$('#profileListingID'+itemID).remove();
+					} else if ($('#carouselItemID'+itemID).length) {
+						$('#carouselItemID'+itemID).remove();
+					}
 					$('#modal-modalDetails').modal('hide');
 				} else {
 					document.getElementById("itemEditMessage").innerHTML = this.responseText;
@@ -827,8 +922,8 @@ function removeListing(itemID) {
 
 function editListing(itemID) {
 	document.getElementById("itemEditMessage").innerHTML = "";
-	var newDescription = document.getElementById("newDescription");
 	var newTitle = document.getElementById("newTitle");
+	var newDescription = document.getElementById("newDescription");
 	var newCategory = document.getElementById("newCategory");
 	var newDateTime = document.getElementById("newDateTime");
 	if (newDescription.value != "" && newTitle.value != "" && newDateTime.value != "" ){
@@ -851,16 +946,19 @@ function editListing(itemID) {
 }
 
 
-function updateItemTable(itemID) {
+function updateItemTable(itemID,locationType) {
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText != "failed") {
-				getItemModal(itemID);
-				if (document.getElementById("itemTableID"+itemID) != null){
+				if ($('#itemTableID'+itemID).length) {
 					createItemTable(JSON.parse(this.responseText), function(result){
-						document.getElementById("itemTableID"+itemID).innerHTML = result;
+						$('#itemTableID'+itemID).html(result);
 						activateLazyLoad();
+					});
+				} else if($('#profileListingID'+itemID).length){
+					updateProfileItem(JSON.parse(this.responseText), '#profileListingID'+itemID, function(result){
+						$('#profileListingID'+itemID).html(result);
 					});
 				}
 			} else {
@@ -869,6 +967,94 @@ function updateItemTable(itemID) {
 		}
 	};
 	xmlhttp.open("GET", "/php/itemGetSingle.php?id="+itemID, true);
+	xmlhttp.send();
+}
+
+
+function updateProfileItem(itemObj, itemID, callback){
+    switch (itemObj.finished) {
+        case "0":
+        	jQuery(itemID).removeClass().addClass('list-group-item').addClass('available');
+            break;
+        case "1":
+            jQuery(itemID).removeClass().addClass('list-group-item').addClass('wanted');
+            break;
+        default:
+            jQuery(itemID).removeClass().addClass('list-group-item').addClass('primary');
+    }
+    var updatedProfileItem = "";
+    updatedProfileItem += '<button type="button" class="table-button" onclick="getItemModal(' + itemObj.itemID + ')" data-toggle="modal" data-target="#modal-modalDetails">' + itemObj.name + '</button></li>';
+  	callback(updatedProfileItem);
+}
+
+
+function editOrganisation(orgID) {
+	document.getElementById("organisationEditMessage").innerHTML = "";
+	var updateName = document.getElementById("updateName").value;
+	var updateDescription = document.getElementById("updateDescription").value;
+	var updateCurrentNews = document.getElementById("updateCurrentNews").value;
+	if (updateName.value != "" && updateDescription != ""){
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				if (this.responseText == "success") {
+					getOrganisationModal(orgID);
+					updateOrganisationTable(orgID);
+				} else {
+					document.getElementById("organisationEditMessage").innerHTML = this.responseText;
+				}			
+			}
+		};
+		xmlhttp.open("GET", "/php/organisationEdit.php?id="+orgID+"&name="+updateName+"&description="+updateDescription+"&currentNews="+updateCurrentNews, true);
+		xmlhttp.send();
+	} else {
+		document.getElementById("organisationEditMessage").innerHTML = '<div class="alert alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><p>Both name and description must not be blank</p><p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p></div>';
+	}
+}
+
+
+function createNewHomepageMessage(){
+	document.getElementById("hpCreateMessage").innerHTML = "";
+	var newTitle = document.getElementById("hpTitle").value;
+	var newDescription = document.getElementById("hpDescription").value;
+	if (newDescription.value != "" && newTitle.value != ""){
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				if (this.responseText == "success") {
+					document.getElementById("hpCreateMessage").innerHTML = "The homepage message has been updated.";
+					document.getElementById("hpTitle").value = "";
+					document.getElementById("hpDescription").value = "";
+				} else {
+					document.getElementById("hpCreateMessage").innerHTML = this.responseText;
+				}			
+			}
+		};
+		xmlhttp.open("GET", "/php/updateHomepageMessage.php?title="+newTitle+"&description="+newDescription, true);
+		xmlhttp.send();
+	} else {
+		document.getElementById("hpCreateMessage").innerHTML = '<div class="alert alert-danger alert-dismissible fade in" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button><p>All fields must not be empty!</p><p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p></div>';
+	}
+}
+
+
+function updateOrganisationTable(orgID) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			if (this.responseText != "failed") {
+				if (document.getElementById("organisationTableID"+orgID) != null){
+					createOrganisationTable(JSON.parse(this.responseText), function(result){
+						document.getElementById("organisationTableID"+orgID).innerHTML = result;
+						activateLazyLoad();
+					});
+				}
+			} else {
+				location.reload();
+			}			
+		}
+	};
+	xmlhttp.open("GET", "/php/organisationGetSingle.php?id="+orgID, true);
 	xmlhttp.send();
 }
 
@@ -979,7 +1165,12 @@ function createItemTable(itemObj, callback){
 		            		default:
 		                        newItemTable += 'class="primary" value="finished">';
 		            	}
-						newItemTable += '<h2>' + itemObj.name + '</h2>';
+		            	if (itemObj.category == "Request") {
+		            		newItemTable += '<span class="fa fa-shopping-cart  dontHideBadge" style="display: flex;">';
+		            	} else {
+		            		newItemTable += '<span class="glyphicon glyphicon-gift  dontHideBadge" style="display: flex;">';
+		            	}
+						newItemTable += '<h2> ' + itemObj.name + '</h2></span>';
 		      		newItemTable += '</td>';
 	      		newItemTable += '</tr>';
 
@@ -1038,7 +1229,7 @@ function createOrganisationList(obj, callback){
 		}
 
 		currentOrg++;
-		organisationsStr += '<li id="organisationTableID' + obj[k].itemID + '">';
+		organisationsStr += '<li id="organisationTableID' + obj[k].groupID + '">';
 		createOrganisationTable(obj[k], function(result){
 			organisationsStr += result;
 			organisationsStr += '</li>';
