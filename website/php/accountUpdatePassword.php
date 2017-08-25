@@ -3,8 +3,9 @@
 	include("config.php");
 
 	if (isset($_SESSION['userID'])){
+    $hashedPassword = password_hash($_GET['newPassword'], PASSWORD_DEFAULT);
 		$stmt = $db->prepare("UPDATE client SET clientPassword=? WHERE clientID=?");
-		$stmt->execute(array($_GET['newPassword'], $_SESSION['userID']));
+		$stmt->execute(array($hashedPassword, $_SESSION['userID']));
       	if($stmt->rowCount() == 0){
       		echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
                <button type="button" class="close" data-dismiss="alert" aria-label="Close">

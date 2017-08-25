@@ -29,7 +29,7 @@
          } else {
             $address = NULL;
          }
-      } elseif ($_GET['mapLocation'] == "NULL") {
+      } elseif ($_GET['mapLocation'] == "Null") {
          $address = NULL;
       } else {
          $address = $_GET['mapLocation'];
@@ -59,6 +59,9 @@
       }
       else{
          echo $insertId;
+         $stmt = $db->prepare("INSERT INTO emailqueue(itemNumber,emailType) VALUES(:itemNumber,:emailType)");
+         $stmt->execute(array(':itemNumber' => $insertId, ':emailType' => 1));
+         //system('cmd /c C:\xampp\htdocs\website\sendEmail.bat');
       }
    }
 ?>

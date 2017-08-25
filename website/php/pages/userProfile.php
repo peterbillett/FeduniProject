@@ -150,7 +150,7 @@
                                             default:
                                                 echo 'primary">';
                                         }
-                                        echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails"><span style="display: flex;"><span class="fa fa-shopping-cart dontHideBadge"></span> '.$row['name'].'</span></button></li>';
+                                        echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails"><span class="dontHideBadge" style="display: flex;"><span class="fa fa-shopping-cart dontHideBadge"></span> '.$row['name'].'</span></button></li>';
                                     }
                                 }
                                 echo'</ul>
@@ -176,7 +176,7 @@
                                             default:
                                                 echo 'primary">';
                                         }
-                                        echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails"><span style="display: flex;"><span class="glyphicon glyphicon-gift dontHideBadge"></span> '.$row['name'].'</span></button></li>';
+                                        echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails"><span class="dontHideBadge" style="display: flex;"><span class="glyphicon glyphicon-gift dontHideBadge"></span> '.$row['name'].'</span></button></li>';
                                     }
                                 }
                                 echo'</ul>

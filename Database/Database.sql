@@ -3,11 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 18, 2017 at 02:10 AM
+-- Generation Time: Aug 25, 2017 at 11:52 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
-SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
@@ -35,29 +34,45 @@ CREATE TABLE IF NOT EXISTS `client` (
   `clientFirstName` varchar(35) NOT NULL,
   `clientLastName` varchar(35) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `clientPassword` varchar(50) NOT NULL,
+  `clientPassword` varchar(100) NOT NULL,
   `FKgroup` int(11) DEFAULT NULL,
   `lastSeen` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `accountType` tinyint(3) NOT NULL DEFAULT '1',
   PRIMARY KEY (`clientID`),
   UNIQUE KEY `ClientID` (`clientID`),
   KEY `FKgroup` (`FKgroup`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `client`
 --
 
 INSERT INTO `client` (`clientID`, `clientFirstName`, `clientLastName`, `email`, `clientPassword`, `FKgroup`, `lastSeen`, `accountType`) VALUES
-(3, 'Gerard', 'May', 'gerdington@gmail.com', 'password', 36, '2017-08-15 14:52:39', 1),
-(4, 'Tim', 'Russell', 'timjarussell@gmail.com', 'password', 1, '2017-07-17 23:13:59', 1),
-(5, 'Tim', 'McKnight', 'tmcknight@gmail.com', 'password', 2, '2017-07-17 23:13:59', 1),
-(6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', 'password', 10, '2017-07-17 23:13:59', 1),
-(7, 'Peter', 'Billett', 'peterbillettsemail@gmail.com', 'password', 17, '2017-07-17 23:13:59', 1),
-(8, 'Test', 'Test', 'test@test.com', 'password', 1, '2017-08-18 10:00:38', 2),
-(9, 'red', 'red', 'red@red.net', 'redalbert1', NULL, '2017-08-16 10:42:47', 1),
-(11, 'Admin', 'Admin', 'admin@admin.com', 'password', NULL, '2017-08-18 09:03:02', 3),
-(13, 'red', 'albert', 'anaccount@email.net', 'redalbert1', 34, '2017-08-14 14:39:26', 1);
+(3, 'Gerard', 'May', 'gerdington@gmail.com', '$2y$10$OloLj1M/1A1lVHlpis7lnerPIqhtCS8/lEGCK0xMkfqKUauIosRTm', NULL, '2017-08-18 21:53:37', 2),
+(4, 'Tim', 'Russell', 'timjarussell@gmail.com', '$2y$10$DDBKUS3vsP76aLLHVr/1be.1kDYmE8oycrSmQnBsnM35Rg8crJ91C', 1, '2017-07-17 23:13:59', 1),
+(5, 'Tim', 'McKnight', 'tmcknight@gmail.com', '$2y$10$UMsc7xqP85HaKgRPYWY3j.Pvgx0qNNpd8.B0qi9EsUXGme3wT.1jy', 2, '2017-07-17 23:13:59', 1),
+(6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', '$2y$10$gGhELtJXzo.t2txN6fDYYugaxP5d31nJRMzYfjGd7Yn9wHdIS7IRS', 10, '2017-07-17 23:13:59', 1),
+(7, 'Peter', 'Billett', 'jeneralpanano@hotmail.com', '$2y$10$fsJv77cLdQIs2EM90QOnzOCTXh56TcoRCw13C/S8USv1gsxROt4Py', 17, '2017-07-17 23:13:59', 1),
+(8, 'Test', 'Test', 'test@test.com', '$2y$10$Y9i1Da.Ss0XwPWzsrMY6BuOkYWzobwsSs0HvQMi5wm56B5EyEk99u', 1, '2017-08-25 23:04:47', 2),
+(9, 'red', 'red', 'red@red.net', '$2y$10$iEHrxPtWa24Z6y4gznQ8.Ozl9NW.oSu3a0xRPdrdGRsdqRHUHiSrO', NULL, '2017-08-25 10:23:48', 1),
+(11, 'Admin', 'Admin', 'admin@admin.com', '$2y$10$vROLCDI7msSzssmh1.8E.uTrOwjZTcX.QMj0Ey2uMLPStxYbQkpc2', NULL, '2017-08-25 17:19:51', 3),
+(13, 'red', 'albert', 'anaccount@email.net', '$2y$10$JPCWSI3NKM.43GboQjwtjeYtc2CbXsaABQx.8zpP1JEv1SdziQyO2', NULL, '2017-08-25 10:29:17', 1),
+(14, 'test', 'test', 'testtest@test.com', '$2y$10$kD8XZyhz5VlG638F2L8d0.el0H73Yip9nzjlXL49FfDR5u.sjb8aO', NULL, '2017-08-25 22:19:55', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emailqueue`
+--
+
+DROP TABLE IF EXISTS `emailqueue`;
+CREATE TABLE IF NOT EXISTS `emailqueue` (
+  `emailID` int(11) NOT NULL AUTO_INCREMENT,
+  `itemNumber` int(11) NOT NULL,
+  `emailType` tinyint(5) NOT NULL,
+  PRIMARY KEY (`emailID`),
+  KEY `itemNumber` (`itemNumber`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -72,14 +87,14 @@ CREATE TABLE IF NOT EXISTS `homepagenews` (
   `news` varchar(20000) NOT NULL,
   `newsDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`newID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `homepagenews`
 --
 
 INSERT INTO `homepagenews` (`newID`, `title`, `news`, `newsDate`) VALUES
-(1, 'Welcome', 'This is Connect Me Ballarat.', '2017-08-08 10:01:02');
+(1, 'WARNING', 'The website is currently in development and will have some broken features during this time.', '2017-08-08 10:01:02');
 
 -- --------------------------------------------------------
 
@@ -106,19 +121,19 @@ CREATE TABLE IF NOT EXISTS `item` (
   KEY `FKClient` (`FKclient`),
   KEY `FKGroupID` (`organisation`),
   KEY `FKTagID` (`FKTagID`)
-) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=285 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `item`
 --
 
 INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKclient`, `finished`, `organisation`, `FKTagID`, `lastModifiedTime`, `perishable`, `location`, `image`) VALUES
-(3, 'Coaches', '2017-08-18 12:08:00', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 8, 1, 1, 6, '2017-08-18 09:29:26', 0, NULL, '3.png'),
+(3, 'Coaches', '2017-08-18 12:08:00', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 8, 2, 1, 6, '2017-08-18 09:29:26', 0, NULL, '3.png'),
 (4, 'Sausages', '2017-10-13 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 1, 2, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
 (5, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-01 17:39:23', 1, NULL, '5.png'),
 (6, 'Workers', '2017-10-05 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 1, NULL, 15, '2017-08-15 17:56:51', 0, NULL, NULL),
 (14, 'New name ', '2018-01-05 23:19:52', 'New description ', 'Supplying', 7, 1, 1, 1, '2017-08-15 17:56:53', 0, NULL, NULL),
-(15, 'TESTa', '2018-02-28 23:19:52', 'et', 'Request', 4, 0, 1, 1, '2017-08-09 18:03:59', 0, NULL, NULL),
+(15, 'TESTa', '2018-02-28 23:19:52', 'et', 'Request', 4, 0, 1, 1, '2017-08-18 16:58:55', 0, NULL, NULL),
 (17, 'testaaaa', '2017-10-21 01:06:00', 'as', 'Request', 3, 0, 1, 1, '2017-07-24 23:19:52', 0, NULL, NULL),
 (20, 'Testa', '2017-09-28 01:06:00', 'test', 'Request', 5, 0, 1, 1, '2017-07-31 23:19:52', 0, NULL, NULL),
 (22, 'Test0', '2017-09-25 10:06:00', 'Test0', 'Supplying', 9, 0, 1, 1, '2017-08-15 17:57:01', 0, NULL, NULL),
@@ -127,7 +142,7 @@ INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKc
 (25, 'Sausages', '2018-01-19 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 0, 2, 7, '2017-07-17 23:19:52', 1, NULL, NULL),
 (26, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-08-15 17:57:07', 1, NULL, NULL),
 (27, 'Workers', '2017-08-28 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 1, NULL, 15, '2017-08-15 17:57:10', 0, NULL, NULL),
-(29, 'TesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttestTesttesttest', '2017-09-01 12:06:00', 'etsgsgswhwjbwdbdb', 'Request', 8, 0, 1, 1, '2017-07-18 11:49:03', 0, NULL, NULL),
+(29, 'urieo', '2017-08-18 12:08:00', 'etsgsgswhwjbwdbdb', 'Request', 8, 2, 1, 1, '2017-08-18 18:49:12', 0, NULL, '29.png'),
 (30, 'testing', '2018-05-11 01:06:00', 'test', 'Request', 3, 0, 1, 1, '2017-07-27 23:19:52', 0, NULL, NULL),
 (31, 'test', '2017-11-10 01:06:00', 'test', 'Request', 6, 0, 1, 1, '2017-07-31 23:19:52', 0, NULL, NULL),
 (32, 'test', '2017-10-15 23:19:52', 'test', 'Request', 4, 0, 1, 1, '2017-07-31 00:00:00', 0, NULL, NULL),
@@ -312,10 +327,47 @@ INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKc
 (235, 'Picture upload test', '2017-10-20 01:10:00', 'TESTING', 'Supplying', 8, 0, 1, 1, '2017-08-07 13:21:47', 0, 'Ballarat YMCA, Lyons Street North, Ballarat Central, Victoria, Australia', '235.png'),
 (236, 'test', '2017-08-09 05:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-08 17:15:16', 0, 'Null', NULL),
 (238, 'test', '2017-08-11 07:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-10 07:59:45', 0, 'Null', NULL),
-(239, 'Cleaning Products', '2017-08-23 05:08:00', 'A variety of Cleaning Products are available to anyone who wants them.', 'Supplying', 13, 0, NULL, 11, '2017-08-14 14:24:37', 1, '12 Doveton Street North, Ballarat Central, Victoria, Australia', NULL),
+(239, 'Cleaning Products', '2017-08-23 05:08:00', 'A variety of Cleaning Products are available to anyone who wants them.', 'Supplying', 13, 2, NULL, 11, '2017-08-14 14:24:37', 1, '12 Doveton Street North, Ballarat Central, Victoria, Australia', NULL),
 (240, 'A Thing', '2017-08-15 12:08:00', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum commodo ut metus eu gravida. Duis feugiat eget mi sit amet lacinia. Phasellus suscipit tincidunt lorem at aliquam. Quisque posuere sem eget orci ultrices faucibus. Mauris venenatis tellus quis turpis feugiat, et ultricies orci tincidunt. In vel ligula rutrum, placerat arcu sed, facilisis quam. Vestibulum a odio eget diam interdum pellentesque. Aenean quis ipsum lobortis, volutpat magna non, dignissim lorem. Suspendisse id mi eli', 'Supplying', 9, 2, NULL, 10, '2017-08-15 17:41:36', 0, '10 Sturt Street, Ballarat Central, Victoria, Australia', '240.png'),
 (241, 'Onions', '2018-07-18 11:07:00', 'Several bags of onions available', 'Supplying', 9, 0, NULL, 7, '2017-08-16 10:41:14', 1, '1 Sturt Street, Ballarat Central, Victoria, Australia', NULL),
-(242, 'Clothing', '2017-08-17 10:08:00', 'Clean secondhand baby clothing wanted', 'Request', 9, 2, NULL, 14, '2017-08-16 10:45:05', 0, '1 Sturt Street, Ballarat Central, Victoria, Australia', NULL);
+(242, 'Clothing', '2017-08-17 10:08:00', 'Clean secondhand baby clothing wanted', 'Request', 9, 2, NULL, 14, '2017-08-16 10:45:05', 0, '1 Sturt Street, Ballarat Central, Victoria, Australia', NULL),
+(243, 'A thing of value', '2017-08-23 04:08:00', 'Only one thing get it quick', 'Supplying', 13, 2, NULL, 1, '2017-08-18 16:28:51', 0, '1 Sturt Street, Ballarat Central, Victoria, Australia', NULL),
+(244, 'apple', '2017-08-19 05:08:00', 'apple', 'Request', 3, 2, NULL, 1, '2017-08-18 18:05:27', 0, 'Null', NULL),
+(245, 'TEST', '2017-08-19 06:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-18 18:08:26', 0, '8 Eleanor Drive, Lucas, Victoria, Australia', NULL),
+(246, 'TEST', '2017-08-19 06:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-18 18:10:14', 0, 'Ararat RSL, 101 High Street, Ararat, Victoria, Australia', NULL),
+(247, 'More Things', '2017-09-05 06:09:00', 'Things for supply', 'Supplying', 9, 1, NULL, 8, '2017-08-22 10:14:08', 1, '1813 Sturt Street, Alfredton, Victoria, Australia', NULL),
+(248, 'TEST', '2017-08-24 10:08:00', 'TEST', 'Supplying', 8, 2, NULL, 6, '2017-08-22 10:16:10', 1, NULL, NULL),
+(249, 'TEST', '2017-08-23 12:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-22 12:46:10', 0, 'Null', NULL),
+(250, 'TEST', '2017-08-23 12:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-22 12:48:39', 0, 'Null', NULL),
+(251, 'TEST', '2017-08-23 12:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-22 12:56:58', 0, 'Null', NULL),
+(252, 'TEST', '2017-08-23 12:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-22 12:58:36', 0, 'Null', NULL),
+(253, 'TEST', '2017-08-23 12:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-22 12:58:49', 0, 'Null', NULL),
+(254, 'TEST', '2017-08-23 01:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-22 13:29:40', 0, 'Null', NULL),
+(255, 'test', '2017-08-23 01:08:00', 'TEST', 'Request', 8, 2, NULL, 1, '2017-08-22 13:34:32', 0, 'Null', NULL),
+(256, 'test', '2017-08-23 01:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 13:35:46', 0, 'Null', NULL),
+(257, 'test', '2017-08-23 01:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 13:39:39', 0, 'Null', NULL),
+(258, 'test', '2017-08-23 01:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 13:40:12', 0, 'Null', NULL),
+(259, 'test', '2017-08-23 01:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 13:40:47', 0, 'Null', NULL),
+(260, 'test', '2017-08-23 01:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 13:45:33', 0, 'Null', NULL),
+(261, 'test', '2017-08-23 01:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 13:46:34', 0, 'Null', NULL),
+(262, 'test', '2017-08-23 01:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 13:49:53', 0, 'Null', NULL),
+(263, 'Test item', '2017-08-23 02:08:00', 'testing email send', 'Request', 8, 2, NULL, 1, '2017-08-22 14:07:56', 0, 'Null', NULL),
+(264, 'TEST', '2017-08-23 02:08:00', 'TESTING', 'Request', 8, 2, NULL, 1, '2017-08-22 14:09:42', 0, 'Null', NULL),
+(265, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:11:58', 0, 'Null', NULL),
+(266, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:12:33', 0, 'Null', NULL),
+(267, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:13:00', 0, 'Null', NULL),
+(268, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:14:10', 0, 'Null', NULL),
+(269, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:16:24', 0, 'Null', NULL),
+(270, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:17:35', 0, 'Null', NULL),
+(271, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:20:50', 0, 'Null', NULL),
+(272, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:22:02', 0, 'Null', NULL),
+(273, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:31:17', 0, 'Null', NULL),
+(274, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:38:24', 0, 'Null', NULL),
+(275, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:44:13', 0, 'Null', NULL),
+(276, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:45:17', 0, 'Null', NULL),
+(277, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:46:02', 0, 'Null', NULL),
+(278, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:46:57', 0, 'Null', NULL),
+(279, 'test', '2017-08-23 02:08:00', 'test', 'Request', 8, 2, NULL, 1, '2017-08-22 14:47:32', 0, 'Null', NULL);
 
 -- --------------------------------------------------------
 
@@ -331,18 +383,19 @@ CREATE TABLE IF NOT EXISTS `notification` (
   PRIMARY KEY (`NotificationID`),
   KEY `FKClientID` (`FKClient`),
   KEY `FKTagID` (`FKTag`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `notification`
 --
 
 INSERT INTO `notification` (`NotificationID`, `FKClient`, `FKTag`) VALUES
-(4, 8, 8),
-(6, 3, 13),
-(8, 8, 7),
-(11, 8, 6),
-(12, 13, 7);
+(4, 7, 8),
+(6, 7, 13),
+(8, 7, 5),
+(11, 7, 1),
+(12, 7, 7),
+(13, 7, 10);
 
 -- --------------------------------------------------------
 
@@ -358,14 +411,14 @@ CREATE TABLE IF NOT EXISTS `organisation` (
   `currentNews` varchar(2000) DEFAULT NULL,
   `address` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`groupID`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `organisation`
 --
 
 INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`, `address`) VALUES
-(1, 'YMCA Ballarat', '(03) 5329 2800 ballarat.hr@ymca.org.au', '', 'YMCA Ballarat'),
+(1, 'YMCA Ballarat', '(03) 5329 2800 ballarat.hr@ymca.org.au', 'TESTING CURRENT NEWS TESTING CURRENT NEWS TESTING CURRENT NEWS TESTING CURRENT NEWS TESTING CURRENT NEWS TESTING CURRENT NEWS.', 'YMCA Ballarat'),
 (2, 'Ballarat Health Services', 'https://www.bhs.org.au/how-we-can-help', NULL, 'Ballarat Health Services'),
 (3, 'Uniting Care Ballarat', '105 Dana Street PO Box 608 Ballarat VIC 3353 Phone 03 5332 1286', NULL, 'Uniting Care Ballarat'),
 (4, 'Southern Cross Care', 'https://www.sccv.org.au/contact-us-(1)', NULL, 'Southern Cross Care'),
@@ -390,11 +443,7 @@ INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`, `ad
 (26, 'RSPCA Victoria', '115A Gillies St S\r\n(03) 5334 2075\r\nhttp://www.rspcavic.org/about-us/pets-place', NULL, 'RSPCA Victoria'),
 (27, 'Art Gallery of Ballarat', 'https://artgalleryofballarat.com.au/support/volunteer/', NULL, 'Art Gallery of Ballarat'),
 (28, 'Senior Citizens Clubs', 'http://www.ballarat.vic.gov.au/pc/community-directory.aspx?Parent=110202&Child=110203', NULL, 'Senior Citizens Clubs'),
-(29, 'Ballarat Community Garden', 'http://ballaratcommunitygarden.org.au/contact-us/', NULL, 'Ballarat Community Garden'),
-(30, 'Carl Sagan Appreciation Group', 'Appreciating the work and life of Carl Sagan', NULL, 'Carl Sagan Appreciation Group'),
-(34, 'TEST2', 'TEST', NULL, NULL),
-(35, 'REEEEEE', 'REEE', NULL, NULL),
-(36, 'gdsfg', 'dsfgsv', NULL, NULL);
+(29, 'Ballarat Community Garden', 'http://ballaratcommunitygarden.org.au/contact-us/', NULL, 'Ballarat Community Garden');
 
 -- --------------------------------------------------------
 
@@ -439,6 +488,12 @@ ALTER TABLE `client`
   ADD CONSTRAINT `FKGroup` FOREIGN KEY (`FKgroup`) REFERENCES `organisation` (`groupID`);
 
 --
+-- Constraints for table `emailqueue`
+--
+ALTER TABLE `emailqueue`
+  ADD CONSTRAINT `itemNumber` FOREIGN KEY (`itemNumber`) REFERENCES `item` (`itemID`);
+
+--
 -- Constraints for table `item`
 --
 ALTER TABLE `item`
@@ -452,7 +507,6 @@ ALTER TABLE `item`
 ALTER TABLE `notification`
   ADD CONSTRAINT `FKClientID` FOREIGN KEY (`FKClient`) REFERENCES `client` (`clientID`),
   ADD CONSTRAINT `FKTagID` FOREIGN KEY (`FKTag`) REFERENCES `tag` (`tagID`);
-SET FOREIGN_KEY_CHECKS=1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

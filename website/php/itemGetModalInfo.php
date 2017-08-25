@@ -144,7 +144,7 @@
 
                 <label>End datetime: 
                     <div class="input-group date" id="datetimepicker2">
-                        <input id="newDateTime" type="text" class="form-control">
+                        <input id="newDateTime" readonly="true" type="text" class="form-control">
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>

@@ -17,9 +17,13 @@ $(function () {
 			autoNotification();
 			$('#datetimepicker1').datetimepicker({
 				sideBySide: true,
+				ignoreReadonly: true,
 				minDate: moment().format("YYYY-MM-DD HH:mm"),
 				defaultDate: moment().add(1,'days').format("YYYY-MM-DD HH:mm")
 			});
+			$('#createDateTime').on('click touchstart', function() {
+		        $('#datetimepicker1').data("DateTimePicker").show();
+		    });
 			if ($('#modal-login').length) {
 				$('#newPassword').pwstrength({
 				 	common: { usernameField: '#newEmail' },
@@ -183,6 +187,7 @@ function removeNotification(notificationID) {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText == "SUCCESS") {
 				sendOffPHP('modalDetails','/php/modalNotifications.php');
+				notificationTable();
 
 			} else {				
 				document.getElementById("notificationMsgID").innerHTML = this.responseText;
@@ -200,6 +205,7 @@ function addNotification() {
 		if (this.readyState == 4 && this.status == 200) {
 			if (this.responseText == "SUCCESS") {
 				sendOffPHP('modalDetails','/php/modalNotifications.php');
+				notificationTable();
 			} else {				
 				document.getElementById("notificationMsgID").innerHTML = this.responseText;
 			}
@@ -232,19 +238,24 @@ function autoNotification() {
 }
 
 
+function notificationTable() {
+	var xmlhttpTEST = new XMLHttpRequest();
+	xmlhttpTEST.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("notificationTable").innerHTML = this.responseText;
+			var updateDate = new Date();
+			document.getElementById("lastUpdatedTime").innerHTML = "Last updated: " + updateDate.today() + " " + updateDate.timeNow();
+		}
+	};
+	xmlhttpTEST.open("GET", "/php/notificationTable.php?collapsed="+isNotificationTableCollapsed, true);
+	xmlhttpTEST.send();
+}
+
+
 function setupAutoRefresh() {
 	var autoRefreshInterval = setInterval(function() {
 		if($('#notificationTable').length) {
-			var xmlhttpTEST = new XMLHttpRequest();
-			xmlhttpTEST.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					document.getElementById("notificationTable").innerHTML = this.responseText;
-					var updateDate = new Date();
-					document.getElementById("lastUpdatedTime").innerHTML = "Last updated: " + updateDate.today() + " " + updateDate.timeNow();
-				}
-			};
-			xmlhttpTEST.open("GET", "/php/notificationTable.php?collapsed="+isNotificationTableCollapsed, true);
-			xmlhttpTEST.send();
+			notificationTable();
 		} else {
 			clearInterval(autoRefreshInterval);
 		}
@@ -737,11 +748,15 @@ function getItemModal(itemID) {
 				document.getElementById("modalDetails").innerHTML = "There was an error getting the details for this item";
 			} else {
 				$("#modalDetails").html(this.responseText);
-				$('#datetimepicker2').datetimepicker({
+		       	$('#datetimepicker2').datetimepicker({
 					sideBySide: true,
+					ignoreReadonly: true,
 					minDate: moment().format("YYYY-MM-DD"),
 					defaultDate: moment().format("YYYY-MM-DD")
 				});
+				$('#newDateTime').on('click touchstart', function() {
+			        $('#datetimepicker2').data("DateTimePicker").show();
+			    });
 			}			
 		}
 	};
@@ -799,7 +814,6 @@ function createNewListing() {
 					document.getElementById("createListingMessage").innerHTML = "Item created. Redirecting you to the item...";
 					document.getElementById("pageDetails").innerHTML = "";
 					listingsPageCallback(function(callback){
-						getItemModal(itemNum);
 						var checkIfListingPageIsReady = function(){
 						    if(document.getElementById("pageDetails").innerHTML != "") {
 						    	if (lastlistingPage > 1){
@@ -807,6 +821,7 @@ function createNewListing() {
 								}
 								$('#modal-createListing').modal('hide');
 								$('#modal-modalDetails').modal('show');
+								getItemModal(itemNum);
 								setTimeout(function () {
 									createNewListingButton.disabled = false;
 									createTitle.value = "";
@@ -1166,9 +1181,9 @@ function createItemTable(itemObj, callback){
 		                        newItemTable += 'class="primary" value="finished">';
 		            	}
 		            	if (itemObj.category == "Request") {
-		            		newItemTable += '<span class="fa fa-shopping-cart  dontHideBadge" style="display: flex;">';
+		            		newItemTable += '<span class="fa fa-shopping-cart dontHideBadge" style="display: flex;">';
 		            	} else {
-		            		newItemTable += '<span class="glyphicon glyphicon-gift  dontHideBadge" style="display: flex;">';
+		            		newItemTable += '<span class="glyphicon glyphicon-gift dontHideBadge" style="display: flex;">';
 		            	}
 						newItemTable += '<h2> ' + itemObj.name + '</h2></span>';
 		      		newItemTable += '</td>';
@@ -1196,7 +1211,7 @@ function createItemTable(itemObj, callback){
   	callback(newItemTable);
 }
 
-$('#datetimepicker').datetimepicker();
+//$('#datetimepicker').datetimepicker();
 
 function createOrganisationList(obj, callback){
 	var currentPage = 1;

@@ -52,7 +52,7 @@
 	                                echo 'wanted" value="wanted">';
 	                                break;
 	                        }
-	                        echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails"><span style="display: flex;">';
+	                        echo '<button type="button" class="table-button" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails"><span class="dontHideBadge" style="display: flex;">';
 	                        if ($row['category'] == "Supplying") {
 	                        	echo '<span class="glyphicon glyphicon-gift dontHideBadge"></span> ';
 	                        } else {
