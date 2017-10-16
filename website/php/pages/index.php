@@ -3,6 +3,7 @@
     include("../updateItemFinished.php");
     session_start();
 
+    //Count all item status
     $availableCount = 0;
     $wantedCount = 0;
     $finishedCount = 0;
@@ -23,86 +24,47 @@
         }
     }
 
-    $availablePercent = GetPercentage($listingCount,$availableCount);
-    $wantedPercent = GetPercentage($listingCount,$wantedCount);
-    $finishedPercent = GetPercentage($listingCount,$finishedCount);
-    $totalPercent = ($availablePercent + $wantedPercent + $finishedPercent);
-    if ($totalPercent > 100.00) {
-        $removePercent = $totalPercent - 100;
-        if (max($availablePercent,$wantedPercent,$finishedPercent) == $availablePercent){
-            $availablePercent = $availablePercent - $removePercent;
-        } elseif (max($availablePercent,$wantedPercent,$finishedPercent) == $wantedPercent){
-            $wantedPercent = $wantedPercent - $removePercent;
-        } else {
-            $finishedPercent = $finishedPercent - $removePercent;
-        }
-    }
-
-     echo '<div class="panel-group testing">
+    //Create the section for the auto typing baner. Storing the values for available and unavailable in spans to be grabbed with javascript via their id
+    echo '<div class="panel-group testing">
         <div class="panel panel-default">
-            <p id="homepageTypist" class="typist">WELCOME TO CONNECT ME BALLARAT</p>
+            <p id="homepageTypist" class="typist">&nbsp;</p>
             <span style="display:none" id="hpAvailableID">'.$availableCount.'</span>
-            <span style="display:none" id="hpFinishedID">'.$finishedCount.'</span>';
-
-            /*if ($listingCount > 0){
-                echo '<div class="progress">';
-                if ($availableCount > 0 ) {
-                    echo '<div class="progress-bar progress-bar-success" role="progressbar" style="width:'.$availablePercent.'%">
-                        &#8203;
-                    </div>';
-                }
-                if ($wantedCount > 0 ) {
-                    echo '<div class="progress-bar progress-bar-warning" role="progressbar" style="width:'.$wantedPercent.'%">
-                        &#8203;
-                    </div>';
-                }
-                if ($finishedCount > 0 ) {
-                    echo '<div class="progress-bar progress-bar" role="progressbar" style="width:'.$finishedPercent.'%">
-                        &#8203;
-                    </div>';
-                }
-            } else {
-                echo '<div class="progress-bar progress-bar-info" role="progressbar" style="width:100%">
-                    You have no listings
-                </div>';
-            }                                  
-                 
-            echo '</div>
-            <h4 class="panel-title">
-                Available: <span class="badge dontHideBadge">'.$availableCount.'</span> | Wanted: <span class="badge dontHideBadge">'.$wantedCount.'</span> | Finished: <span class="badge dontHideBadge">'.$finishedCount.'</span>
-            </h4>*/
-        echo '</div>
+            <span style="display:none" id="hpFinishedID">'.$finishedCount.'</span>
+        </div>
     </div>';
 
-
-
-
+    //Get up to 5 items that are available (ending earliest)
     $firstLoop = true;
-    $stmtItem = $db->prepare('SELECT itemID, name, description, endtime, organisation FROM item WHERE endtime > NOW() ORDER BY endtime ASC LIMIT 5');
+    $stmtItem = $db->prepare('SELECT itemID, name, description, endtime, organisation, category FROM item WHERE endtime > NOW() ORDER BY endtime ASC LIMIT 5');
     $stmtItem->execute();
     $itemResult = $stmtItem->fetchAll(PDO::FETCH_ASSOC);
 
+    //If there are items returned then create a carousel for them
     if($stmtItem->rowCount() > 0) { 
         echo '<div id="text-carousel" class="carousel slide" data-ride="carousel">
     	    <!-- Slides -->
     	    <div class="row">
                 <div class="carousel-inner">';
-                    foreach ($itemResult as $row) {
-                        if ($firstLoop == true) {
+                    foreach ($itemResult as $row) { //For each item
+                        echo '<div id="carouselItemID'.$row['itemID'].'" class="item';
+                        if ($firstLoop == true) { //Set the first item as active (so it is displayed)
                             $firstLoop = false;
-                            echo '<div class="item active">';
+                            echo ' active">';
                         } else {
-                            echo '<div id="carouselItemID'.$row['itemID'].'" class="item">';
+                            echo '">';
                         }
+                        //make the item a button to open the items modal
     	                echo '<button class="no-button no-select-link" onclick="getItemModal('.$row['itemID'].')" data-toggle="modal" data-target="#modal-modalDetails" data-keyboard="true">
-                			<span class="modalTitle">'.$row['name'].'</span>';
-                            if (strlen($row['description']) > 100) {
-                                echo '<br>'.substr($row['description'],0,97).'...';
+                            <span class="modalTitle">'; //Print the type of item
+                            if ($row['category'] == "Request") {
+                                echo '[Request] ';
                             } else {
-                                echo '<br>'.$row['description'].'';
-                            }                            
-                			echo '<br>End date/time: '.$row['endtime'].'<br> ';
+                                echo '[Supplying] ';
+                            }
+                            echo $row['name'].'</span>'; //Print the items name
+                			echo '<br>End date/time: '.$row['endtime'].'<br> '; //Print the end date/time of the item
 
+                            //Get -> Print the items organsation name
                             $stmtOrg = $db->prepare("SELECT organisation.name FROM organisation WHERE groupID=?");
                             $stmtOrg->execute(array($row['organisation']));
                             $organisationResult = $stmtOrg->fetch(PDO::FETCH_ASSOC);
@@ -112,6 +74,7 @@
                             echo '</br></button>
                         </div>';
                     }   
+                    //Add the controls to go left and right with the carousel
                 echo '</div>
     	    </div>
 
@@ -125,19 +88,20 @@
     	</div>';
     }
 
-    echo '<div id="indexNews">';
+    //If the user is logged in then print a welcome message to them
+    if(isset($_SESSION['userID'])) {
+        $stmt = $db->prepare('SELECT clientFirstName FROM client WHERE clientID = ?');
+        $stmt->execute(array($_SESSION['userID']));
+        $clientName = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo '<div style="text-align: center;"><b style="padding: 10px; font-size: 30px;">Hi '.$clientName['clientFirstName'].',</b></div>';
+    }
+
+    //Print the welcome message from the database
+    echo '<div id="indexNews" style="padding: 10px; text-align: center;">';
         $stmt = $db->query('SELECT title, news FROM homepageNews ORDER BY newsDate DESC LIMIT 1');
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            echo '<b>'.$row['title'].'</b>';
+            echo '<b style="font-size: 30px;">'.$row['title'].'</b>';
             echo '<p>'.$row['news'].'</p>';
         }
     echo '</div>';
-
-    function GetPercentage($total, $number) {
-        if ( $total > 0 ) {
-            return round($number / ($total / 100),2);
-        } else {
-            return 0;
-        }
-    }
 ?>

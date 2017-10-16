@@ -2,19 +2,21 @@
 	include("config.php");
 	session_start();
 
+	//Check the user is logged in
 	if(isset($_SESSION['userID'])) {
-		if($_SESSION['userID'] === $_GET['id'] || $_SESSION['accountType'] === "3"){
+		//Delete the users items, notifications and account
+		if($_SESSION['userID'] === $_POST['id'] || $_SESSION['accountType'] === "3"){
 			$stmt = $db -> prepare ('DELETE FROM item WHERE FKclient=?');
-			$stmt -> execute (array($_GET['id']));
+			$stmt -> execute (array($_POST['id']));
 
 			$stmt = $db -> prepare ('DELETE FROM notification WHERE FKclient=?');
-			$stmt -> execute (array($_GET['id']));
+			$stmt -> execute (array($_POST['id']));
 
 			$stmt = $db -> prepare ('DELETE FROM client WHERE clientID=?');
-			$stmt -> execute (array($_GET['id']));
+			$stmt -> execute (array($_POST['id']));
 			
 			if($stmt -> rowCount() > 0) {
-				if ($_SESSION['accountType'] != "3"){
+				if ($_SESSION['userID'] === $_POST['id']) {
 					session_destroy();
 				}
 				echo "success";	

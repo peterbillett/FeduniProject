@@ -5,12 +5,10 @@
 	//If the user is logged in then link the organisation to the user
 	if(isset($_SESSION['userID'])) {
 		$stmt = $db -> prepare ('UPDATE client SET FKgroup=? WHERE clientID=?');
-		$stmt -> execute (array($_GET['groupID'], $_SESSION['userID']));
+		$stmt -> execute (array($_POST['groupID'], $_SESSION['userID']));
 		
+		//On success return success
 		if($stmt -> rowCount() > 0) {
-			//Update the users items to include their organisation and return success
-			//$stmt = $db -> prepare ('UPDATE item SET organisation=? WHERE clientID=?');
-			//$stmt -> execute (array($_GET['groupID'], $_SESSION['userID']));
 			echo "success";	
 		} else {
 			//Notify the user of the failure

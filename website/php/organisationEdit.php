@@ -2,6 +2,7 @@
    include("config.php");
    session_start();
 
+   //Check if the user is not logged in, if they arnt then report error
    if (!isset($_SESSION['userID'])) {
       echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -14,13 +15,14 @@
       return;
    }
 
+   //Check if they are an admin or the organisations owner and return the organisations details
    if ($_SESSION['accountType'] === "3") {
       $stmt = $db->prepare("SELECT groupID FROM organisation WHERE groupID=?");
-      $stmt->execute(array($_GET['id']));
+      $stmt->execute(array($_POST['id']));
    } elseif ($_SESSION['accountType'] === "2") {
       $stmt = $db->prepare("SELECT groupID FROM organisation LEFT JOIN client ON client.FKgroup = organisation.groupID WHERE client.clientID=? AND organisation.groupID=?");
-      $stmt->execute(array($_SESSION['userID'],$_GET['id']));
-   } else {
+      $stmt->execute(array($_SESSION['userID'],$_POST['id']));
+   } else { //If they are not an admin or org owner then report error
       echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">×</span>
@@ -31,6 +33,7 @@
       return;
    }
    
+   //If an organisation was not returned report error
    if ($stmt->rowCount() == 0) {
       echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -39,11 +42,11 @@
             <p>You cannot edit someone else'."'".'s organisation</p>
             <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
       </div>';
-   } else {
-      $stmt = $stmt->fetch(PDO::FETCH_ASSOC);
-      $stmt = $db->prepare("UPDATE organisation SET name=?, Information=?, currentNews=? WHERE groupID=?");
-      $stmt->execute(array($_GET['name'], $_GET['description'], $_GET['currentNews'], $_GET['id']));
+   } else { //Else update the organisation with the passed information
+      $stmt = $db->prepare("UPDATE organisation SET name=?, Information=?, currentNews=?, address=?, lastModified=now() WHERE groupID=?");
+      $stmt->execute(array($_POST['name'], $_POST['description'], $_POST['currentNews'], $_POST['address'], $_POST['id']));
 
+      //if the update failed the report error
       if ($stmt->rowCount() == 0) {
          echo '<br><div class="alert alert-danger alert-dismissible fade in" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -52,8 +55,11 @@
                <p>Failed to edit organisation</p>
                <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
          </div>';
-      } else {
+      } else { //Else return success
          echo "success";
+         date_default_timezone_set('Australia/Melbourne');
+         $updateClientSeen = $db->prepare("UPDATE client SET lastseen=now() WHERE clientID=?");
+         $updateClientSeen->execute(array($_SESSION['userID']));
       }
    }
 ?>

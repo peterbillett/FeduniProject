@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-
+		<!--Setup meta info for browser and crawlers-->
 		<title>Connect Me Ballarat</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1.0">
-		<meta name="author" content="Peter Billett, Tim Russell, Tim McKnight, Gerard May, Baljit Kaur">
-		<meta name="keywords" content="Volunteer, Sharing, Community, Help, Locations">
+		<meta name="author" content="Peter Billett, Baljit Kaur, Gerard May, Tim Russell, Tim McKnight">
+		<meta name="keywords" content="volunteer, sharing, community, locations, ballarat, victoria, australia, non-profit">
 		<meta name="description" content="Ballarat volunteer organisations">
-		<meta charset="UTF-8">
 
+		<!--Get css sheets-->
 		<link rel="shortcut icon" href="img/favicon.ico"/>
 		<link rel="stylesheet" href="css/bootstrap.custom.css"/>
 	    <link rel="stylesheet" href="css/main.css"/>
@@ -21,46 +21,46 @@
 		    <META HTTP-EQUIV="Refresh" CONTENT="0;URL=ie8Redirect">
 		<![endif]-->
 	    
-	    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
-	    <script type="text/javascript" src="/js/jquery.lazy.js"></script>
-	    <script type="text/javascript" src="/js/jquery.mobile.custom.min.js"></script>
-	    <script type="text/javascript" src="/js/jquery.typist.js"></script>
-	    <script type="text/javascript" src="/js/jquery.color.plus-names-2.1.2.min.js"></script>
-	    <script type="text/javascript" src="/js/bootstrap.js"></script>
+	    <!--Get the javascript files-->
+	    <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+	    <script type="text/javascript" src="js/jquery.lazy.js"></script>
+	    <script type="text/javascript" src="js/jquery.mobile.custom.min.js"></script>
+	    <script type="text/javascript" src="js/jquery.typist.js"></script>
+	    <script type="text/javascript" src="js/jquery.color.plus-names-2.1.2.min.js"></script>
+	    <script type="text/javascript" src="js/bootstrap.js"></script>
+	    <script type="text/javascript" src="js/moment.js"></script>
+	    <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
 	    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnIx1QkG-_64NuLSYxxQj4vkcdt9I5zV0&libraries=places"></script>
-	    <script type="text/javascript" src="/js/moment.js"></script>
-	    <script type="text/javascript" src="/js/bootstrap-datetimepicker.min.js"></script>
-	    <script type="text/javascript" src="/js/pwstrength-bootstrap.js"></script>
-	    <script type="text/javascript" src="/js/script.js"></script>
+	    <script type="text/javascript" src="js/pwstrength-bootstrap.js"></script>
+	    <script type="text/javascript" src="js/script.js"></script>
+	    
 	</head>
 
 	<body>
-		<MIME type=text/html>
-			<nav class="navbar navbar-inverse">
-				<h1><a class="no-select-link"><button class="no-button no-select-link" onclick="getIndexPage()">CONNECT ME Ballarat</button></a></h1>
-				<span id="navBar"></span>
-			</nav>
+		<!--Navbar goes here-->
+		<nav class="navbar navbar-inverse">
+			<h1><a class="no-select-link"><button class="no-button no-select-link" onclick="getIndexPage()">CONNECT ME Ballarat</button></a></h1>
+			<span id="navBar"></span>
+		</nav>
 
-			<div id="loadingBar" class="progress" style="display: none">
-			  	<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%">
-			    	Loading...
-			  	</div>
-			</div>
+		<!--Loading bar-->
+		<div id="loadingBar" class="progress" style="display: none">
+		  	<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%">Loading...</div>
+		</div>
 
-			<section>
-				<div id="notificationAlert" class="testing"></div>
+		<!--Notification alerts and where pages load into go here-->
+		<section>
+			<div id="notificationAlert" class="testing"></div>
+		    <div id="pageDetails"></div>
+	    </section>
 
-			    <div id="pageDetails"></div>
-		    </section>
+	    <!--Modal that can be filled with custom info-->
+	    <div class="modal fade" id="modal-modalDetails">
+	        <div id="modalDetails"></div>
+	    </div>
+	</body>
 
-		    <div class="modal fade" id="modal-modalDetails">
-		        <div id="modalDetails"></div>
-		    </div>
-
-		</body>
-
-		<footer>
-			Example Footer
-		</footer>
-	</mime>
+	<footer>
+		Connect Me Ballarat - 2017
+	</footer>
 </html>
