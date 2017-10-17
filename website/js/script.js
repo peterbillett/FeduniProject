@@ -518,7 +518,7 @@ function updatePassword() {
 	} else if (passwordNew != passwordConfirm) { //Check the confirmed password matches the new password (To prevent typos)
 		$("#passwordUpdateMessage").html("Your new password does not match.");
 	} else { //If the requirements are met then send request to update the password
-		$.post( "/php/accountUpdatePassword.php", { oldPassword: passwordOld, newPassword: passwordNew }, function( data ) {
+		$.post( "/php/accountUpdatePassword.php", { oldPassword: passwordOld, newPassword: passwordNew, passwordConfirm: passwordConfirm }, function( data ) {
 			if (data == 'success') { //On success
 				$("#passwordUpdateMessage").html("Password updated");
 			} else { //On failure report error
@@ -682,8 +682,8 @@ function checkLoginSuccess() {
 		$("#loginMessage").html("Please enter a vaild email or create a new account.");
 		return false;
 	}
-	if (validatePassword($("#loginPassword").val()) == false){
-		$("#loginMessage").html("Please enter a vaild password or create a new account.");
+	if ($("#loginPassword").val() == ""){
+		$("#loginMessage").html("Please enter a password or create a new account.");
 		return false;
 	}
 	$("#loginMessage").html("Logging in..."); //display message that its logging in
@@ -723,14 +723,14 @@ function checkAccountCreationSuccess() {
 	//Get the entered data
 	email = $("#newEmail").val();
 	password = $("#newPassword").val();
-	confirmPassword = $("#newConfirm").val();
+	passwordConfirm = $("#newConfirm").val();
 	firstName = $("#newFirstName").val();
 	lastName = $("#newLastName").val();
 
 	//Validation
 	if (validateEmail(email) == false) {
 		accountCreationError("Invalid email address");
-	} else if (password != confirmPassword) {
+	} else if (password != passwordConfirm) {
         accountCreationError("Your passwords do not match");
 	} else if (validateEmail(email) == false) {
         accountCreationError("You can not use your email as your password");
@@ -743,7 +743,7 @@ function checkAccountCreationSuccess() {
 	} else { //If everything validates then
 
 		//Check if login is successful
-		$.post( "/php/accountCreate.php", { email: email, password: password, firstName: firstName, lastName: lastName }, function( data ) { //Send post to create account, passing through the data
+		$.post( "/php/accountCreate.php", { email: email, password: password, firstName: firstName, lastName: lastName, passwordConfirm: passwordConfirm }, function( data ) { //Send post to create account, passing through the data
 			if (data == "success") { //On success send email to unlock new account
 				$.post( "/php/sendEmail.php" );
 				$("#accountCreationMessage").html("Your account has been created<br>Please check your email to confirm your account.");
@@ -806,8 +806,9 @@ function validateEmail(email) {
 
 
 //Validate password
+//Password must be between 6-15 char, at least 1 number and at least 1 letter
 function validatePassword(password) {
-    var re = /^[A-Za-z]\w{7,15}$/;  
+    var re = /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%^&*]{6,50}$/;
     return re.test(password);
 }
 
