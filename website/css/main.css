@@ -1,3 +1,11 @@
+.tooltip-inner {
+    white-space:pre-wrap;
+}
+
+.homePageImage {
+	width: 50%;
+}
+
 .topnav, html, body, div, span, h2, h3, h4, h5, h6, p, a, img, form, label, table, tr, th, td, article, footer, header, menu, nav, section, audio, video {
 	margin: 0;
 	padding: 0;
@@ -272,7 +280,7 @@ details summary {
 	color: #15344D;
 }
 
-footer{
+.footer{
 	bottom: 0;
 	width: 100%;
 	background-color: #0051A3;
@@ -395,6 +403,10 @@ footer{
 
 @media only screen and (min-width: 881px) {
 
+	.tooltip-inner {
+	    white-space:pre-wrap;
+	}
+
     .navbar .navbar-nav {
         display: inline-block;
         float: none;
@@ -438,6 +450,14 @@ footer{
 
 @media only screen and (max-width: 880px){
 
+	.homePageImage {
+		width: 80%;
+	}
+
+	.tooltip-inner {
+	    white-space:pre-wrap;
+	}
+
 	.br-filter{
 		display: block;
 	}
@@ -476,6 +496,10 @@ footer{
 
 @media only screen and (max-width: 610px){
 
+	.tooltip-inner {
+	    white-space:pre-wrap;
+	}
+
 	h1, h1>a, h1>a:hover, h1>a:focus{
 		font-size: 30px;
 	}
@@ -494,6 +518,10 @@ footer{
 }
 
 @media (min-width: 881px) {
+
+	.tooltip-inner {
+	    white-space:pre-wrap;
+	}
 
     .navbar .navbar-nav {
         display: inline-block;
@@ -534,6 +562,14 @@ footer{
 
 @media (max-width: 880px){
 
+	.homePageImage {
+		width: 80%;
+	}
+
+	.tooltip-inner {
+	    white-space:pre-wrap;
+	}
+
 	.br-filter{
 		display: block;
 	}
@@ -567,6 +603,10 @@ footer{
 }
 
 @media (max-width: 610px){
+
+	.tooltip-inner {
+	    white-space:pre-wrap;
+	}
 
 	h1, h1>a, h1>a:hover, h1>a:focus{
 		font-size: 40px;
@@ -857,6 +897,11 @@ footer{
 }
 
 @media only screen and (max-width:879px) {
+
+	.tooltip-inner {
+	    white-space:pre-wrap;
+	}
+
 	.sideMenuMainItem{
 	    border-bottom: none;
 	    line-height: 20px;

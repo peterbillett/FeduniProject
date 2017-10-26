@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 17, 2017 at 01:40 AM
+-- Generation Time: Oct 26, 2017 at 11:15 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -17,14 +17,15 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `project01`
+-- Database: `connectMeBallarat`
 --
-DROP DATABASE IF EXISTS `project01`;
-CREATE DATABASE IF NOT EXISTS `project01` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `project01`;
+DROP DATABASE IF EXISTS `connectMeBallarat`;
+CREATE DATABASE `library` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `connectMeBallarat`;
 
+-- Setup database user
 GRANT SELECT, INSERT, UPDATE, DELETE
-  ON project01.*
+  ON connectMeBallarat.*
   TO 'cmbdba'@'localhost'
   IDENTIFIED BY 'Osq6JkgqBzPUC8tQ';
 
@@ -34,7 +35,6 @@ GRANT SELECT, INSERT, UPDATE, DELETE
 -- Table structure for table `client`
 --
 
-DROP TABLE IF EXISTS `client`;
 CREATE TABLE `client` (
   `clientID` int(10) NOT NULL,
   `clientFirstName` varchar(35) NOT NULL,
@@ -56,13 +56,14 @@ INSERT INTO `client` (`clientID`, `clientFirstName`, `clientLastName`, `email`, 
 (5, 'Tim', 'McKnight', 'tmcknight@gmail.com', '$2y$10$UMsc7xqP85HaKgRPYWY3j.Pvgx0qNNpd8.B0qi9EsUXGme3wT.1jy', 2, '2017-07-17 23:13:59', '1'),
 (6, 'Baljit', 'Kaur', 'kaurbaljit046@gmail.com', '$2y$10$gGhELtJXzo.t2txN6fDYYugaxP5d31nJRMzYfjGd7Yn9wHdIS7IRS', 10, '2017-07-17 23:13:59', '1'),
 (7, 'Peter', 'Billett', 'peterbillettsemail@gmail.com', '$2y$10$fsJv77cLdQIs2EM90QOnzOCTXh56TcoRCw13C/S8USv1gsxROt4Py', 17, '2017-09-19 08:11:21', '2'),
-(8, 'Rodrigo', 'Sanchez', 'jeneralpanano@hotmail.com', '$2y$10$aTWfdV3pGcO3X2IBySfmFeScFJAIVDyV9Y.35XEfjdmVxAkuGk.4O', 1, '2017-10-16 09:50:52', '2'),
+(8, 'Rodrigo', 'Sanchez', 'jeneralpanano@hotmail.com', '$2y$10$U1q2RoSlx14gHOeQIUH29O7db7RpLr9S4x.HDkHi9p7xQGA95UXnu', 1, '2017-10-17 20:22:05', '2'),
 (9, 'Tim', 'McKnight', 'red@red.net', '$2y$10$iEHrxPtWa24Z6y4gznQ8.Ozl9NW.oSu3a0xRPdrdGRsdqRHUHiSrO', NULL, '2017-10-16 21:28:40', '1'),
 (11, 'Admin', 'Admin', 'admin@admin.com', '$2y$10$vROLCDI7msSzssmh1.8E.uTrOwjZTcX.QMj0Ey2uMLPStxYbQkpc2', NULL, '2017-10-17 07:40:46', '3'),
 (13, 'Tim', 'Albert', 'anaccount@email.net', '$2y$10$JPCWSI3NKM.43GboQjwtjeYtc2CbXsaABQx.8zpP1JEv1SdziQyO2', NULL, '2017-08-28 14:22:15', '1'),
 (14, 'Jim', 'Thompson', 'themangohunter@gmail.com', '$2y$10$kD8XZyhz5VlG638F2L8d0.el0H73Yip9nzjlXL49FfDR5u.sjb8aO', NULL, '2017-08-25 22:19:55', '1'),
 (16, 'Bob', 'Stuart', 'bob@bmail.com', '$2y$10$2F0CwVVSMNYECbpsE8NvWuaJUe3evJ1QQFgOTalk4lQFXynCUt/1G', NULL, '2017-08-28 16:29:32', '1'),
-(37, 'Kathleen', 'Keogh', 'k.keogh@federation.edu.au', '$2y$10$Ct3At8o/xK7hlvzbrPSNtOcN/WOaFEfYqFz5KQQ7l.7V/PUj8NZEi', 15, '2017-09-19 14:11:32', '2');
+(37, 'Kathleen', 'Keogh', 'k.keogh@federation.edu.au', '$2y$10$Ct3At8o/xK7hlvzbrPSNtOcN/WOaFEfYqFz5KQQ7l.7V/PUj8NZEi', 15, '2017-09-19 14:11:32', '2'),
+(38, 'Basil', 'Theofanides', 'basil@dogtraining.com.au', '$2y$10$MSvXYNeNX2w.U/tCIo6j0.uDQyzp62TS2EMPUd0Z24sKFkRjAf..a', NULL, '2017-10-25 10:01:28', 'A8371034');
 
 -- --------------------------------------------------------
 
@@ -70,7 +71,6 @@ INSERT INTO `client` (`clientID`, `clientFirstName`, `clientLastName`, `email`, 
 -- Table structure for table `emailqueue`
 --
 
-DROP TABLE IF EXISTS `emailqueue`;
 CREATE TABLE `emailqueue` (
   `emailID` int(10) NOT NULL,
   `referenceNum` int(10) NOT NULL,
@@ -83,7 +83,6 @@ CREATE TABLE `emailqueue` (
 -- Table structure for table `homepagenews`
 --
 
-DROP TABLE IF EXISTS `homepagenews`;
 CREATE TABLE `homepagenews` (
   `newID` int(10) NOT NULL,
   `title` varchar(100) NOT NULL,
@@ -97,7 +96,7 @@ CREATE TABLE `homepagenews` (
 
 INSERT INTO `homepagenews` (`newID`, `title`, `news`, `newsDate`) VALUES
 (1, 'WARNING', 'This website is currently in development and might have some broken features during this time.', '2017-08-08 10:01:02'),
-(2, 'Welcome', 'This website has been developed by a group of Federation University students for the Ballarat Council.<br>It has been designed for the volunteer organisations in Ballarat so they can share their resources online easier.<br>Volunteers can create listings to the services they need or can provide which can then easily be found by other volunteers.<br><a style=\"font-size: x-large\" href=\"https://www.surveymonkey.com/r/FKFMSFS\" target=\"_blank\">Please click here to share your opinion on this site</a>', '2017-10-13 08:48:50');
+(2, 'Welcome', 'This website has been developed by a group of Federation University students for the Ballarat Council.<br>It has been designed for the volunteer organisations in Ballarat so they can share their resources online easier.<br>Volunteers can create listings to the services they need or can provide which can then easily be found by other volunteers.<br><a style=\"font-size: x-large\" href=\"https://www.surveymonkey.com/r/FKFMSFS\" target=\"_blank\">Please click here to share your opinion on this site</a><br><img src=\"img/logo.png\" alt=\"Logo\" class=\"homePageImage\">', '2017-10-13 08:48:50');
 
 -- --------------------------------------------------------
 
@@ -105,7 +104,6 @@ INSERT INTO `homepagenews` (`newID`, `title`, `news`, `newsDate`) VALUES
 -- Table structure for table `item`
 --
 
-DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `itemID` int(10) NOT NULL,
   `name` varchar(250) NOT NULL,
@@ -128,8 +126,8 @@ CREATE TABLE `item` (
 --
 
 INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKclient`, `finished`, `organisation`, `FKTagID`, `lastModifiedTime`, `perishable`, `location`, `image`, `dateCreated`) VALUES
-(3, 'Coaches', '2017-08-18 12:08:00', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 8, 2, 1, 6, '2017-08-18 09:29:26', 0, NULL, '3.png', '2017-10-10 12:57:43'),
-(5, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-09-22 14:35:06', 1, NULL, '5.png', '2017-10-10 12:57:43'),
+(3, 'Coaches', '2017-08-18 12:08:00', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 8, 2, 1, 6, '2017-08-18 09:29:26', 0, NULL, NULL, '2017-10-10 12:57:43'),
+(5, 'Sausages', '2017-11-10 23:19:52', '10kg of sausages. Please contact for more information.', 'Supplying', 7, 1, 17, 7, '2017-09-22 14:35:06', 1, NULL, NULL, '2017-10-10 12:57:43'),
 (6, 'Workers', '2017-10-05 00:00:00', 'Offering to help any organisation in need every Wednesday this month. Ring me on ##########', 'Supplying', 3, 2, NULL, 15, '2017-08-15 17:56:51', 0, NULL, NULL, '2017-10-10 12:57:43'),
 (24, 'Coaches', '2017-10-13 12:10:00', 'Looking for people to help out with coaching under 12 basketball. Please ensure you have working with children qualifications before applying.', 'Request', 4, 2, NULL, 6, '2017-10-13 09:43:37', 0, NULL, NULL, '2017-10-10 12:57:43'),
 (25, 'Sausages', '2018-01-19 00:00:00', 'Looking for sausages for a fund raiser', 'Request', 5, 0, 2, 7, '2017-07-17 23:19:52', 1, NULL, NULL, '2017-10-10 12:57:43'),
@@ -174,7 +172,6 @@ INSERT INTO `item` (`itemID`, `name`, `endtime`, `description`, `category`, `FKc
 -- Table structure for table `notification`
 --
 
-DROP TABLE IF EXISTS `notification`;
 CREATE TABLE `notification` (
   `NotificationID` int(10) NOT NULL,
   `FKClient` int(10) NOT NULL,
@@ -198,7 +195,9 @@ INSERT INTO `notification` (`NotificationID`, `FKClient`, `FKTag`) VALUES
 (92, 7, 9),
 (93, 7, 11),
 (94, 7, 12),
-(95, 7, 14);
+(95, 7, 14),
+(105, 8, 7),
+(106, 8, 12);
 
 -- --------------------------------------------------------
 
@@ -206,7 +205,6 @@ INSERT INTO `notification` (`NotificationID`, `FKClient`, `FKTag`) VALUES
 -- Table structure for table `organisation`
 --
 
-DROP TABLE IF EXISTS `organisation`;
 CREATE TABLE `organisation` (
   `groupID` int(10) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -254,7 +252,6 @@ INSERT INTO `organisation` (`groupID`, `name`, `Information`, `currentNews`, `ad
 -- Table structure for table `tag`
 --
 
-DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `tagID` int(10) NOT NULL,
   `name` varchar(50) NOT NULL
@@ -341,12 +338,12 @@ ALTER TABLE `tag`
 -- AUTO_INCREMENT for table `client`
 --
 ALTER TABLE `client`
-  MODIFY `clientID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `clientID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 --
 -- AUTO_INCREMENT for table `emailqueue`
 --
 ALTER TABLE `emailqueue`
-  MODIFY `emailID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `emailID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `homepagenews`
 --
@@ -361,7 +358,7 @@ ALTER TABLE `item`
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
-  MODIFY `NotificationID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `NotificationID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 --
 -- AUTO_INCREMENT for table `organisation`
 --

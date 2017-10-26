@@ -16,7 +16,10 @@
 				//Three password fields to comfirm password change (current password, new password, confirm new password)
 				echo '<label>Password</label>
 					<br><input type="password" class="form-control" id="updatePasswordOld" required placeholder="Enter current password">
-					<br><input type="password" class="form-control" id="updatePasswordNew" required placeholder="Enter new password">
+					<br><input type="password" class="form-control" id="updatePasswordNew" required placeholder="Enter new password" data-toggle="tooltip" title="Passwords require:
+-Between 6-50 characters
+-At least 1 number
+-At least 1 letter" class="form-control">
 					<br><input type="password" class="form-control" id="updatePasswordConfirm" required placeholder="Confirm new password">
 					<span id="passwordUpdateMessage"></span>
 				</div>

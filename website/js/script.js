@@ -152,6 +152,9 @@ function initialLoad(callback){
 			 	common: { usernameField: '#newEmail' },
 		        ui: { showVerdictsInsideProgressBar: true }
 		    });
+		    $('#newPassword').on('click touchstart', function() {
+		    	$('#newPassword').tooltip('show');
+		    });
 			$("#modal-login").keypress(function(event) { //Add on key press (enter) login if the login modal is open
 			    if (event.which == 13) {
 			     	checkLoginSuccess();
@@ -251,16 +254,14 @@ function getPasswordUpdater() {
 	$("#modalDetails").html(""); //Clear the current modal
 	$.get("php/modalUpdatePassword.php", function(data) { //Get the password updater modal
 		$("#modalDetails").html(data); //Set the modal
-	    var checkIfPasswordUpdaterIsReady = function(){ //Check if the modal has been set
-		    if($('#updatePassword').length) { //If it has been set then activate the password strength bar
-		    	$('#updatePassword').pwstrength({
-			        ui: { showVerdictsInsideProgressBar: true }
-			    });
-		    } else {
-		        setTimeout(checkIfPasswordUpdaterIsReady, 1000); //If it is not ready then check again in 1 second
-		    }
-		}
-	    checkIfPasswordUpdaterIsReady();
+		//Add tool tip (requirements for passwords) on mobiles
+		$('#updatePasswordNew').on('click touchstart', function() {
+	    	$('#updatePasswordNew').tooltip('show');
+	    });
+	    //Activate the password strength bar
+    	$('#updatePasswordNew').pwstrength({
+	        ui: { showVerdictsInsideProgressBar: true }
+	    });
     });
 }
 

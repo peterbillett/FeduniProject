@@ -308,7 +308,10 @@
 						<br><input type="email" class="form-control" id="newEmail" required placeholder="Enter a valid email address"><br/>
 						<br>
 						<label>Password</label>
-						<br><input type="password" class="form-control" id="newPassword" required placeholder="Enter password"><br/>
+						<br><input type="password" data-toggle="tooltip" title="Passwords require:
+-Between 6-50 characters
+-At least 1 number
+-At least 1 letter" class="form-control" id="newPassword" required placeholder="Enter password"><br/>
 						<br>
 						<label>Confirm Password</label>
 						<br><input type="password" class="form-control" id="newConfirm" required placeholder="Re-enter password"><br/>
