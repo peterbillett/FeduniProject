@@ -5,7 +5,7 @@
 	//Check the user is logged in. An account is required to make changes to an items status 
 	if(isset($_SESSION['userID'])){
 		if ($_POST['status'] == 3){ //Change status 3 to 0 to be read by the database correctly
-			$status = 0;
+			$status = "0";
 		} else {
 			$status = $_POST['status'];
 		}
@@ -14,8 +14,8 @@
 			echo "Error: Invalid status update call";
 		} else {
 			//Update the items status to the new status
-			$stmt = $db->prepare("UPDATE item SET finished=? WHERE itemID=?"); \
-			$stmt->execute(array($status, $_POST['id']));
+      		$stmt = $db->prepare("UPDATE item SET finished=? WHERE itemID=?");
+      		$stmt->execute(array($status, $_POST['id']));
 			if ($stmt->rowCount() > 0){ //Upon success update the items last modified time to the current time and return success
 				$stmt = $db->prepare("UPDATE item SET lastModifiedTime=now() WHERE itemID=?"); 
          		$stmt->execute(array($_POST['id'])); 
