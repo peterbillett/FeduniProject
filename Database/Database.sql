@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 -- Database: `connectMeBallarat`
 --
 DROP DATABASE IF EXISTS `connectMeBallarat`;
-CREATE DATABASE `library` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+CREATE DATABASE `connectMeBallarat` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `connectMeBallarat`;
 
 -- Setup database user
