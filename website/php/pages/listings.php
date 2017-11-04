@@ -1,6 +1,6 @@
 <?php
     echo '<div class="center wrapper">
-        <input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search for listing..">'; //On keypress the content in this text input filters the shown items (hides page breaks so all items are shown at the start but re-hides it when emptyed so the pages reappear)
+        <input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search for listing...">'; //On keypress the content in this text input filters the shown items (hides page breaks so all items are shown at the start but re-hides it when emptyed so the pages reappear)
         include('../legendBar.php'); //Gets the legend collapse (shows the key for items)
         //Create a dropdown to filter the items (item status and or tag)
         //The tag can be selected from a drop down and the item staus is a radio button.

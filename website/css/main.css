@@ -276,6 +276,15 @@ details summary {
 	text-align: center;
 }
 
+.organisationTable-Heading {
+	background-color: #337AB7;
+	color: white;
+}
+
+.organisationTable-Body {
+	color: black;
+}
+
 .navbar-inverse .navbar-nav>li>a:focus, .navbar-inverse .navbar-nav>li>a:hover{
 	color: #15344D;
 }
@@ -283,7 +292,7 @@ details summary {
 .footer{
 	bottom: 0;
 	width: 100%;
-	background-color: #0051A3;
+	background-color: #337AB7;
 	position: fixed;
 	color: white;
 	z-index: 11;
