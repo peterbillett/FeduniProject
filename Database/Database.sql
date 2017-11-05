@@ -67,7 +67,7 @@ CREATE TABLE `homepagenews` (
 --
 
 INSERT INTO `homepagenews` (`newID`, `title`, `news`, `newsDate`) VALUES
-(1, 'Welcome', 'This website has been developed by a group of Federation University students for the Ballarat Council.<br>It has been designed for the volunteer organisations in Ballarat so they can share their resources online easier.<br>Volunteers can create listings to the services they need or can provide which can then easily be found by other volunteers.<br><img src=\"img/logo.png\" alt=\"Logo\" class=\"homePageImage\">', '2017-10-13 08:48:50');
+(1, 'Welcome', 'This website has been developed by a group of Federation University students for the Ballarat Council.<br>It has been designed for the volunteer organisations in Ballarat, so they can share their resources online easier.<br>Volunteers can create listings for the services that they need or can provide, which can then easily be found by other volunteers.<br><img src=\"img/logo.png\" alt=\"Logo\" class=\"homePageImage\">', '2017-10-13 08:48:50');
 
 -- --------------------------------------------------------
 

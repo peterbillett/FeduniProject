@@ -534,14 +534,10 @@ function updatePassword() {
 function getOrganisationsPage() {
 	$("#loadingBar").css('display', 'block'); //Show the loading bar
 	$.get("php/organisationGetAll.php", function(data) { //Get the list of all organisations in a JSON file
-		if (data == "") {
+		createOrganisationList(JSON.parse(data), function(result){ //Parse the JSON file then send it to createOrganisationList to make the tables for the page
+			$("#pageDetails").html(result); //Fill the page with the organisation tables
 			$("#loadingBar").css('display', 'none'); //Hide the loading bar
-		} else {
-			createOrganisationList(JSON.parse(data), function(result){ //Parse the JSON file then send it to createOrganisationList to make the tables for the page
-				$("#pageDetails").html(result); //Fill the page with the organisation tables
-				$("#loadingBar").css('display', 'none'); //Hide the loading bar
-			});
-		}
+		});
 	});
 }
 
@@ -591,8 +587,6 @@ function getListingsPage(setListingType) {
 				}
 				checkIfTagsAreReady();
 				getAllListings(false); //Get all of the listings to fill the page with the item tables
-	  		} else {
-	  			$("#loadingBar").css('display', 'none'); //Hide the loading bar
 	  		}
 		});
 	});
@@ -603,19 +597,15 @@ function getListingsPage(setListingType) {
 function getAllListings(callSearch) {
 	$("#loadingBar").css('display', 'block'); //Display the loading bar
 	$.get("php/itemGetAll.php", { "type": listingType}, function(data) { //Send the request to get all of the items (with the filter), return in JSON
-		if (data != "") {
-			filterArray(JSON.parse(data),$("#tagFilterList").val(),$("input[name='statusFilter']:checked").val(), function(filteredArray){ //Parse the JSON then filter the returned results via the tag select and status checkbox
-				createItemList(filteredArray, function(result){ //Create the item tables from the filtered array
-					activateLazyLoad(); //Activate lazy load (loads images once they become in view to reduce impact of loading for user and server)
-					if (callSearch) { //If their is currently something in the search bar then call search tables to filter the displayed item tables
-						searchTables(result);
-					}
-					$("#loadingBar").css('display', 'none'); //Hide the loading bar
-				});
+		filterArray(JSON.parse(data),$("#tagFilterList").val(),$("input[name='statusFilter']:checked").val(), function(filteredArray){ //Parse the JSON then filter the returned results via the tag select and status checkbox
+			createItemList(filteredArray, function(result){ //Create the item tables from the filtered array
+				activateLazyLoad(); //Activate lazy load (loads images once they become in view to reduce impact of loading for user and server)
+				if (callSearch) { //If their is currently something in the search bar then call search tables to filter the displayed item tables
+					searchTables(result);
+				}
+				$("#loadingBar").css('display', 'none'); //Hide the loading bar
 			});
-		} else {
-			$("#loadingBar").css('display', 'none'); //Hide the loading bar
-		}
+		});
 	});
 }
 
@@ -1372,7 +1362,7 @@ function createOrganisationList(obj, callback){
 	//Create the wrapper to house the content
 	organisationsStr = '<div class="center wrapper">';
 	//Add the search bar for searching for organisations
-	organisationsStr += '<input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search for organisation...">';
+	organisationsStr += '<input type="text" id="searchValue" onkeyup="searchTables()" placeholder="Search for organisation..">';
 	//Create the list
 	organisationsStr += '<ul id="tableList">';
 	//Create the first organisation page
@@ -1428,11 +1418,11 @@ function createOrganisationTable(organisationObj, callback){
 	newOrganisationTable += '<a type="button" class="table-button noUnderline" onclick="getOrganisationModal(' + organisationObj.groupID + ')" data-toggle="modal" data-target="#modal-modalDetails">';
   	//Create the table
   	newOrganisationTable += '<table class="table table-striped table-bordered table-hover table-restrict-size"">';
-  	newOrganisationTable += '<thead class="organisationTable-Heading">';
+  	newOrganisationTable += '<thead>';
   	//The organisation name goes in the header/ first row
   	newOrganisationTable += '<tr><td><b>' + organisationObj.name + '</b></td></tr>';
   	newOrganisationTable += '</thead>';
-  	newOrganisationTable += '<tbody class="organisationTable-Body">';
+  	newOrganisationTable += '<tbody>';
   	//The next row contains the description
   	newOrganisationTable += '<tr><td class="table-listings">';
   	//if the description is larger than 200 characters then get the first 200 characters and add ...

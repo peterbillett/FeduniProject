@@ -13,6 +13,6 @@
 		$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		echo json_encode($rows);
 	} else {
-		echo "";
+		json_encode (json_decode ("{}"));
 	}
 ?>

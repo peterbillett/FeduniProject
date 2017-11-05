@@ -24,7 +24,6 @@
 
 		    $stmt = $db->prepare("DELETE FROM organisation WHERE groupID=:id");
 		    $stmt->bindValue(':id', $groupID['FKgroup'], PDO::PARAM_STR);
-		    $stmt->execute();
 		    if ($_SESSION['accountType'] === "2") {
       			$_SESSION['accountType'] = "1";
       		}

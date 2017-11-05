@@ -41,7 +41,7 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                <span aria-hidden="true">×</span>
             </button>
-               <p>You can not remove someone else'."'".'s listing</p>
+               <p>You can not remove someone els'."'".'s listing</p>
                <p><button type="button" class="btn btn-danger" data-dismiss="alert">Dismiss</button></p>
          </div>';
       }
@@ -50,9 +50,7 @@
          $stmt = $db->prepare("DELETE FROM item WHERE itemID=:id");
          $stmt->bindValue(':id', $_POST['id'], PDO::PARAM_STR);
          $stmt->execute();
-         if($DBimage['image'] != "") {
-            unlink("../uploads/".$DBimage['image']);
-         }
+         unlink("../uploads/".$DBimage['image']) or die();
          if($stmt->rowCount() > 0){
             echo "success";
          }
